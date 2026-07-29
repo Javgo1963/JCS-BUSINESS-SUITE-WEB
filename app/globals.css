@@ -1,26 +1,929 @@
 @import "tailwindcss";
+@import "./jcs-foundation.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   JCS Business Suite Web
+   Global Application Styles
+
+   Purpose:
+   - Connect Tailwind CSS with JCS Foundation
+   - Provide reusable application-wide utilities
+   - Support responsive layouts
+   - Support light, dark and system appearance
+   - Preserve accessibility across the entire platform
+
+   Business logic must never be placed in this file.
+   ============================================================ */
+
+/* MARK: - Tailwind Theme Integration */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* JCS colors */
+
+  --color-jcs-background: var(--jcs-background);
+  --color-jcs-background-secondary: var(--jcs-background-secondary);
+
+  --color-jcs-surface: var(--jcs-surface);
+  --color-jcs-surface-strong: var(--jcs-surface-strong);
+  --color-jcs-surface-soft: var(--jcs-surface-soft);
+  --color-jcs-surface-muted: var(--jcs-surface-muted);
+
+  --color-jcs-primary: var(--jcs-accent-primary);
+  --color-jcs-secondary: var(--jcs-accent-secondary);
+  --color-jcs-deep: var(--jcs-accent-deep);
+
+  --color-jcs-text-primary: var(--jcs-text-primary);
+  --color-jcs-text-secondary: var(--jcs-text-secondary);
+  --color-jcs-text-tertiary: var(--jcs-text-tertiary);
+
+  --color-jcs-border: var(--jcs-border);
+  --color-jcs-border-strong: var(--jcs-border-strong);
+
+  --color-jcs-success: var(--jcs-success);
+  --color-jcs-warning: var(--jcs-warning);
+  --color-jcs-danger: var(--jcs-danger);
+  --color-jcs-info: var(--jcs-info);
+
+  /* JCS typography */
+
+  --font-jcs: var(--jcs-font-family);
+  --font-jcs-body: var(--jcs-font-family-body);
+
+  /* JCS radius */
+
+  --radius-jcs-sm: var(--jcs-radius-small);
+  --radius-jcs-md: var(--jcs-radius-medium);
+  --radius-jcs-lg: var(--jcs-radius-large);
+  --radius-jcs-xl: var(--jcs-radius-xl);
+  --radius-jcs-2xl: var(--jcs-radius-2xl);
+
+  /* JCS shadows */
+
+  --shadow-jcs-sm: var(--jcs-shadow-small);
+  --shadow-jcs-md: var(--jcs-shadow-medium);
+  --shadow-jcs-lg: var(--jcs-shadow-large);
+  --shadow-jcs-accent: var(--jcs-shadow-accent);
+  --shadow-jcs-floating: var(--jcs-shadow-floating);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* MARK: - Root Application */
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+body > div:first-child {
+  min-height: 100vh;
+}
+
+/* Prevent browser text resizing from altering the interface. */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* MARK: - Form Normalization */
+
+input,
+textarea,
+select,
+button {
+  color: inherit;
+}
+
+input,
+textarea,
+select {
+  min-width: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--jcs-text-tertiary);
+  opacity: 0.82;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled,
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+/*
+ Prevent Safari from applying its own aggressive styling
+ to form controls.
+ */
+
+input,
+textarea,
+select {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+
+/*
+ Remove the default search decoration in WebKit browsers.
+ */
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* MARK: - Buttons and Links */
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+button {
+  cursor: pointer;
+  background: transparent;
+}
+
+a,
+button {
+  transition:
+    opacity var(--jcs-duration-fast) ease,
+    color var(--jcs-duration-normal) ease,
+    background-color var(--jcs-duration-normal) ease,
+    border-color var(--jcs-duration-normal) ease,
+    box-shadow var(--jcs-duration-normal) ease,
+    transform var(--jcs-duration-normal) var(--jcs-ease-spring);
+}
+
+button:disabled,
+a[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+/* MARK: - Headings */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--jcs-font-family);
+  color: var(--jcs-text-primary);
+}
+
+p {
+  color: inherit;
+}
+
+/* MARK: - Media */
+
+img {
+  height: auto;
+  object-fit: cover;
+}
+
+svg {
+  flex-shrink: 0;
+}
+
+/* MARK: - Tables */
+
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+th {
+  font-family: var(--jcs-font-family);
+  font-weight: 750;
+  color: var(--jcs-text-primary);
+  text-align: left;
+}
+
+td {
+  color: var(--jcs-text-secondary);
+}
+
+/* MARK: - Global Scrollbar */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    color-mix(
+      in srgb,
+      var(--jcs-accent-primary) 42%,
+      transparent
+    )
+    transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: var(--jcs-radius-pill);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent-primary) 42%,
+      transparent
+    );
+
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent-primary) 62%,
+      transparent
+    );
+
+  background-clip: padding-box;
+}
+
+/* MARK: - JCS Application Shell */
+
+.jcs-app {
+  position: relative;
+  isolation: isolate;
+
+  width: 100%;
+  min-height: 100vh;
+
+  color: var(--jcs-text-primary);
+}
+
+.jcs-app-main {
+  width: 100%;
+  min-width: 0;
+}
+
+.jcs-app-content {
+  width: min(
+    calc(100% - (var(--jcs-page-padding) * 2)),
+    var(--jcs-content-width)
+  );
+
+  margin-inline: auto;
+  padding-block:
+    var(--jcs-page-padding)
+    calc(var(--jcs-bottom-bar-height) + var(--jcs-space-8));
+}
+
+/* MARK: - JCS Responsive Grid */
+
+.jcs-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--jcs-section-gap);
+}
+
+.jcs-grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--jcs-section-gap);
+}
+
+.jcs-grid-3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--jcs-section-gap);
+}
+
+.jcs-grid-4 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--jcs-section-gap);
+}
+
+.jcs-auto-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(min(100%, 250px), 1fr)
+    );
+
+  gap: var(--jcs-section-gap);
+}
+
+/* MARK: - JCS Stack Utilities */
+
+.jcs-v-stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.jcs-h-stack {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.jcs-stack-2 {
+  gap: var(--jcs-space-2);
+}
+
+.jcs-stack-3 {
+  gap: var(--jcs-space-3);
+}
+
+.jcs-stack-4 {
+  gap: var(--jcs-space-4);
+}
+
+.jcs-stack-5 {
+  gap: var(--jcs-space-5);
+}
+
+.jcs-stack-6 {
+  gap: var(--jcs-space-6);
+}
+
+.jcs-stack-8 {
+  gap: var(--jcs-space-8);
+}
+
+/* MARK: - JCS Card Foundation */
+
+.jcs-card {
+  position: relative;
+  overflow: hidden;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-large);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgb(255 255 255 / 18%),
+      transparent 58%
+    ),
+    var(--jcs-surface);
+
+  box-shadow: var(--jcs-shadow-small);
+
+  -webkit-backdrop-filter:
+    blur(var(--jcs-blur-small))
+    saturate(140%);
+
+  backdrop-filter:
+    blur(var(--jcs-blur-small))
+    saturate(140%);
+}
+
+.jcs-card-content {
+  position: relative;
+  z-index: 1;
+  padding: clamp(1rem, 2.2vw, 1.5rem);
+}
+
+.jcs-card-premium {
+  border-color: var(--jcs-border-light);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgb(255 255 255 / 22%),
+      transparent 54%
+    ),
+    var(--jcs-glass-surface-strong);
+
+  box-shadow: var(--jcs-shadow-medium);
+
+  -webkit-backdrop-filter:
+    blur(var(--jcs-blur-medium))
+    saturate(155%);
+
+  backdrop-filter:
+    blur(var(--jcs-blur-medium))
+    saturate(155%);
+}
+
+/* MARK: - JCS Gradient Button */
+
+.jcs-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--jcs-space-2);
+
+  min-height: 52px;
+  padding:
+    0.875rem
+    1.125rem;
+
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: var(--jcs-radius-large);
+
+  font-family: var(--jcs-font-family);
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1;
+
+  color: var(--jcs-text-on-accent);
+  background: var(--jcs-gradient-primary);
+  box-shadow: var(--jcs-shadow-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .jcs-button-primary:hover {
+    transform: translateY(-2px);
+    background: var(--jcs-gradient-primary-hover);
+
+    box-shadow:
+      0 18px 42px
+      rgb(22 137 248 / 29%);
+  }
+}
+
+.jcs-button-primary:active {
+  transform: scale(0.985);
+}
+
+.jcs-button-primary:focus-visible {
+  outline: 3px solid var(--jcs-border-focus);
+  outline-offset: 3px;
+}
+
+/* MARK: - JCS Secondary Button */
+
+.jcs-button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--jcs-space-2);
+
+  min-height: 48px;
+  padding:
+    0.75rem
+    1rem;
+
+  border: 1px solid var(--jcs-border-strong);
+  border-radius: var(--jcs-radius-large);
+
+  font-family: var(--jcs-font-family);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+
+  color: var(--jcs-accent-primary);
+  background: var(--jcs-surface-soft);
+  box-shadow: var(--jcs-shadow-small);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .jcs-button-secondary:hover {
+    transform: translateY(-2px);
+    border-color: var(--jcs-border-focus);
+    background: var(--jcs-surface-strong);
+    box-shadow: var(--jcs-shadow-medium);
+  }
+}
+
+.jcs-button-secondary:active {
+  transform: scale(0.985);
+}
+
+/* MARK: - JCS Text Button */
+
+.jcs-button-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--jcs-space-2);
+
+  padding:
+    var(--jcs-space-2)
+    var(--jcs-space-3);
+
+  border-radius: var(--jcs-radius-medium);
+
+  font-family: var(--jcs-font-family);
+  font-weight: 700;
+
+  color: var(--jcs-accent-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .jcs-button-text:hover {
+    background: var(--jcs-info-soft);
+  }
+}
+
+/* MARK: - JCS Form Field */
+
+.jcs-field {
+  display: flex;
+  align-items: center;
+  gap: var(--jcs-space-3);
+
+  width: 100%;
+  min-height: 52px;
+
+  padding:
+    0.75rem
+    0.875rem;
+
+  border: 1px solid var(--jcs-border-strong);
+  border-radius: var(--jcs-radius-medium);
+
+  color: var(--jcs-text-primary);
+  background: var(--jcs-surface-soft);
+
+  box-shadow:
+    inset 0 1px 0
+    rgb(255 255 255 / 20%);
+
+  transition:
+    border-color var(--jcs-duration-normal) ease,
+    background-color var(--jcs-duration-normal) ease,
+    box-shadow var(--jcs-duration-normal) ease;
+}
+
+.jcs-field:focus-within {
+  border-color: var(--jcs-border-focus);
+  background: var(--jcs-surface-strong);
+
+  box-shadow:
+    0 0 0 4px
+    rgb(22 137 248 / 10%);
+}
+
+.jcs-field input,
+.jcs-field textarea,
+.jcs-field select {
+  width: 100%;
+  min-width: 0;
+
+  border: 0;
+  outline: 0;
+
+  color: var(--jcs-text-primary);
+  background: transparent;
+}
+
+.jcs-field-icon {
+  flex: 0 0 auto;
+  color: var(--jcs-accent-primary);
+}
+
+/* MARK: - JCS Badge */
+
+.jcs-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--jcs-space-1);
+
+  min-height: 28px;
+
+  padding:
+    0.35rem
+    0.7rem;
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--jcs-accent-primary) 18%,
+      transparent
+    );
+
+  border-radius: var(--jcs-radius-pill);
+
+  font-family: var(--jcs-font-family);
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1;
+
+  color: var(--jcs-accent-primary);
+  background: var(--jcs-info-soft);
+}
+
+/* MARK: - JCS Divider */
+
+.jcs-divider {
+  width: 100%;
+  height: 1px;
+  border: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--jcs-border-strong),
+      transparent
+    );
+}
+
+/* MARK: - JCS Sticky Bottom Bar */
+
+.jcs-bottom-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+
+  min-height: var(--jcs-bottom-bar-height);
+
+  border-top: 1px solid var(--jcs-border-light);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-glass-surface-strong) 88%,
+      transparent
+    );
+
+  box-shadow:
+    0 -12px 38px
+    rgb(15 60 110 / 10%);
+
+  -webkit-backdrop-filter:
+    blur(var(--jcs-blur-large))
+    saturate(160%);
+
+  backdrop-filter:
+    blur(var(--jcs-blur-large))
+    saturate(160%);
+}
+
+.jcs-bottom-bar-content {
+  display: flex;
+  align-items: center;
+  gap: var(--jcs-space-3);
+
+  width: min(
+    calc(100% - (var(--jcs-page-padding) * 2)),
+    var(--jcs-content-width)
+  );
+
+  min-height: var(--jcs-bottom-bar-height);
+  margin-inline: auto;
+
+  padding-block:
+    var(--jcs-space-2)
+    max(
+      var(--jcs-space-2),
+      env(safe-area-inset-bottom)
+    );
+}
+
+/* MARK: - JCS Loading Indicator */
+
+.jcs-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+
+  border: 2px solid
+    rgb(255 255 255 / 35%);
+
+  border-top-color: currentColor;
+  border-radius: 50%;
+
+  animation:
+    jcs-spin
+    700ms
+    linear
+    infinite;
+}
+
+@keyframes jcs-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* MARK: - Entrance Animations */
+
+.jcs-animate-enter {
+  animation:
+    jcs-enter
+    620ms
+    var(--jcs-ease-spring)
+    both;
+}
+
+.jcs-animate-enter-delayed {
+  animation:
+    jcs-enter
+    720ms
+    120ms
+    var(--jcs-ease-spring)
+    both;
+}
+
+@keyframes jcs-enter {
+  from {
+    opacity: 0;
+    transform:
+      translateY(18px)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+.jcs-animate-fade {
+  animation:
+    jcs-fade
+    var(--jcs-duration-slow)
+    ease
+    both;
+}
+
+@keyframes jcs-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* MARK: - Utility States */
+
+.jcs-error-text {
+  color: var(--jcs-text-danger);
+}
+
+.jcs-success-text {
+  color: var(--jcs-text-success);
+}
+
+.jcs-warning-text {
+  color: var(--jcs-text-warning);
+}
+
+.jcs-muted {
+  color: var(--jcs-text-tertiary);
+}
+
+.jcs-no-scroll {
+  overflow: hidden;
+}
+
+.jcs-full-width {
+  width: 100%;
+}
+
+.jcs-center {
+  display: grid;
+  place-items: center;
+}
+
+.jcs-space-between {
+  justify-content: space-between;
+}
+
+.jcs-align-start {
+  align-items: flex-start;
+}
+
+.jcs-text-center {
+  text-align: center;
+}
+
+.jcs-text-left {
+  text-align: left;
+}
+
+/* MARK: - Mobile Layout */
+
+@media (max-width: 767px) {
+  .jcs-app-content {
+    padding-top: var(--jcs-space-4);
+  }
+
+  .jcs-bottom-bar-content {
+    gap: var(--jcs-space-2);
+  }
+
+  .jcs-button-primary,
+  .jcs-button-secondary {
+    min-height: 50px;
+    padding-inline: 0.875rem;
+  }
+}
+
+/* MARK: - Tablet Layout */
+
+@media (min-width: 768px) {
+  .jcs-grid-2 {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .jcs-grid-3 {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .jcs-grid-4 {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* MARK: - Desktop Layout */
+
+@media (min-width: 1100px) {
+  .jcs-grid-3 {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .jcs-grid-4 {
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* MARK: - Extra Wide Layout */
+
+@media (min-width: 1600px) {
+  :root {
+    --jcs-content-width: 1540px;
+  }
+}
+
+/* MARK: - Reduced Motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .jcs-spinner {
+    animation-duration: 1.2s !important;
+  }
+
+  .jcs-animate-enter,
+  .jcs-animate-enter-delayed,
+  .jcs-animate-fade {
+    animation: none !important;
+  }
+}
+
+/* MARK: - Print */
+
+@media print {
+  body {
+    color: #000000;
+    background: #ffffff;
+  }
+
+  .jcs-bottom-bar {
+    display: none !important;
+  }
+
+  .jcs-app-content {
+    width: 100%;
+    padding: 0;
+  }
+
+  .jcs-card,
+  .jcs-card-premium {
+    break-inside: avoid;
+    border: 1px solid #d7d7d7;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  a {
+    text-decoration: underline;
+  }
 }

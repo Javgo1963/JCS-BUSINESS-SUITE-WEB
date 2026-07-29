@@ -1,0 +1,3035 @@
+/*==========================================================
+ JCS BUSINESS SUITE
+ BusinessSignUpView.css
+ Version 1.0
+ Foundation Styles
+==========================================================*/
+
+/*==========================================================
+ ROOT
+==========================================================*/
+
+.jcs-business-signup {
+
+    --jcs-primary: #2563eb;
+    --jcs-primary-hover: #1d4ed8;
+
+    --jcs-success: #16a34a;
+    --jcs-warning: #f59e0b;
+    --jcs-danger: #dc2626;
+
+    --jcs-text: #111827;
+    --jcs-text-secondary: #6b7280;
+
+    --jcs-background: #f7f9fc;
+    --jcs-card: rgba(255,255,255,.82);
+
+    --jcs-border: rgba(0,0,0,.08);
+
+    --jcs-shadow-small:
+        0 4px 10px rgba(0,0,0,.05);
+
+    --jcs-shadow:
+
+        0 12px 40px rgba(0,0,0,.08);
+
+    --jcs-shadow-large:
+
+        0 30px 80px rgba(0,0,0,.12);
+
+    --jcs-radius-small:12px;
+
+    --jcs-radius:20px;
+
+    --jcs-radius-large:32px;
+
+    --jcs-transition:
+
+        .30s ease;
+
+    position:relative;
+
+    min-height:100vh;
+
+    width:100%;
+
+    overflow:hidden;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:flex-start;
+
+    background:
+
+        var(--jcs-background);
+
+    color:
+
+        var(--jcs-text);
+
+    font-family:
+
+        Inter,
+        SF Pro Display,
+        SF Pro Text,
+        system-ui,
+        sans-serif;
+}
+
+/*==========================================================
+ RESET
+==========================================================*/
+
+.jcs-business-signup *,
+.jcs-business-signup *::before,
+.jcs-business-signup *::after{
+
+    box-sizing:border-box;
+
+}
+
+.jcs-business-signup button{
+
+    font:inherit;
+
+    cursor:pointer;
+
+    border:none;
+
+    outline:none;
+
+    transition:
+
+        var(--jcs-transition);
+
+}
+
+.jcs-business-signup input{
+
+    font:inherit;
+
+    outline:none;
+
+    background:none;
+
+}
+
+.jcs-business-signup h1,
+.jcs-business-signup h2,
+.jcs-business-signup h3,
+.jcs-business-signup p{
+
+    margin:0;
+
+}
+
+.jcs-business-signup img{
+
+    display:block;
+
+    max-width:100%;
+
+}
+
+/*==========================================================
+ BACKGROUND
+==========================================================*/
+
+.jcs-business-signup__background{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    z-index:0;
+
+}
+
+/*==========================================================
+ ORBS
+==========================================================*/
+
+.jcs-business-signup__background-orb{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(80px);
+
+    opacity:.45;
+
+    animation:
+
+        jcsOrbFloat
+        20s
+        ease-in-out
+        infinite;
+
+}
+
+.jcs-business-signup__background-orb--one{
+
+    width:520px;
+
+    height:520px;
+
+    left:-120px;
+
+    top:-160px;
+
+    background:
+
+        linear-gradient(
+
+            135deg,
+
+            #60a5fa,
+
+            #2563eb
+
+        );
+
+}
+
+.jcs-business-signup__background-orb--two{
+
+    width:620px;
+
+    height:620px;
+
+    right:-180px;
+
+    bottom:-220px;
+
+    animation-delay:6s;
+
+    background:
+
+        linear-gradient(
+
+            135deg,
+
+            #7c3aed,
+
+            #3b82f6
+
+        );
+
+}
+
+@keyframes jcsOrbFloat{
+
+    0%{
+
+        transform:
+
+            translateY(0)
+            scale(1);
+
+    }
+
+    50%{
+
+        transform:
+
+            translateY(-40px)
+            scale(1.08);
+
+    }
+
+    100%{
+
+        transform:
+
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+/*==========================================================
+ GRID
+==========================================================*/
+
+.jcs-business-signup__background-grid{
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+        linear-gradient(
+
+            rgba(0,0,0,.03) 1px,
+
+            transparent 1px
+
+        ),
+
+        linear-gradient(
+
+            90deg,
+
+            rgba(0,0,0,.03) 1px,
+
+            transparent 1px
+
+        );
+
+    background-size:
+
+        48px 48px;
+
+    mask-image:
+
+        radial-gradient(
+
+            circle,
+
+            rgba(0,0,0,1),
+
+            transparent 85%
+
+        );
+
+}
+
+/*==========================================================
+ FORM
+==========================================================*/
+
+.jcs-business-signup__form{
+
+    position:relative;
+
+    z-index:2;
+
+    width:min(1280px,100%);
+
+    padding:
+
+        60px
+        32px
+        80px;
+
+}
+
+/*==========================================================
+ CONTAINER
+==========================================================*/
+
+.jcs-business-signup__container{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:32px;
+
+}
+
+/*==========================================================
+ TOP BAR
+==========================================================*/
+
+.jcs-business-signup__top-bar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:40px;
+
+}
+
+/*==========================================================
+ BRAND
+==========================================================*/
+
+.jcs-business-signup__brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    background:none;
+
+    padding:0;
+
+    color:inherit;
+
+}
+
+.jcs-business-signup__brand:hover{
+
+    transform:
+
+        translateY(-2px);
+
+}
+
+.jcs-business-signup__brand-mark{
+
+    width:62px;
+
+    height:62px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:white;
+
+    background:
+
+        linear-gradient(
+
+            135deg,
+
+            #2563eb,
+
+            #3b82f6
+
+        );
+
+    box-shadow:
+
+        var(--jcs-shadow);
+
+}
+
+.jcs-business-signup__brand-copy{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+}
+
+.jcs-business-signup__brand-copy strong{
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+.jcs-business-signup__brand-copy small{
+
+    color:
+
+        var(--jcs-text-secondary);
+
+    font-size:14px;
+
+}
+
+/*==========================================================
+ CLOSE BUTTON
+==========================================================*/
+
+.jcs-business-signup__close-button{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+
+        rgba(255,255,255,.75);
+
+    backdrop-filter:
+
+        blur(20px);
+
+    box-shadow:
+
+        var(--jcs-shadow-small);
+
+}
+
+.jcs-business-signup__close-button:hover{
+
+    transform:
+
+        rotate(90deg);
+
+}
+/*==========================================================
+ HERO
+==========================================================*/
+
+.jcs-business-signup__hero {
+
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 32px;
+
+    padding:
+        42px
+        44px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.72);
+
+    border-radius:
+        var(--jcs-radius-large);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.92),
+            rgba(255, 255, 255, 0.68)
+        );
+
+    backdrop-filter:
+        blur(28px)
+        saturate(150%);
+
+    -webkit-backdrop-filter:
+        blur(28px)
+        saturate(150%);
+
+    box-shadow:
+        var(--jcs-shadow-large);
+
+    overflow: hidden;
+
+    isolation: isolate;
+}
+
+.jcs-business-signup__hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 340px;
+
+    height: 340px;
+
+    top: -220px;
+
+    right: -120px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(59, 130, 246, 0.30),
+            rgba(59, 130, 246, 0)
+        );
+
+    z-index: -1;
+}
+
+.jcs-business-signup__hero::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(37, 99, 235, 0.38),
+            transparent
+        );
+}
+
+/*==========================================================
+ HERO COPY
+==========================================================*/
+
+.jcs-business-signup__hero-copy {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 14px;
+}
+
+.jcs-business-signup__hero-copy h1 {
+
+    max-width: 760px;
+
+    font-size:
+        clamp(
+            36px,
+            5vw,
+            64px
+        );
+
+    line-height: 1.02;
+
+    letter-spacing: -0.045em;
+
+    font-weight: 780;
+
+    color:
+        var(--jcs-text);
+
+    text-wrap: balance;
+}
+
+.jcs-business-signup__hero-copy p {
+
+    max-width: 760px;
+
+    font-size:
+        clamp(
+            16px,
+            1.8vw,
+            20px
+        );
+
+    line-height: 1.65;
+
+    color:
+        var(--jcs-text-secondary);
+}
+
+/*==========================================================
+ STEP BADGE
+==========================================================*/
+
+.jcs-business-signup__step-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 34px;
+
+    padding:
+        7px
+        14px;
+
+    border:
+        1px solid
+        rgba(37, 99, 235, 0.18);
+
+    border-radius: 999px;
+
+    background:
+        rgba(37, 99, 235, 0.10);
+
+    color:
+        var(--jcs-primary);
+
+    font-size: 13px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: 0.03em;
+
+    text-transform: uppercase;
+}
+
+/*==========================================================
+ HERO PROGRESS
+==========================================================*/
+
+.jcs-business-signup__hero-progress {
+
+    position: relative;
+
+    width: 152px;
+
+    height: 152px;
+
+    flex-shrink: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            var(--jcs-primary)
+            calc(var(--jcs-progress-value, 0) * 1%),
+
+            rgba(37, 99, 235, 0.10)
+            0
+        );
+
+    box-shadow:
+        inset
+        0
+        0
+        0
+        1px
+        rgba(37, 99, 235, 0.10),
+
+        0
+        18px
+        40px
+        rgba(37, 99, 235, 0.15);
+}
+
+.jcs-business-signup__hero-progress::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 11px;
+
+    border-radius: inherit;
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+    box-shadow:
+        inset
+        0
+        0
+        0
+        1px
+        rgba(15, 23, 42, 0.05);
+}
+
+.jcs-business-signup__hero-progress-value {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    text-align: center;
+}
+
+.jcs-business-signup__hero-progress-value strong {
+
+    font-size: 31px;
+
+    line-height: 1;
+
+    letter-spacing: -0.04em;
+
+    font-weight: 800;
+
+    color:
+        var(--jcs-text);
+}
+
+.jcs-business-signup__hero-progress-value span {
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
+}
+
+/*
+ The percentage ring will use this variable when it is
+ supplied from the React component.
+
+ Example:
+
+ style={
+  {
+    "--jcs-progress-value": progressValue,
+  } as CSSProperties
+}
+
+.jcs-business-signup__hero-progress {
+
+    --jcs-progress-value: 10;
+}
+
+/*==========================================================
+ PROGRESS CARD
+==========================================================*/
+
+.jcs-business-signup__progress-card {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 26px;
+
+    padding:
+        28px
+        30px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.78);
+
+    border-radius:
+        var(--jcs-radius);
+
+    background:
+        rgba(255, 255, 255, 0.78);
+
+    backdrop-filter:
+        blur(24px)
+        saturate(140%);
+
+    -webkit-backdrop-filter:
+        blur(24px)
+        saturate(140%);
+
+    box-shadow:
+        var(--jcs-shadow);
+}
+
+/*==========================================================
+ PROGRESS TRACK
+==========================================================*/
+
+.jcs-business-signup__progress-track {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 10px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background:
+        rgba(15, 23, 42, 0.07);
+
+    box-shadow:
+        inset
+        0
+        1px
+        2px
+        rgba(15, 23, 42, 0.08);
+}
+
+.jcs-business-signup__progress-fill {
+
+    position: relative;
+
+    height: 100%;
+
+    min-width: 10px;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #4f7df3,
+            #7c3aed
+        );
+
+    box-shadow:
+        0
+        0
+        22px
+        rgba(37, 99, 235, 0.36);
+
+    transition:
+        width
+        520ms
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+}
+
+.jcs-business-signup__progress-fill::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent 15%,
+            rgba(255, 255, 255, 0.45) 45%,
+            transparent 75%
+        );
+
+    transform:
+        translateX(-120%);
+
+    animation:
+        jcsProgressShimmer
+        2.8s
+        ease-in-out
+        infinite;
+}
+
+@keyframes jcsProgressShimmer {
+
+    0% {
+
+        transform:
+            translateX(-120%);
+    }
+
+    60%,
+    100% {
+
+        transform:
+            translateX(120%);
+    }
+}
+
+/*==========================================================
+ PROGRESS STEPS
+==========================================================*/
+
+.jcs-business-signup__progress-steps {
+
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            5,
+            minmax(0, 1fr)
+        );
+
+    gap: 12px;
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+}
+
+.jcs-business-signup__progress-step {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    gap: 10px;
+
+    color:
+        var(--jcs-text-secondary);
+
+    text-align: center;
+
+    transition:
+        color
+        var(--jcs-transition),
+        transform
+        var(--jcs-transition);
+}
+
+.jcs-business-signup__progress-step-number {
+
+    position: relative;
+
+    width: 38px;
+
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        1px solid
+        rgba(15, 23, 42, 0.10);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.88);
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 14px;
+
+    font-weight: 750;
+
+    box-shadow:
+        0
+        5px
+        14px
+        rgba(15, 23, 42, 0.05);
+
+    transition:
+        background
+        var(--jcs-transition),
+        border-color
+        var(--jcs-transition),
+        color
+        var(--jcs-transition),
+        box-shadow
+        var(--jcs-transition),
+        transform
+        var(--jcs-transition);
+}
+
+.jcs-business-signup__progress-step-title {
+
+    max-width: 130px;
+
+    overflow: hidden;
+
+    font-size: 12px;
+
+    line-height: 1.35;
+
+    font-weight: 650;
+
+    text-overflow: ellipsis;
+}
+
+.jcs-business-signup__progress-step--current {
+
+    color:
+        var(--jcs-primary);
+
+    transform:
+        translateY(-2px);
+}
+
+.jcs-business-signup__progress-step--current
+.jcs-business-signup__progress-step-number {
+
+    border-color:
+        rgba(37, 99, 235, 0.38);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--jcs-primary),
+            #4f7df3
+        );
+
+    color: white;
+
+    box-shadow:
+        0
+        10px
+        22px
+        rgba(37, 99, 235, 0.25);
+
+    transform:
+        scale(1.08);
+}
+
+.jcs-business-signup__progress-step--completed {
+
+    color:
+        var(--jcs-success);
+}
+
+.jcs-business-signup__progress-step--completed
+.jcs-business-signup__progress-step-number {
+
+    border-color:
+        rgba(22, 163, 74, 0.22);
+
+    background:
+        rgba(22, 163, 74, 0.12);
+
+    color:
+        var(--jcs-success);
+
+    box-shadow:
+        0
+        8px
+        18px
+        rgba(22, 163, 74, 0.12);
+}
+
+/*==========================================================
+ PROGRESS CONNECTING LINE
+==========================================================*/
+
+.jcs-business-signup__progress-steps::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 19px;
+
+    left: 10%;
+
+    right: 10%;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(37, 99, 235, 0.12),
+            rgba(124, 58, 237, 0.16)
+        );
+
+    z-index: -1;
+}
+
+/*==========================================================
+ COMPACT INVITATION
+==========================================================*/
+
+.jcs-business-signup__compact-invitation {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    padding:
+        12px
+        16px;
+
+    border:
+        1px solid
+        rgba(37, 99, 235, 0.16);
+
+    border-radius:
+        16px;
+
+    background:
+        rgba(239, 246, 255, 0.86);
+
+    color:
+        var(--jcs-primary);
+
+    box-shadow:
+        var(--jcs-shadow-small);
+}
+
+.jcs-business-signup__compact-invitation > span {
+
+    width: 34px;
+
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 11px;
+
+    background:
+        rgba(37, 99, 235, 0.11);
+
+    font-size: 17px;
+}
+
+.jcs-business-signup__compact-invitation > div {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.jcs-business-signup__compact-invitation small {
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 11px;
+
+    font-weight: 650;
+
+    letter-spacing: 0.04em;
+
+    text-transform: uppercase;
+}
+
+.jcs-business-signup__compact-invitation strong {
+
+    overflow: hidden;
+
+    color:
+        var(--jcs-primary);
+
+    font-size: 14px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+/*==========================================================
+ CONTENT CARD FOUNDATION
+==========================================================*/
+
+.jcs-business-signup__content-card {
+
+    position: relative;
+
+    min-height: 420px;
+
+    padding:
+        42px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.80);
+
+    border-radius:
+        var(--jcs-radius-large);
+
+    background:
+        rgba(255, 255, 255, 0.86);
+
+    backdrop-filter:
+        blur(28px)
+        saturate(145%);
+
+    -webkit-backdrop-filter:
+        blur(28px)
+        saturate(145%);
+
+    box-shadow:
+        var(--jcs-shadow-large);
+
+    overflow: hidden;
+}
+
+.jcs-business-signup__content-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 38px;
+
+    right: 38px;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.95),
+            transparent
+        );
+}
+
+/*==========================================================
+ BASE RESPONSIVE — LARGE LAPTOP
+==========================================================*/
+
+@media
+(max-width: 1180px) {
+
+    .jcs-business-signup__form {
+
+        padding:
+            42px
+            24px
+            64px;
+    }
+
+    .jcs-business-signup__hero {
+
+        padding:
+            36px;
+    }
+
+    .jcs-business-signup__hero-progress {
+
+        width: 136px;
+
+        height: 136px;
+    }
+
+    .jcs-business-signup__content-card {
+
+        padding:
+            36px;
+    }
+}
+
+/*==========================================================
+ BASE RESPONSIVE — TABLET
+==========================================================*/
+
+@media
+(max-width: 900px) {
+
+    .jcs-business-signup__top-bar {
+
+        margin-bottom: 28px;
+    }
+
+    .jcs-business-signup__brand-mark {
+
+        width: 54px;
+
+        height: 54px;
+
+        border-radius: 16px;
+
+        font-size: 19px;
+    }
+
+    .jcs-business-signup__brand-copy strong {
+
+        font-size: 19px;
+    }
+
+    .jcs-business-signup__hero {
+
+        grid-template-columns: 1fr;
+
+        padding:
+            32px;
+    }
+
+    .jcs-business-signup__hero-progress {
+
+        width: 120px;
+
+        height: 120px;
+    }
+
+    .jcs-business-signup__hero-progress-value strong {
+
+        font-size: 27px;
+    }
+
+    .jcs-business-signup__progress-card {
+
+        overflow-x: auto;
+    }
+
+    .jcs-business-signup__progress-steps {
+
+        min-width: 680px;
+    }
+
+    .jcs-business-signup__content-card {
+
+        min-height: 360px;
+
+        padding:
+            32px;
+    }
+}
+
+/*==========================================================
+ BASE RESPONSIVE — MOBILE FOUNDATION
+==========================================================*/
+
+@media
+(max-width: 640px) {
+
+    .jcs-business-signup {
+
+        min-height:
+            100dvh;
+
+        overflow-x: hidden;
+
+        overflow-y: auto;
+    }
+
+    .jcs-business-signup__form {
+
+        padding:
+            20px
+            14px
+            42px;
+    }
+
+    .jcs-business-signup__container {
+
+        gap: 20px;
+    }
+
+    .jcs-business-signup__top-bar {
+
+        margin-bottom: 20px;
+    }
+
+    .jcs-business-signup__brand {
+
+        gap: 11px;
+    }
+
+    .jcs-business-signup__brand-mark {
+
+        width: 46px;
+
+        height: 46px;
+
+        border-radius: 14px;
+
+        font-size: 16px;
+    }
+
+    .jcs-business-signup__brand-copy strong {
+
+        font-size: 16px;
+    }
+
+    .jcs-business-signup__brand-copy small {
+
+        display: none;
+    }
+
+    .jcs-business-signup__close-button {
+
+        width: 42px;
+
+        height: 42px;
+    }
+
+    .jcs-business-signup__hero {
+
+        gap: 24px;
+
+        padding:
+            26px
+            22px;
+
+        border-radius:
+            24px;
+    }
+
+    .jcs-business-signup__hero-copy {
+
+        gap: 11px;
+    }
+
+    .jcs-business-signup__hero-copy h1 {
+
+        font-size:
+            clamp(
+                31px,
+                10vw,
+                44px
+            );
+    }
+
+    .jcs-business-signup__hero-copy p {
+
+        font-size: 15px;
+
+        line-height: 1.55;
+    }
+
+    .jcs-business-signup__hero-progress {
+
+        width: 106px;
+
+        height: 106px;
+    }
+
+    .jcs-business-signup__hero-progress::before {
+
+        inset: 9px;
+    }
+
+    .jcs-business-signup__hero-progress-value strong {
+
+        font-size: 24px;
+    }
+
+    .jcs-business-signup__hero-progress-value span {
+
+        font-size: 10px;
+    }
+
+    .jcs-business-signup__progress-card {
+
+        gap: 18px;
+
+        padding:
+            20px
+            18px;
+
+        border-radius:
+            20px;
+    }
+
+    .jcs-business-signup__progress-track {
+
+        height: 8px;
+    }
+
+    .jcs-business-signup__progress-steps {
+
+        min-width: 610px;
+    }
+
+    .jcs-business-signup__progress-step-number {
+
+        width: 34px;
+
+        height: 34px;
+    }
+
+    .jcs-business-signup__content-card {
+
+        min-height: 320px;
+
+        padding:
+            24px
+            20px;
+
+        border-radius:
+            24px;
+    }
+
+    .jcs-business-signup__compact-invitation {
+
+        width: 100%;
+    }
+}
+/*==========================================================
+ JCS BUSINESS SUITE
+ BusinessSignUpView.css
+
+ PART 1B-1
+ Welcome Step
+ Form Foundations
+ Section Headers
+ Fields
+ Labels
+ Inputs
+ Validation States
+==========================================================*/
+
+/*==========================================================
+ STEP CONTENT FOUNDATION
+==========================================================*/
+
+.jcs-business-signup__step-content {
+
+    position: relative;
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 32px;
+
+    animation:
+        jcsStepEnter
+        480ms
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        )
+        both;
+}
+
+@keyframes jcsStepEnter {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(0.992);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+/*==========================================================
+ STEP HEADER
+==========================================================*/
+
+.jcs-business-signup__step-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 24px;
+}
+
+.jcs-business-signup__step-header-copy {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.jcs-business-signup__step-header-copy h2 {
+
+    color:
+        var(--jcs-text);
+
+    font-size:
+        clamp(
+            27px,
+            3vw,
+            38px
+        );
+
+    line-height: 1.08;
+
+    font-weight: 780;
+
+    letter-spacing: -0.035em;
+
+    text-wrap: balance;
+}
+
+.jcs-business-signup__step-header-copy p {
+
+    max-width: 760px;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 16px;
+
+    line-height: 1.65;
+}
+
+/*==========================================================
+ STEP ICON
+==========================================================*/
+
+.jcs-business-signup__step-icon {
+
+    width: 58px;
+
+    height: 58px;
+
+    flex-shrink: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        1px solid
+        rgba(37, 99, 235, 0.14);
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(239, 246, 255, 0.96),
+            rgba(219, 234, 254, 0.78)
+        );
+
+    color:
+        var(--jcs-primary);
+
+    font-size: 25px;
+
+    box-shadow:
+        0
+        12px
+        28px
+        rgba(37, 99, 235, 0.13);
+}
+
+/*==========================================================
+ SECTION
+==========================================================*/
+
+.jcs-business-signup__section {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+.jcs-business-signup__section + 
+.jcs-business-signup__section {
+
+    padding-top: 30px;
+
+    border-top:
+        1px solid
+        rgba(15, 23, 42, 0.07);
+}
+
+/*==========================================================
+ SECTION HEADER
+==========================================================*/
+
+.jcs-business-signup__section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.jcs-business-signup__section-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.jcs-business-signup__section-title-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(37, 99, 235, 0.09);
+
+    color:
+        var(--jcs-primary);
+
+    font-size: 17px;
+}
+
+.jcs-business-signup__section-title-copy {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.jcs-business-signup__section-title-copy h3 {
+
+    color:
+        var(--jcs-text);
+
+    font-size: 18px;
+
+    line-height: 1.25;
+
+    font-weight: 740;
+
+    letter-spacing: -0.015em;
+}
+
+.jcs-business-signup__section-title-copy p {
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 13px;
+
+    line-height: 1.45;
+}
+
+/*==========================================================
+ OPTIONAL BADGE
+==========================================================*/
+
+.jcs-business-signup__optional-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 26px;
+
+    padding:
+        5px
+        10px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(15, 23, 42, 0.055);
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 11px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: 0.04em;
+
+    text-transform: uppercase;
+}
+
+/*==========================================================
+ FORM FOUNDATION
+==========================================================*/
+
+.jcs-business-signup__fields {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+.jcs-business-signup__field-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap:
+        22px
+        20px;
+}
+
+.jcs-business-signup__field-grid--single {
+
+    grid-template-columns:
+        minmax(0, 1fr);
+}
+
+.jcs-business-signup__field-grid--three {
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+}
+
+.jcs-business-signup__field-grid--business {
+
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(240px, 0.65fr);
+}
+
+/*==========================================================
+ FIELD
+==========================================================*/
+
+.jcs-business-signup__field {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+.jcs-business-signup__field--full {
+
+    grid-column:
+        1 / -1;
+}
+
+/*==========================================================
+ LABEL
+==========================================================*/
+
+.jcs-business-signup__label {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    color:
+        var(--jcs-text);
+
+    font-size: 14px;
+
+    line-height: 1.35;
+
+    font-weight: 690;
+}
+
+.jcs-business-signup__label-text {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+.jcs-business-signup__label-required {
+
+    color:
+        var(--jcs-danger);
+
+    font-size: 15px;
+
+    line-height: 1;
+}
+
+.jcs-business-signup__label-optional {
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+/*==========================================================
+ INPUT SHELL
+==========================================================*/
+
+.jcs-business-signup__input-shell {
+
+    position: relative;
+
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    border:
+        1px solid
+        rgba(15, 23, 42, 0.11);
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, 0.88);
+
+    box-shadow:
+        0
+        4px
+        12px
+        rgba(15, 23, 42, 0.035),
+
+        inset
+        0
+        1px
+        0
+        rgba(255, 255, 255, 0.75);
+
+    transition:
+        border-color
+        180ms
+        ease,
+        background
+        180ms
+        ease,
+        box-shadow
+        180ms
+        ease,
+        transform
+        180ms
+        ease;
+}
+
+.jcs-business-signup__input-shell:hover {
+
+    border-color:
+        rgba(37, 99, 235, 0.25);
+
+    background:
+        rgba(255, 255, 255, 0.96);
+}
+
+.jcs-business-signup__input-shell:focus-within {
+
+    border-color:
+        rgba(37, 99, 235, 0.72);
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0
+        0
+        0
+        4px
+        rgba(37, 99, 235, 0.11),
+
+        0
+        10px
+        24px
+        rgba(37, 99, 235, 0.09);
+
+    transform:
+        translateY(-1px);
+}
+
+/*==========================================================
+ INPUT ICON
+==========================================================*/
+
+.jcs-business-signup__input-icon {
+
+    width: 48px;
+
+    min-width: 48px;
+
+    height: 52px;
+
+    display: grid;
+
+    place-items: center;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 17px;
+
+    pointer-events: none;
+
+    transition:
+        color
+        180ms
+        ease,
+        transform
+        180ms
+        ease;
+}
+
+.jcs-business-signup__input-shell:focus-within
+.jcs-business-signup__input-icon {
+
+    color:
+        var(--jcs-primary);
+
+    transform:
+        scale(1.04);
+}
+
+/*==========================================================
+ INPUT
+==========================================================*/
+
+.jcs-business-signup__input {
+
+    width: 100%;
+
+    min-width: 0;
+
+    min-height: 52px;
+
+    padding:
+        14px
+        16px;
+
+    border: 0;
+
+    border-radius: inherit;
+
+    background: transparent;
+
+    color:
+        var(--jcs-text);
+
+    font-size: 15px;
+
+    line-height: 1.4;
+
+    caret-color:
+        var(--jcs-primary);
+}
+
+.jcs-business-signup__input-shell
+.jcs-business-signup__input {
+
+    padding-left: 0;
+}
+
+.jcs-business-signup__input-shell--without-icon
+.jcs-business-signup__input {
+
+    padding-left: 16px;
+}
+
+.jcs-business-signup__input::placeholder {
+
+    color:
+        rgba(107, 114, 128, 0.72);
+}
+
+.jcs-business-signup__input:disabled {
+
+    cursor: not-allowed;
+
+    color:
+        rgba(17, 24, 39, 0.52);
+}
+
+.jcs-business-signup__input:-webkit-autofill,
+.jcs-business-signup__input:-webkit-autofill:hover,
+.jcs-business-signup__input:-webkit-autofill:focus {
+
+    -webkit-text-fill-color:
+        var(--jcs-text);
+
+    transition:
+        background-color
+        9999s
+        ease-in-out
+        0s;
+}
+
+/*==========================================================
+ INPUT ACTION
+==========================================================*/
+
+.jcs-business-signup__input-action {
+
+    width: 44px;
+
+    min-width: 44px;
+
+    height: 44px;
+
+    margin-right: 4px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 12px;
+
+    background: transparent;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 17px;
+}
+
+.jcs-business-signup__input-action:hover {
+
+    background:
+        rgba(37, 99, 235, 0.08);
+
+    color:
+        var(--jcs-primary);
+}
+
+.jcs-business-signup__input-action:active {
+
+    transform:
+        scale(0.94);
+}
+
+/*==========================================================
+ INPUT PREFIX / SUFFIX
+==========================================================*/
+
+.jcs-business-signup__input-prefix,
+.jcs-business-signup__input-suffix {
+
+    flex-shrink: 0;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 14px;
+
+    font-weight: 650;
+}
+
+.jcs-business-signup__input-prefix {
+
+    padding-left: 16px;
+}
+
+.jcs-business-signup__input-suffix {
+
+    padding-right: 16px;
+}
+
+/*==========================================================
+ TEXTAREA
+==========================================================*/
+
+.jcs-business-signup__textarea-shell {
+
+    position: relative;
+
+    display: flex;
+
+    border:
+        1px solid
+        rgba(15, 23, 42, 0.11);
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, 0.88);
+
+    box-shadow:
+        0
+        4px
+        12px
+        rgba(15, 23, 42, 0.035);
+
+    transition:
+        border-color
+        180ms
+        ease,
+        box-shadow
+        180ms
+        ease,
+        transform
+        180ms
+        ease;
+}
+
+.jcs-business-signup__textarea-shell:focus-within {
+
+    border-color:
+        rgba(37, 99, 235, 0.72);
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0
+        0
+        0
+        4px
+        rgba(37, 99, 235, 0.11),
+
+        0
+        10px
+        24px
+        rgba(37, 99, 235, 0.09);
+
+    transform:
+        translateY(-1px);
+}
+
+.jcs-business-signup__textarea {
+
+    width: 100%;
+
+    min-height: 128px;
+
+    resize: vertical;
+
+    padding:
+        15px
+        16px;
+
+    border: 0;
+
+    outline: 0;
+
+    border-radius: inherit;
+
+    background: transparent;
+
+    color:
+        var(--jcs-text);
+
+    font: inherit;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+
+    caret-color:
+        var(--jcs-primary);
+}
+
+.jcs-business-signup__textarea::placeholder {
+
+    color:
+        rgba(107, 114, 128, 0.72);
+}
+
+/*==========================================================
+ SELECT
+==========================================================*/
+
+.jcs-business-signup__select-shell {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    border:
+        1px solid
+        rgba(15, 23, 42, 0.11);
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, 0.88);
+
+    transition:
+        border-color
+        180ms
+        ease,
+        box-shadow
+        180ms
+        ease,
+        transform
+        180ms
+        ease;
+}
+
+.jcs-business-signup__select-shell:focus-within {
+
+    border-color:
+        rgba(37, 99, 235, 0.72);
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0
+        0
+        0
+        4px
+        rgba(37, 99, 235, 0.11);
+
+    transform:
+        translateY(-1px);
+}
+
+.jcs-business-signup__select {
+
+    width: 100%;
+
+    min-height: 52px;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    padding:
+        14px
+        46px
+        14px
+        16px;
+
+    border: 0;
+
+    outline: 0;
+
+    border-radius: inherit;
+
+    background: transparent;
+
+    color:
+        var(--jcs-text);
+
+    font: inherit;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+.jcs-business-signup__select-chevron {
+
+    position: absolute;
+
+    right: 15px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 14px;
+
+    pointer-events: none;
+}
+
+/*==========================================================
+ HELPER TEXT
+==========================================================*/
+
+.jcs-business-signup__field-helper {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 7px;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 12px;
+
+    line-height: 1.45;
+}
+
+.jcs-business-signup__field-helper-icon {
+
+    flex-shrink: 0;
+
+    margin-top: 1px;
+
+    color:
+        rgba(107, 114, 128, 0.82);
+}
+
+/*==========================================================
+ CHARACTER COUNTER
+==========================================================*/
+
+.jcs-business-signup__field-counter {
+
+    margin-left: auto;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 11px;
+
+    font-weight: 650;
+
+    font-variant-numeric:
+        tabular-nums;
+}
+
+/*==========================================================
+ FIELD ERROR STATE
+==========================================================*/
+
+.jcs-business-signup__field--error
+.jcs-business-signup__input-shell,
+.jcs-business-signup__input-shell--error,
+.jcs-business-signup__field--error
+.jcs-business-signup__textarea-shell,
+.jcs-business-signup__textarea-shell--error,
+.jcs-business-signup__field--error
+.jcs-business-signup__select-shell,
+.jcs-business-signup__select-shell--error {
+
+    border-color:
+        rgba(220, 38, 38, 0.58);
+
+    background:
+        rgba(254, 242, 242, 0.82);
+
+    box-shadow:
+        0
+        0
+        0
+        3px
+        rgba(220, 38, 38, 0.08);
+}
+
+.jcs-business-signup__field--error
+.jcs-business-signup__input-icon {
+
+    color:
+        var(--jcs-danger);
+}
+
+.jcs-business-signup__field-error {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 7px;
+
+    color:
+        var(--jcs-danger);
+
+    font-size: 12px;
+
+    line-height: 1.45;
+
+    font-weight: 620;
+
+    animation:
+        jcsFieldErrorEnter
+        220ms
+        ease-out
+        both;
+}
+
+.jcs-business-signup__field-error-icon {
+
+    flex-shrink: 0;
+
+    margin-top: 1px;
+}
+
+@keyframes jcsFieldErrorEnter {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(-4px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+/*==========================================================
+ FIELD SUCCESS STATE
+==========================================================*/
+
+.jcs-business-signup__field--success
+.jcs-business-signup__input-shell,
+.jcs-business-signup__input-shell--success {
+
+    border-color:
+        rgba(22, 163, 74, 0.42);
+
+    background:
+        rgba(240, 253, 244, 0.80);
+}
+
+.jcs-business-signup__field--success
+.jcs-business-signup__input-icon {
+
+    color:
+        var(--jcs-success);
+}
+
+.jcs-business-signup__field-success {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color:
+        var(--jcs-success);
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    font-weight: 620;
+}
+
+/*==========================================================
+ DISABLED FIELD STATE
+==========================================================*/
+
+.jcs-business-signup__field--disabled {
+
+    opacity: 0.64;
+}
+
+.jcs-business-signup__field--disabled
+.jcs-business-signup__input-shell,
+.jcs-business-signup__input-shell--disabled {
+
+    cursor: not-allowed;
+
+    background:
+        rgba(241, 245, 249, 0.76);
+
+    box-shadow: none;
+}
+
+/*==========================================================
+ READONLY FIELD
+==========================================================*/
+
+.jcs-business-signup__input-shell--readonly {
+
+    border-style: dashed;
+
+    background:
+        rgba(248, 250, 252, 0.90);
+}
+
+.jcs-business-signup__input-shell--readonly
+.jcs-business-signup__input {
+
+    cursor: default;
+}
+
+/*==========================================================
+ PASSWORD STRENGTH
+==========================================================*/
+
+.jcs-business-signup__password-strength {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.jcs-business-signup__password-strength-bars {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        );
+
+    gap: 6px;
+}
+
+.jcs-business-signup__password-strength-bar {
+
+    height: 5px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(15, 23, 42, 0.08);
+
+    transition:
+        background
+        220ms
+        ease,
+        transform
+        220ms
+        ease;
+}
+
+.jcs-business-signup__password-strength-bar--active {
+
+    transform:
+        scaleY(1.12);
+}
+
+.jcs-business-signup__password-strength--weak
+.jcs-business-signup__password-strength-bar--active {
+
+    background:
+        var(--jcs-danger);
+}
+
+.jcs-business-signup__password-strength--fair
+.jcs-business-signup__password-strength-bar--active {
+
+    background:
+        var(--jcs-warning);
+}
+
+.jcs-business-signup__password-strength--good
+.jcs-business-signup__password-strength-bar--active {
+
+    background:
+        #3b82f6;
+}
+
+.jcs-business-signup__password-strength--strong
+.jcs-business-signup__password-strength-bar--active {
+
+    background:
+        var(--jcs-success);
+}
+
+.jcs-business-signup__password-strength-copy {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+.jcs-business-signup__password-strength-copy strong {
+
+    color:
+        var(--jcs-text);
+
+    font-weight: 700;
+}
+
+/*==========================================================
+ INLINE FIELD ACTION
+==========================================================*/
+
+.jcs-business-signup__field-inline-action {
+
+    align-self: flex-start;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 0;
+
+    background: transparent;
+
+    color:
+        var(--jcs-primary);
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.jcs-business-signup__field-inline-action:hover {
+
+    color:
+        var(--jcs-primary-hover);
+
+    text-decoration: underline;
+}
+
+/*==========================================================
+ FORM DIVIDER
+==========================================================*/
+
+.jcs-business-signup__form-divider {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    color:
+        var(--jcs-text-secondary);
+
+    font-size: 12px;
+
+    font-weight: 650;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+}
+
+.jcs-business-signup__form-divider::before,
+.jcs-business-signup__form-divider::after {
+
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background:
+        rgba(15, 23, 42, 0.08);
+}
+
+/*==========================================================
+ RESPONSIVE — FORM FOUNDATION
+==========================================================*/
+
+@media
+(max-width: 900px) {
+
+    .jcs-business-signup__field-grid--three {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .jcs-business-signup__field-grid--business {
+
+        grid-template-columns:
+            minmax(0, 1fr);
+    }
+}
+
+@media
+(max-width: 640px) {
+
+    .jcs-business-signup__step-content {
+
+        gap: 26px;
+    }
+
+    .jcs-business-signup__step-header {
+
+        gap: 16px;
+    }
+
+    .jcs-business-signup__step-header-copy h2 {
+
+        font-size:
+            clamp(
+                25px,
+                8vw,
+                32px
+            );
+    }
+
+    .jcs-business-signup__step-header-copy p {
+
+        font-size: 14px;
+
+        line-height: 1.55;
+    }
+
+    .jcs-business-signup__step-icon {
+
+        width: 50px;
+
+        height: 50px;
+
+        border-radius: 15px;
+
+        font-size: 21px;
+    }
+
+    .jcs-business-signup__section {
+
+        gap: 18px;
+    }
+
+    .jcs-business-signup__section + 
+    .jcs-business-signup__section {
+
+        padding-top: 24px;
+    }
+
+    .jcs-business-signup__section-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .jcs-business-signup__field-grid,
+    .jcs-business-signup__field-grid--three {
+
+        grid-template-columns:
+            minmax(0, 1fr);
+
+        gap: 18px;
+    }
+
+    .jcs-business-signup__fields {
+
+        gap: 18px;
+    }
+
+    .jcs-business-signup__input-shell,
+    .jcs-business-signup__textarea-shell,
+    .jcs-business-signup__select-shell {
+
+        border-radius: 14px;
+    }
+
+    .jcs-business-signup__input {
+
+        min-height: 50px;
+
+        font-size: 16px;
+    }
+
+    .jcs-business-signup__input-icon {
+
+        width: 45px;
+
+        min-width: 45px;
+
+        height: 50px;
+    }
+
+    .jcs-business-signup__select {
+
+        min-height: 50px;
+
+        font-size: 16px;
+    }
+
+    .jcs-business-signup__textarea {
+
+        min-height: 116px;
+
+        font-size: 16px;
+    }
+}
+
+/*==========================================================
+ REDUCED MOTION
+==========================================================*/
+
+@media
+(prefers-reduced-motion: reduce) {
+
+    .jcs-business-signup__step-content,
+    .jcs-business-signup__field-error {
+
+        animation: none;
+    }
+
+    .jcs-business-signup__input-shell,
+    .jcs-business-signup__textarea-shell,
+    .jcs-business-signup__select-shell,
+    .jcs-business-signup__input-icon,
+    .jcs-business-signup__input-action,
+    .jcs-business-signup__password-strength-bar {
+
+        transition: none;
+    }
+}
