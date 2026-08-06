@@ -28,9 +28,10 @@
 // =======================================================
 
 export interface BusinessModeOption {
-    id: string
-    name: string
-    icon: string
+    id: string;
+    name: string;
+    icon: string;
+    recommendedModules: string[];
 }
 
 export interface BusinessModeCategory {
@@ -40,17 +41,28 @@ export interface BusinessModeCategory {
     modes: BusinessModeOption[]
 }
 
+const DEFAULT_RECOMMENDED_MODULES: readonly string[] = [
+    "dashboard",
+    "customers",
+    "orders",
+    "reports",
+    "app-settings",
+];
+
 function createMode(
     name: string,
-    icon: string
+    icon: string,
+    recommendedModules: readonly string[] =
+        DEFAULT_RECOMMENDED_MODULES
 ): BusinessModeOption {
-
     return {
         id: slugify(name),
         name,
-        icon
-    }
-
+        icon,
+        recommendedModules: [
+            ...recommendedModules,
+        ],
+    };
 }
 
 function createCategory(

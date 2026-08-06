@@ -1,11 +1,24 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type {
+  ReactNode,
+} from "react";
 
-import { AuthProvider } from "@/core/providers/AuthProvider";
+import {
+  AuthProvider,
+} from "@/core/providers/AuthProvider";
+
+import {
+  JCSBusinessContextProvider,
+} from "@/core/business-context/JCSBusinessContext";
+
+import {
+  PlatformSettingsContextProvider,
+} from "@/features/platform-settings/PlatformSettingsContext";
 
 interface AppProvidersProps {
-  children: ReactNode;
+  children:
+    ReactNode;
 }
 
 export function AppProviders({
@@ -13,7 +26,11 @@ export function AppProviders({
 }: AppProvidersProps) {
   return (
     <AuthProvider>
-      {children}
+      <JCSBusinessContextProvider>
+        <PlatformSettingsContextProvider>
+          {children}
+        </PlatformSettingsContextProvider>
+      </JCSBusinessContextProvider>
     </AuthProvider>
   );
 }

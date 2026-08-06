@@ -1,8 +1,15 @@
 "use client";
 
 import {
- type CSSProperties,
- type FormEvent,
+  JCSBusinessRegistrationManager,
+} from "@/core/business-core/registration/JCSBusinessRegistrationManager";
+import "./BusinessSignUpView.css";
+
+import "@/core/business-core/creation/BusinessCreationEngine";
+
+import {
+  type CSSProperties,
+  type FormEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -62,7 +69,7 @@ export interface BusinessSignUpIndustryMode {
   description?: string;
   icon?: string;
 
-  recommendedModules?: string[];
+  recommendedModules: string[],
 }
 
 export interface BusinessSignUpIndustryCategory {
@@ -95,7 +102,7 @@ export interface BusinessSignUpModeSelection {
   icon?: string;
   emoji?: string;
 
-  recommendedModules: string[];
+  recommendedModules: string[],
 }
 
 // MARK: - Registration Progress
@@ -677,6 +684,8 @@ export default function BusinessSignUpView({
     registrationError,
     setRegistrationError,
   ] = useState("");
+
+  
 
   // MARK: Notice State
 
@@ -1313,35 +1322,85 @@ useEffect(() => {
         registrationAbortControllerRef.current =
           abortController;
 
-        /*
-         The connection to:
+        const result =
+  await JCSBusinessRegistrationManager.registerBusiness(
+    {
+      businessName:
+        form.businessName,
 
-         JCSBusinessRegistrationManager.ts
+      businessPhone:
+        form.businessPhone,
 
-         will be inserted in the integration section.
+      website:
+        form.website,
 
-         This component will send one coordinated request
-         containing:
+      ownerFullName:
+        form.fullName,
 
-         businessName
-         businessPhone
-         website
-         fullName
-         email
-         password
-         industryCategoryKey
-         industryCategoryTitle
-         businessModeKey
-         businessModeName
-         platformInvitationCode
+      ownerEmail:
+        form.email,
 
-         BusinessSignUpView.tsx will not create Firebase
-         documents directly.
-        */
+      password:
+        form.password,
 
-        throw new Error(
-          "Registration manager integration has not been added yet."
-        );
+      ownerPhone:
+      normalizePhone(
+        form.businessPhone
+      ),
+
+      industryCategoryKey:
+        selectedIndustryCategoryKey,
+
+      industryCategoryTitle:
+        selectedIndustryCategoryTitle,
+
+      businessModeKey:
+        selectedBusinessModeKey,
+
+      businessModeName:
+        selectedBusinessModeName,
+
+      recommendedModules:
+        selectedMode?.recommendedModules ?? [],
+
+      platformInvitationCode:
+        activePlatformInvitationCode ||
+        undefined,
+
+      localeIdentifier:
+        navigator.language ||
+        "en-US",
+
+      timeZoneIdentifier:
+        Intl.DateTimeFormat()
+          .resolvedOptions()
+          .timeZone ||
+        "America/New_York",
+
+      signal:
+        abortController.signal,
+    },
+    (progress) => {
+      setRegistrationProgress(
+        progress
+      );
+    }
+  );
+
+setRegistrationResult(result);
+
+setRegistrationProgress({
+  stage: "completed",
+  percentage: 100,
+  message:
+    "Your business workspace is ready.",
+});
+
+setStep("success");
+
+showNotice(
+  `${result.businessName} was created successfully.`
+);
       } catch (error: unknown) {
         if (
           error instanceof DOMException &&
@@ -1386,6 +1445,7 @@ useEffect(() => {
       selectedBusinessModeName,
       selectedIndustryCategoryKey,
       selectedIndustryCategoryTitle,
+      selectedMode,
       showNotice,
       validateAllSteps,
     ]);

@@ -1,0 +1,3904 @@
+/* ================================================================
+   JCS BUSINESS SUITE
+   BusinessSignUpView.css
+
+   Professional responsive onboarding experience
+   Desktop • Tablet • Mobile
+   ================================================================ */
+
+
+/* ================================================================
+   01. JCS DESIGN TOKENS
+   ================================================================ */
+
+.jcs-business-signup {
+  --jcs-accent: #1565d8;
+  --jcs-accent-strong: #0a4eb3;
+  --jcs-accent-dark: #063a86;
+  --jcs-accent-soft: rgba(21, 101, 216, 0.1);
+  --jcs-accent-softer: rgba(21, 101, 216, 0.055);
+  --jcs-accent-border: rgba(21, 101, 216, 0.2);
+
+  --jcs-success: #148454;
+  --jcs-success-strong: #0b6d42;
+  --jcs-success-soft: rgba(20, 132, 84, 0.1);
+  --jcs-success-border: rgba(20, 132, 84, 0.22);
+
+  --jcs-warning: #b45f06;
+  --jcs-warning-soft: rgba(245, 158, 11, 0.1);
+  --jcs-warning-border: rgba(245, 158, 11, 0.25);
+
+  --jcs-danger: #c73535;
+  --jcs-danger-strong: #a92424;
+  --jcs-danger-soft: rgba(199, 53, 53, 0.09);
+  --jcs-danger-border: rgba(199, 53, 53, 0.25);
+
+  --jcs-ink: #111827;
+  --jcs-ink-strong: #0b1220;
+  --jcs-text: #263449;
+  --jcs-text-secondary: #5d6a7d;
+  --jcs-text-tertiary: #8490a2;
+  --jcs-placeholder: #98a3b4;
+
+  --jcs-surface: rgba(255, 255, 255, 0.96);
+  --jcs-surface-solid: #ffffff;
+  --jcs-surface-subtle: #f8fafc;
+  --jcs-surface-muted: #f2f5f9;
+  --jcs-surface-elevated: rgba(255, 255, 255, 0.985);
+
+  --jcs-border: rgba(15, 23, 42, 0.09);
+  --jcs-border-strong: rgba(15, 23, 42, 0.14);
+  --jcs-divider: rgba(15, 23, 42, 0.08);
+
+  --jcs-shadow-xs:
+    0 1px 2px rgba(15, 23, 42, 0.04);
+
+  --jcs-shadow-sm:
+    0 6px 18px rgba(15, 23, 42, 0.055);
+
+  --jcs-shadow-md:
+    0 18px 50px rgba(15, 23, 42, 0.085);
+
+  --jcs-shadow-lg:
+    0 28px 80px rgba(15, 23, 42, 0.13);
+
+  --jcs-shadow-accent:
+    0 16px 36px rgba(21, 101, 216, 0.24);
+
+  --jcs-radius-sm: 10px;
+  --jcs-radius-md: 14px;
+  --jcs-radius-lg: 20px;
+  --jcs-radius-xl: 26px;
+  --jcs-radius-2xl: 34px;
+  --jcs-radius-pill: 999px;
+
+  --jcs-control-height: 54px;
+  --jcs-content-width: 1060px;
+
+  --jcs-transition-fast:
+    140ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  --jcs-transition:
+    220ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  --jcs-transition-slow:
+    420ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  isolation: isolate;
+
+  min-height: 100dvh;
+  width: 100%;
+
+  overflow-x: hidden;
+
+  color: var(--jcs-text);
+
+  background:
+    radial-gradient(
+      circle at 12% 0%,
+      rgba(56, 132, 255, 0.13),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 90% 16%,
+      rgba(117, 75, 255, 0.09),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #f7faff 0%,
+      #f4f7fb 48%,
+      #edf2f8 100%
+    );
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    "Segoe UI",
+    Inter,
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ================================================================
+   02. LOCAL RESET
+   ================================================================ */
+
+.jcs-business-signup *,
+.jcs-business-signup *::before,
+.jcs-business-signup *::after {
+  box-sizing: border-box;
+}
+
+.jcs-business-signup h1,
+.jcs-business-signup h2,
+.jcs-business-signup h3,
+.jcs-business-signup p,
+.jcs-business-signup dl,
+.jcs-business-signup dd,
+.jcs-business-signup ol {
+  margin: 0;
+}
+
+.jcs-business-signup button,
+.jcs-business-signup input {
+  font: inherit;
+}
+
+.jcs-business-signup button {
+  border: 0;
+}
+
+.jcs-business-signup button,
+.jcs-business-signup input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.jcs-business-signup button:not(:disabled) {
+  cursor: pointer;
+}
+
+.jcs-business-signup button:disabled,
+.jcs-business-signup input:disabled {
+  cursor: not-allowed;
+}
+
+.jcs-business-signup button:focus-visible,
+.jcs-business-signup input:focus-visible {
+  outline: 3px solid rgba(21, 101, 216, 0.24);
+  outline-offset: 3px;
+}
+
+
+/* ================================================================
+   03. BACKGROUND
+   ================================================================ */
+
+.jcs-business-signup__background {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.jcs-business-signup__background-orb {
+  position: absolute;
+
+  width: 580px;
+  height: 580px;
+
+  border-radius: 50%;
+
+  filter: blur(30px);
+  opacity: 0.68;
+
+  animation:
+    jcs-signup-orb-float 16s ease-in-out infinite;
+}
+
+.jcs-business-signup__background-orb--one {
+  top: -310px;
+  left: -220px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(30, 118, 255, 0.25),
+      rgba(30, 118, 255, 0)
+    );
+}
+
+.jcs-business-signup__background-orb--two {
+  top: 8%;
+  right: -330px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(111, 72, 255, 0.18),
+      rgba(111, 72, 255, 0)
+    );
+
+  animation-delay: -7s;
+}
+
+.jcs-business-signup__background-grid {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0.24;
+
+  background-image:
+    linear-gradient(
+      rgba(15, 23, 42, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(15, 23, 42, 0.035) 1px,
+      transparent 1px
+    );
+
+  background-size: 36px 36px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.75),
+      transparent 74%
+    );
+}
+
+
+/* ================================================================
+   04. MAIN FORM AND PAGE STRUCTURE
+   ================================================================ */
+
+.jcs-business-signup__form {
+  position: relative;
+  z-index: 1;
+
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.jcs-business-signup__container {
+  width: min(
+    calc(100% - 40px),
+    var(--jcs-content-width)
+  );
+
+  margin: 0 auto;
+
+  padding:
+    40px
+    0
+    max(52px, env(safe-area-inset-bottom));
+}
+
+
+/* ================================================================
+   05. TOP BAR
+   ================================================================ */
+
+.jcs-business-signup__top-bar {
+  position: relative;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  min-height: 82px;
+
+  padding:
+    max(14px, env(safe-area-inset-top))
+    max(28px, env(safe-area-inset-right))
+    14px
+    max(28px, env(safe-area-inset-left));
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+
+  background: rgba(247, 250, 255, 0.7);
+
+  box-shadow:
+    0 1px 0 rgba(15, 23, 42, 0.035);
+
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+.jcs-business-signup__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+
+  min-width: 0;
+
+  padding: 7px;
+
+  color: inherit;
+  text-align: left;
+
+  background: transparent;
+
+  border-radius: var(--jcs-radius-md);
+
+  transition:
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__brand:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.jcs-business-signup__brand:not(:disabled):active {
+  transform: scale(0.985);
+}
+
+.jcs-business-signup__brand-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 46px;
+  height: 46px;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #3183ef 0%,
+      #125fc9 55%,
+      #08418f 100%
+    );
+
+  box-shadow:
+    0 12px 26px rgba(21, 101, 216, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.jcs-business-signup__brand-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.jcs-business-signup__brand-copy strong {
+  overflow: hidden;
+
+  color: var(--jcs-ink-strong);
+
+  font-size: 15px;
+  font-weight: 760;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-business-signup__brand-copy small {
+  margin-top: 2px;
+
+  color: var(--jcs-text-tertiary);
+
+  font-size: 12px;
+  font-weight: 520;
+  line-height: 1.3;
+}
+
+.jcs-business-signup__close-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 42px;
+  height: 42px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  box-shadow: var(--jcs-shadow-xs);
+
+  transition:
+    color var(--jcs-transition),
+    border-color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__close-button:not(:disabled):hover {
+  color: var(--jcs-ink);
+
+  border-color: var(--jcs-border-strong);
+
+  background: #ffffff;
+
+  transform: rotate(4deg) scale(1.04);
+}
+
+.jcs-business-signup__close-button:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+
+/* ================================================================
+   06. HERO
+   ================================================================ */
+
+.jcs-business-signup__hero {
+  position: relative;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 40px;
+
+  min-height: 220px;
+
+  padding: 42px 46px;
+
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.19);
+  border-radius: var(--jcs-radius-2xl);
+
+  background:
+    radial-gradient(
+      circle at 86% 14%,
+      rgba(255, 255, 255, 0.22),
+      transparent 31%
+    ),
+    radial-gradient(
+      circle at 7% 100%,
+      rgba(72, 169, 255, 0.28),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #0b3f91 0%,
+      #0d5cc9 48%,
+      #1678e8 100%
+    );
+
+  box-shadow:
+    0 32px 70px rgba(7, 55, 128, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  animation:
+    jcs-signup-enter
+    600ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.jcs-business-signup__hero::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  opacity: 0.18;
+
+  background-image:
+    linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 38%,
+      transparent 72%
+    );
+
+  transform: translateX(-100%);
+
+  animation:
+    jcs-signup-hero-shine
+    10s
+    ease-in-out
+    infinite;
+}
+
+.jcs-business-signup__hero::after {
+  content: "";
+
+  position: absolute;
+  top: -120px;
+  right: -90px;
+
+  width: 310px;
+  height: 310px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 35px rgba(255, 255, 255, 0.025),
+    0 0 0 80px rgba(255, 255, 255, 0.018);
+}
+
+.jcs-business-signup__hero-copy,
+.jcs-business-signup__hero-progress {
+  position: relative;
+  z-index: 2;
+}
+
+.jcs-business-signup__step-badge {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 29px;
+
+  padding: 6px 12px;
+
+  color: rgba(255, 255, 255, 0.94);
+
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--jcs-radius-pill);
+
+  background: rgba(255, 255, 255, 0.1);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  backdrop-filter: blur(14px);
+}
+
+.jcs-business-signup__hero h1 {
+  max-width: 690px;
+
+  margin-top: 18px;
+
+  color: #ffffff;
+
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 790;
+  letter-spacing: -0.048em;
+  line-height: 1.02;
+}
+
+.jcs-business-signup__hero-copy > p {
+  max-width: 620px;
+
+  margin-top: 14px;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 17px;
+  font-weight: 470;
+  line-height: 1.55;
+}
+
+.jcs-business-signup__hero-progress {
+  --jcs-progress-angle:
+    calc(var(--jcs-progress-value) * 3.6deg);
+
+  display: grid;
+  place-items: center;
+
+  width: 136px;
+  height: 136px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(11, 71, 154, 0.98) 0 56%,
+      transparent 57%
+    ),
+    conic-gradient(
+      #ffffff 0deg,
+      #ffffff var(--jcs-progress-angle),
+      rgba(255, 255, 255, 0.2)
+        var(--jcs-progress-angle),
+      rgba(255, 255, 255, 0.2) 360deg
+    );
+
+  box-shadow:
+    0 20px 44px rgba(3, 31, 78, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+
+  transition:
+    background var(--jcs-transition-slow),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__hero-progress:hover {
+  transform: translateY(-3px) scale(1.018);
+}
+
+.jcs-business-signup__hero-progress-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.jcs-business-signup__hero-progress-value strong {
+  color: #ffffff;
+
+  font-size: 28px;
+  font-weight: 790;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.jcs-business-signup__hero-progress-value span {
+  margin-top: 6px;
+
+  color: rgba(255, 255, 255, 0.67);
+
+  font-size: 11px;
+  font-weight: 680;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+
+/* ================================================================
+   07. PROGRESS CARD
+   ================================================================ */
+
+.jcs-business-signup__progress-card {
+  position: relative;
+
+  margin-top: 22px;
+
+  padding: 22px 24px 24px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-xl);
+
+  background: rgba(255, 255, 255, 0.88);
+
+  box-shadow: var(--jcs-shadow-sm);
+
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+
+  animation:
+    jcs-signup-enter
+    650ms
+    80ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.jcs-business-signup__progress-track {
+  position: relative;
+  overflow: hidden;
+
+  width: 100%;
+  height: 6px;
+
+  border-radius: var(--jcs-radius-pill);
+
+  background: #e7ecf3;
+}
+
+.jcs-business-signup__progress-fill {
+  position: relative;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--jcs-accent-strong),
+      #2787f3
+    );
+
+  box-shadow:
+    0 0 18px rgba(21, 101, 216, 0.35);
+
+  transition:
+    width
+    600ms
+    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.jcs-business-signup__progress-fill::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+
+  transform: translateX(-100%);
+
+  animation:
+    jcs-signup-progress-shimmer
+    2.8s
+    ease-in-out
+    infinite;
+}
+
+.jcs-business-signup__progress-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+
+  padding: 0;
+  margin-top: 20px;
+
+  list-style: none;
+}
+
+.jcs-business-signup__progress-step {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  min-width: 0;
+
+  color: var(--jcs-text-tertiary);
+
+  transition:
+    color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__progress-step-number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 29px;
+  height: 29px;
+
+  color: var(--jcs-text-tertiary);
+
+  font-size: 12px;
+  font-weight: 760;
+
+  border: 1px solid var(--jcs-border-strong);
+  border-radius: 50%;
+
+  background: var(--jcs-surface-muted);
+
+  transition:
+    color var(--jcs-transition),
+    border-color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    box-shadow var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__progress-step-title {
+  overflow: hidden;
+
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.25;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-business-signup__progress-step--current {
+  color: var(--jcs-accent-strong);
+}
+
+.jcs-business-signup__progress-step--current
+.jcs-business-signup__progress-step-number {
+  color: #ffffff;
+
+  border-color: var(--jcs-accent);
+
+  background: var(--jcs-accent);
+
+  box-shadow:
+    0 8px 20px rgba(21, 101, 216, 0.26);
+
+  transform: scale(1.08);
+}
+
+.jcs-business-signup__progress-step--completed {
+  color: var(--jcs-success-strong);
+}
+
+.jcs-business-signup__progress-step--completed
+.jcs-business-signup__progress-step-number {
+  color: #ffffff;
+
+  border-color: var(--jcs-success);
+
+  background: var(--jcs-success);
+
+  box-shadow:
+    0 7px 17px rgba(20, 132, 84, 0.2);
+}
+
+
+/* ================================================================
+   08. CONTENT CARD
+   ================================================================ */
+
+.jcs-business-signup__content-card {
+  position: relative;
+
+  min-height: 440px;
+
+  margin-top: 22px;
+  padding: clamp(26px, 4vw, 48px);
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-2xl);
+
+  background: var(--jcs-surface-elevated);
+
+  box-shadow: var(--jcs-shadow-md);
+
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+
+  animation:
+    jcs-signup-enter
+    650ms
+    130ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.jcs-business-signup__step {
+  animation:
+    jcs-signup-step-enter
+    420ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+
+/* ================================================================
+   09. SHARED TYPOGRAPHY
+   ================================================================ */
+
+.jcs-business-signup__eyebrow {
+  color: var(--jcs-accent-strong);
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.jcs-business-signup__section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+
+  margin-bottom: 30px;
+}
+
+.jcs-business-signup__section-heading > div:first-child {
+  min-width: 0;
+}
+
+.jcs-business-signup__section-heading h2,
+.jcs-business-signup__welcome-copy h2,
+.jcs-business-signup__success-copy h2 {
+  margin-top: 8px;
+
+  color: var(--jcs-ink-strong);
+
+  font-size: clamp(27px, 4vw, 38px);
+  font-weight: 770;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+}
+
+.jcs-business-signup__section-heading
+> div:first-child
+> p:last-child,
+.jcs-business-signup__welcome-copy > p:last-child,
+.jcs-business-signup__success-copy > p:last-child {
+  max-width: 700px;
+
+  margin-top: 11px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.jcs-business-signup__section-heading strong {
+  color: var(--jcs-ink);
+}
+
+.jcs-business-signup__section-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 58px;
+  height: 58px;
+
+  font-size: 28px;
+
+  border: 1px solid var(--jcs-accent-border);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(233, 242, 255, 0.9)
+    );
+
+  box-shadow:
+    0 12px 30px rgba(21, 101, 216, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+
+/* ================================================================
+   10. WELCOME STEP
+   ================================================================ */
+
+.jcs-business-signup__welcome-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.jcs-business-signup__welcome-icon {
+  display: grid;
+  place-items: center;
+
+  width: 78px;
+  height: 78px;
+
+  color: #ffffff;
+
+  font-size: 34px;
+
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #3b92f5,
+      #125fc9 58%,
+      #08418f
+    );
+
+  box-shadow:
+    0 20px 40px rgba(21, 101, 216, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+  transform: rotate(-4deg);
+
+  animation:
+    jcs-signup-icon-float
+    5s
+    ease-in-out
+    infinite;
+}
+
+.jcs-business-signup__welcome-icon span {
+  transform: rotate(4deg);
+}
+
+.jcs-business-signup__welcome-copy {
+  max-width: 760px;
+
+  margin-top: 28px;
+}
+
+.jcs-business-signup__welcome-copy > p:last-child {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.jcs-business-signup__feature-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 16px;
+
+  width: 100%;
+
+  margin-top: 34px;
+
+  text-align: left;
+}
+
+.jcs-business-signup__feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+
+  min-height: 126px;
+
+  padding: 22px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(247, 250, 255, 0.94)
+    );
+
+  box-shadow: var(--jcs-shadow-xs);
+
+  transition:
+    border-color var(--jcs-transition),
+    box-shadow var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__feature-card:hover {
+  border-color: var(--jcs-accent-border);
+
+  box-shadow: var(--jcs-shadow-sm);
+
+  transform: translateY(-3px);
+}
+
+.jcs-business-signup__feature-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 44px;
+  height: 44px;
+
+  font-size: 22px;
+
+  border-radius: 14px;
+
+  background: var(--jcs-accent-soft);
+}
+
+.jcs-business-signup__feature-card h3 {
+  color: var(--jcs-ink);
+
+  font-size: 15px;
+  font-weight: 740;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+}
+
+.jcs-business-signup__feature-card p {
+  margin-top: 6px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+
+/* ================================================================
+   11. INVITATION CARDS
+   ================================================================ */
+
+.jcs-business-signup__invitation-card {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+
+  width: 100%;
+
+  margin-top: 22px;
+  padding: 20px 22px;
+
+  text-align: left;
+
+  border: 1px solid var(--jcs-success-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(238, 252, 246, 0.98),
+      rgba(247, 255, 251, 0.98)
+    );
+
+  box-shadow:
+    0 12px 30px rgba(20, 132, 84, 0.07);
+}
+
+.jcs-business-signup__invitation-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 48px;
+  height: 48px;
+
+  font-size: 23px;
+
+  border-radius: 15px;
+
+  background: var(--jcs-success-soft);
+}
+
+.jcs-business-signup__invitation-label {
+  color: var(--jcs-success-strong);
+
+  font-size: 11px;
+  font-weight: 780;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jcs-business-signup__invitation-card strong {
+  display: inline-block;
+
+  margin-top: 3px;
+
+  color: var(--jcs-ink);
+
+  font-size: 17px;
+  letter-spacing: 0.04em;
+}
+
+.jcs-business-signup__invitation-card
+div:last-child
+p:last-child {
+  margin-top: 5px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.jcs-business-signup__compact-invitation {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-top: 18px;
+  padding: 10px 14px;
+
+  border: 1px solid var(--jcs-success-border);
+  border-radius: var(--jcs-radius-pill);
+
+  background: rgba(244, 255, 250, 0.9);
+
+  box-shadow: var(--jcs-shadow-xs);
+}
+
+.jcs-business-signup__compact-invitation
+> span {
+  font-size: 17px;
+}
+
+.jcs-business-signup__compact-invitation div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jcs-business-signup__compact-invitation small {
+  color: var(--jcs-text-secondary);
+
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.jcs-business-signup__compact-invitation strong {
+  color: var(--jcs-success-strong);
+
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+
+/* ================================================================
+   12. MIGRATION BUTTON
+   ================================================================ */
+
+.jcs-business-signup__migration-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  margin-top: 25px;
+  padding: 12px 17px;
+
+  color: var(--jcs-accent-strong);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  border: 1px solid var(--jcs-accent-border);
+  border-radius: var(--jcs-radius-pill);
+
+  background: var(--jcs-accent-softer);
+
+  transition:
+    color var(--jcs-transition),
+    border-color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__migration-button:not(:disabled):hover {
+  color: #ffffff;
+
+  border-color: var(--jcs-accent);
+
+  background: var(--jcs-accent);
+
+  transform: translateY(-2px);
+}
+
+
+/* ================================================================
+   13. FORM FIELDS
+   ================================================================ */
+
+.jcs-business-signup__field-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 23px 20px;
+}
+
+.jcs-business-signup__field {
+  min-width: 0;
+}
+
+.jcs-business-signup__field--wide {
+  grid-column: 1 / -1;
+}
+
+.jcs-business-signup__field label {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 9px;
+
+  color: var(--jcs-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.jcs-business-signup__field label span {
+  color: var(--jcs-danger);
+}
+
+.jcs-business-signup__input-shell {
+  display: flex;
+  align-items: center;
+
+  min-height: var(--jcs-control-height);
+
+  overflow: hidden;
+
+  border: 1px solid var(--jcs-border-strong);
+  border-radius: var(--jcs-radius-md);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.025);
+
+  transition:
+    border-color var(--jcs-transition),
+    box-shadow var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__input-shell:focus-within {
+  border-color: rgba(21, 101, 216, 0.75);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgba(21, 101, 216, 0.1),
+    0 10px 24px rgba(21, 101, 216, 0.08);
+
+  transform: translateY(-1px);
+}
+
+.jcs-business-signup__input-shell > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 50px;
+  height: var(--jcs-control-height);
+
+  color: var(--jcs-text-tertiary);
+
+  font-size: 18px;
+
+  transition:
+    color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__input-shell:focus-within
+> span {
+  color: var(--jcs-accent);
+
+  transform: scale(1.05);
+}
+
+.jcs-business-signup__input-shell input {
+  flex: 1;
+  min-width: 0;
+  height: var(--jcs-control-height);
+
+  padding: 0 16px 0 0;
+
+  color: var(--jcs-ink);
+
+  font-size: 15px;
+  font-weight: 510;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+}
+
+.jcs-business-signup__input-shell
+input::placeholder {
+  color: var(--jcs-placeholder);
+  opacity: 1;
+}
+
+.jcs-business-signup__input-shell
+input:disabled {
+  opacity: 0.64;
+}
+
+.jcs-business-signup__input-shell--error {
+  border-color: var(--jcs-danger);
+
+  background: rgba(255, 250, 250, 0.98);
+
+  box-shadow:
+    0 0 0 4px rgba(199, 53, 53, 0.07);
+}
+
+.jcs-business-signup__input-shell--error
+> span {
+  color: var(--jcs-danger);
+}
+
+.jcs-business-signup__field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+
+  margin-top: 8px;
+
+  color: var(--jcs-danger-strong);
+
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+
+  animation:
+    jcs-signup-error-shake
+    320ms
+    ease-out
+    both;
+}
+
+
+/* ================================================================
+   14. INFORMATION CARD
+   ================================================================ */
+
+.jcs-business-signup__information-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+
+  margin-top: 26px;
+  padding: 18px 20px;
+
+  border: 1px solid var(--jcs-accent-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 247, 255, 0.96),
+      rgba(249, 252, 255, 0.96)
+    );
+}
+
+.jcs-business-signup__information-card
+> span {
+  flex: 0 0 auto;
+
+  font-size: 20px;
+}
+
+.jcs-business-signup__information-card strong {
+  color: var(--jcs-ink);
+
+  font-size: 13px;
+  font-weight: 730;
+}
+
+.jcs-business-signup__information-card p {
+  margin-top: 4px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+
+/* ================================================================
+   15. INDUSTRY SEARCH
+   ================================================================ */
+
+.jcs-business-signup__industry-search {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  min-height: 58px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--jcs-border-strong);
+  border-radius: 17px;
+
+  background: #ffffff;
+
+  box-shadow: var(--jcs-shadow-xs);
+
+  transition:
+    border-color var(--jcs-transition),
+    box-shadow var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__industry-search:focus-within {
+  border-color: rgba(21, 101, 216, 0.7);
+
+  box-shadow:
+    0 0 0 4px rgba(21, 101, 216, 0.09),
+    0 12px 28px rgba(21, 101, 216, 0.07);
+
+  transform: translateY(-1px);
+}
+
+.jcs-business-signup__industry-search
+> span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 54px;
+
+  font-size: 19px;
+}
+
+.jcs-business-signup__industry-search input {
+  flex: 1;
+  min-width: 0;
+  height: 56px;
+
+  padding: 0 8px 0 0;
+
+  color: var(--jcs-ink);
+
+  font-size: 15px;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+}
+
+.jcs-business-signup__industry-search
+input::placeholder {
+  color: var(--jcs-placeholder);
+}
+
+.jcs-business-signup__industry-search
+button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 38px;
+  height: 38px;
+
+  margin-right: 9px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 22px;
+  line-height: 1;
+
+  border-radius: 50%;
+
+  background: var(--jcs-surface-muted);
+
+  transition:
+    color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__industry-search
+button:not(:disabled):hover {
+  color: var(--jcs-ink);
+
+  background: #e7edf5;
+
+  transform: scale(1.05);
+}
+
+
+/* ================================================================
+   16. INDUSTRY CATEGORY LIST
+   ================================================================ */
+
+.jcs-business-signup__industry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+
+  margin-top: 22px;
+}
+
+.jcs-business-signup__industry-category {
+  overflow: hidden;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background: #ffffff;
+
+  box-shadow: var(--jcs-shadow-xs);
+
+  transition:
+    border-color var(--jcs-transition),
+    box-shadow var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__industry-category:hover {
+  border-color: var(--jcs-accent-border);
+
+  box-shadow: var(--jcs-shadow-sm);
+}
+
+.jcs-business-signup__industry-category-header {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 78px;
+
+  padding: 15px 18px;
+
+  color: inherit;
+  text-align: left;
+
+  background: transparent;
+
+  transition:
+    background-color var(--jcs-transition);
+}
+
+.jcs-business-signup__industry-category-header:not(:disabled):hover {
+  background: rgba(246, 249, 253, 0.9);
+}
+
+.jcs-business-signup__industry-category-header[aria-expanded="true"] {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(242, 248, 255, 0.96),
+      rgba(250, 252, 255, 0.96)
+    );
+}
+
+.jcs-business-signup__industry-category-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 48px;
+  height: 48px;
+
+  font-size: 24px;
+
+  border-radius: 15px;
+
+  background: var(--jcs-accent-soft);
+}
+
+.jcs-business-signup__industry-category-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+
+  margin-left: 14px;
+}
+
+.jcs-business-signup__industry-category-copy
+strong {
+  overflow: hidden;
+
+  color: var(--jcs-ink);
+
+  font-size: 15px;
+  font-weight: 730;
+  letter-spacing: -0.01em;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-business-signup__industry-category-copy
+small {
+  margin-top: 4px;
+
+  color: var(--jcs-text-tertiary);
+
+  font-size: 12px;
+  font-weight: 530;
+}
+
+.jcs-business-signup__industry-chevron {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 34px;
+  height: 34px;
+
+  color: var(--jcs-text-tertiary);
+
+  font-size: 22px;
+
+  border-radius: 50%;
+
+  transition:
+    color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__industry-chevron--expanded {
+  color: var(--jcs-accent);
+
+  background: var(--jcs-accent-soft);
+
+  transform: rotate(180deg);
+}
+
+
+/* ================================================================
+   17. BUSINESS MODE GRID
+   ================================================================ */
+
+.jcs-business-signup__mode-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 11px;
+
+  padding: 0 15px 15px;
+
+  border-top: 1px solid var(--jcs-divider);
+
+  background: rgba(249, 251, 254, 0.68);
+
+  animation:
+    jcs-signup-expand
+    320ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.jcs-business-signup__mode-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  min-height: 86px;
+
+  margin-top: 14px;
+  padding: 15px;
+
+  color: inherit;
+  text-align: left;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow: var(--jcs-shadow-xs);
+
+  transition:
+    border-color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    box-shadow var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__mode-card:not(:disabled):hover {
+  border-color: rgba(21, 101, 216, 0.4);
+
+  background: #fbfdff;
+
+  box-shadow:
+    0 12px 28px rgba(21, 101, 216, 0.1);
+
+  transform: translateY(-3px);
+}
+
+.jcs-business-signup__mode-card:not(:disabled):active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.jcs-business-signup__mode-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 40px;
+  height: 40px;
+
+  font-size: 20px;
+
+  border-radius: 13px;
+
+  background: var(--jcs-accent-soft);
+}
+
+.jcs-business-signup__mode-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.jcs-business-signup__mode-copy strong {
+  color: var(--jcs-ink);
+
+  font-size: 14px;
+  font-weight: 720;
+  line-height: 1.3;
+}
+
+.jcs-business-signup__mode-copy small {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+
+  margin-top: 4px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.jcs-business-signup__mode-select-indicator {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 30px;
+  height: 30px;
+
+  color: var(--jcs-accent);
+
+  font-size: 16px;
+
+  border-radius: 50%;
+
+  background: var(--jcs-accent-soft);
+
+  transition:
+    color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__mode-card:hover
+.jcs-business-signup__mode-select-indicator {
+  color: #ffffff;
+
+  background: var(--jcs-accent);
+
+  transform: translateX(2px);
+}
+
+
+/* ================================================================
+   18. SELECTED MODE
+   ================================================================ */
+
+.jcs-business-signup__selected-mode-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 17px;
+
+  padding: 22px;
+
+  border: 1px solid var(--jcs-success-border);
+  border-radius: var(--jcs-radius-xl);
+
+  background:
+    radial-gradient(
+      circle at 95% 0%,
+      rgba(20, 132, 84, 0.09),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(242, 253, 248, 0.98),
+      rgba(255, 255, 255, 0.98)
+    );
+
+  box-shadow:
+    0 16px 38px rgba(20, 132, 84, 0.08);
+
+  animation:
+    jcs-signup-selected
+    420ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.jcs-business-signup__selected-mode-icon {
+  display: grid;
+  place-items: center;
+
+  width: 62px;
+  height: 62px;
+
+  font-size: 31px;
+
+  border: 1px solid var(--jcs-success-border);
+  border-radius: 19px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 10px 26px rgba(20, 132, 84, 0.1);
+}
+
+.jcs-business-signup__selected-mode-copy {
+  min-width: 0;
+}
+
+.jcs-business-signup__selected-mode-copy p {
+  color: var(--jcs-success-strong);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.jcs-business-signup__selected-mode-copy h3 {
+  overflow: hidden;
+
+  margin-top: 5px;
+
+  color: var(--jcs-ink-strong);
+
+  font-size: 21px;
+  font-weight: 760;
+  letter-spacing: -0.025em;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-business-signup__selected-mode-copy
+> span {
+  display: inline-block;
+
+  margin-top: 5px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 13px;
+}
+
+.jcs-business-signup__change-mode-button {
+  min-height: 40px;
+
+  padding: 0 16px;
+
+  color: var(--jcs-accent-strong);
+
+  font-size: 12px;
+  font-weight: 730;
+
+  border: 1px solid var(--jcs-accent-border);
+  border-radius: var(--jcs-radius-pill);
+
+  background: #ffffff;
+
+  transition:
+    color var(--jcs-transition),
+    border-color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__change-mode-button:not(:disabled):hover {
+  color: #ffffff;
+
+  border-color: var(--jcs-accent);
+
+  background: var(--jcs-accent);
+
+  transform: translateY(-2px);
+}
+
+
+/* ================================================================
+   19. MODULE PREVIEW
+   ================================================================ */
+
+.jcs-business-signup__module-preview {
+  margin-top: 22px;
+  padding: 22px;
+
+  border: 1px solid var(--jcs-accent-border);
+  border-radius: var(--jcs-radius-xl);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(244, 249, 255, 0.98),
+      rgba(255, 255, 255, 0.98)
+    );
+}
+
+.jcs-business-signup__module-preview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.jcs-business-signup__module-preview-heading h3 {
+  margin-top: 5px;
+
+  color: var(--jcs-ink);
+
+  font-size: 18px;
+  font-weight: 740;
+  letter-spacing: -0.02em;
+}
+
+.jcs-business-signup__module-preview-heading
+> span {
+  font-size: 25px;
+}
+
+.jcs-business-signup__module-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+
+  margin-top: 18px;
+}
+
+.jcs-business-signup__module-chip {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 34px;
+
+  padding: 7px 13px;
+
+  color: var(--jcs-accent-strong);
+
+  font-size: 12px;
+  font-weight: 680;
+
+  border: 1px solid var(--jcs-accent-border);
+  border-radius: var(--jcs-radius-pill);
+
+  background: rgba(255, 255, 255, 0.92);
+
+  box-shadow: var(--jcs-shadow-xs);
+}
+
+
+/* ================================================================
+   20. EMPTY STATE
+   ================================================================ */
+
+.jcs-business-signup__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 52px 24px;
+
+  text-align: center;
+
+  border: 1px dashed var(--jcs-border-strong);
+  border-radius: var(--jcs-radius-xl);
+
+  background: var(--jcs-surface-subtle);
+}
+
+.jcs-business-signup__empty-state
+> span {
+  font-size: 36px;
+}
+
+.jcs-business-signup__empty-state h3 {
+  margin-top: 16px;
+
+  color: var(--jcs-ink);
+
+  font-size: 18px;
+  font-weight: 740;
+}
+
+.jcs-business-signup__empty-state p {
+  max-width: 480px;
+
+  margin-top: 8px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.jcs-business-signup__empty-state button {
+  margin-top: 18px;
+  padding: 10px 16px;
+
+  color: var(--jcs-accent-strong);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  border: 1px solid var(--jcs-accent-border);
+  border-radius: var(--jcs-radius-pill);
+
+  background: #ffffff;
+
+  transition:
+    color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__empty-state
+button:hover {
+  color: #ffffff;
+
+  background: var(--jcs-accent);
+
+  transform: translateY(-2px);
+}
+
+
+/* ================================================================
+   21. OWNER SUMMARY
+   ================================================================ */
+
+.jcs-business-signup__owner-summary {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.25fr)
+    minmax(0, 0.75fr);
+  gap: 14px;
+
+  margin-bottom: 28px;
+}
+
+.jcs-business-signup__owner-summary
+> div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  min-width: 0;
+  min-height: 82px;
+
+  padding: 16px 18px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(247, 250, 255, 0.98)
+    );
+}
+
+.jcs-business-signup__owner-summary
+> div:first-child
+> span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 43px;
+  height: 43px;
+
+  font-size: 22px;
+
+  border-radius: 14px;
+
+  background: var(--jcs-accent-soft);
+}
+
+.jcs-business-signup__owner-summary
+div div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.jcs-business-signup__owner-summary small {
+  color: var(--jcs-text-tertiary);
+
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jcs-business-signup__owner-summary strong {
+  overflow: hidden;
+
+  margin-top: 5px;
+
+  color: var(--jcs-ink);
+
+  font-size: 14px;
+  font-weight: 720;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ================================================================
+   22. REVIEW CARD
+   ================================================================ */
+
+.jcs-business-signup__review-card {
+  margin-top: 30px;
+  padding: 24px;
+
+  border: 1px solid var(--jcs-success-border);
+  border-radius: var(--jcs-radius-xl);
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(20, 132, 84, 0.08),
+      transparent 33%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(244, 254, 249, 0.98),
+      rgba(255, 255, 255, 0.98)
+    );
+}
+
+.jcs-business-signup__review-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.jcs-business-signup__review-heading h3 {
+  margin-top: 5px;
+
+  color: var(--jcs-ink);
+
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -0.022em;
+}
+
+.jcs-business-signup__review-heading
+> span {
+  font-size: 26px;
+}
+
+.jcs-business-signup__review-list {
+  overflow: hidden;
+
+  margin-top: 20px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.jcs-business-signup__review-list
+> div {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.42fr) 1fr;
+  align-items: center;
+  gap: 20px;
+
+  min-height: 52px;
+
+  padding: 12px 16px;
+
+  border-bottom: 1px solid var(--jcs-divider);
+}
+
+.jcs-business-signup__review-list
+> div:last-child {
+  border-bottom: 0;
+}
+
+.jcs-business-signup__review-list dt {
+  color: var(--jcs-text-tertiary);
+
+  font-size: 12px;
+  font-weight: 680;
+}
+
+.jcs-business-signup__review-list dd {
+  overflow-wrap: anywhere;
+
+  color: var(--jcs-ink);
+
+  font-size: 13px;
+  font-weight: 690;
+  text-align: right;
+}
+
+
+/* ================================================================
+   23. SUCCESS STEP
+   ================================================================ */
+
+.jcs-business-signup__success-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.jcs-business-signup__success-mark {
+  display: grid;
+  place-items: center;
+
+  width: 88px;
+  height: 88px;
+
+  color: #ffffff;
+
+  font-size: 41px;
+  font-weight: 760;
+
+  border: 7px solid rgba(20, 132, 84, 0.12);
+  border-radius: 50%;
+
+  background: var(--jcs-success);
+
+  box-shadow:
+    0 22px 48px rgba(20, 132, 84, 0.25);
+
+  animation:
+    jcs-signup-success-pop
+    620ms
+    cubic-bezier(0.34, 1.56, 0.64, 1)
+    both;
+}
+
+.jcs-business-signup__success-copy {
+  max-width: 680px;
+
+  margin-top: 26px;
+}
+
+.jcs-business-signup__success-copy
+> p:last-child {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.jcs-business-signup__success-business-card {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+
+  width: 100%;
+
+  margin-top: 32px;
+  padding: 22px;
+
+  text-align: left;
+
+  border: 1px solid var(--jcs-success-border);
+  border-radius: var(--jcs-radius-xl);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(240, 253, 247, 0.98),
+      rgba(255, 255, 255, 0.98)
+    );
+
+  box-shadow:
+    0 16px 38px rgba(20, 132, 84, 0.09);
+}
+
+.jcs-business-signup__success-business-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 62px;
+  height: 62px;
+
+  font-size: 31px;
+
+  border: 1px solid var(--jcs-success-border);
+  border-radius: 19px;
+
+  background: #ffffff;
+}
+
+.jcs-business-signup__success-business-card
+small {
+  color: var(--jcs-success-strong);
+
+  font-size: 10px;
+  font-weight: 780;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.jcs-business-signup__success-business-card h3 {
+  margin-top: 4px;
+
+  color: var(--jcs-ink);
+
+  font-size: 22px;
+  font-weight: 760;
+  letter-spacing: -0.025em;
+}
+
+.jcs-business-signup__success-business-card p {
+  margin-top: 4px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 13px;
+}
+
+.jcs-business-signup__success-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  width: 100%;
+
+  margin-top: 18px;
+
+  text-align: left;
+}
+
+.jcs-business-signup__success-grid
+article {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+
+  min-height: 114px;
+
+  padding: 19px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background: #ffffff;
+
+  box-shadow: var(--jcs-shadow-xs);
+}
+
+.jcs-business-signup__success-grid
+article
+> span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 40px;
+  height: 40px;
+
+  font-size: 20px;
+
+  border-radius: 13px;
+
+  background: var(--jcs-success-soft);
+}
+
+.jcs-business-signup__success-grid strong {
+  color: var(--jcs-ink);
+
+  font-size: 14px;
+  font-weight: 730;
+}
+
+.jcs-business-signup__success-grid p {
+  margin-top: 5px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.jcs-business-signup__success-details {
+  overflow: hidden;
+
+  width: 100%;
+
+  margin-top: 18px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background: var(--jcs-surface-subtle);
+}
+
+.jcs-business-signup__success-details
+> div {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 18px;
+
+  min-height: 52px;
+
+  padding: 13px 17px;
+
+  border-bottom: 1px solid var(--jcs-divider);
+}
+
+.jcs-business-signup__success-details
+> div:last-child {
+  border-bottom: 0;
+}
+
+.jcs-business-signup__success-details dt {
+  color: var(--jcs-text-tertiary);
+
+  font-size: 12px;
+  font-weight: 680;
+  text-align: left;
+}
+
+.jcs-business-signup__success-details dd {
+  overflow-wrap: anywhere;
+
+  color: var(--jcs-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+
+/* ================================================================
+   24. REGISTRATION ERROR
+   ================================================================ */
+
+.jcs-business-signup__registration-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+
+  margin-top: 18px;
+  padding: 18px 20px;
+
+  border: 1px solid var(--jcs-danger-border);
+  border-radius: var(--jcs-radius-lg);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 245, 245, 0.98),
+      rgba(255, 252, 252, 0.98)
+    );
+
+  box-shadow:
+    0 12px 30px rgba(199, 53, 53, 0.07);
+
+  animation:
+    jcs-signup-error-shake
+    380ms
+    ease-out
+    both;
+}
+
+.jcs-business-signup__registration-error
+> span {
+  font-size: 21px;
+}
+
+.jcs-business-signup__registration-error
+strong {
+  color: var(--jcs-danger-strong);
+
+  font-size: 14px;
+}
+
+.jcs-business-signup__registration-error p {
+  margin-top: 5px;
+
+  color: #8a3333;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* ================================================================
+   25. BOTTOM BAR
+   ================================================================ */
+
+.jcs-business-signup__bottom-bar {
+  position: sticky;
+  bottom: 14px;
+  z-index: 30;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+
+  margin-top: 22px;
+  padding: 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: var(--jcs-radius-xl);
+
+  background: rgba(255, 255, 255, 0.86);
+
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.12);
+
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+.jcs-business-signup__bottom-secondary {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.jcs-business-signup__primary-button,
+.jcs-business-signup__secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 51px;
+
+  border-radius: 15px;
+
+  font-size: 14px;
+  font-weight: 740;
+
+  transition:
+    color var(--jcs-transition),
+    border-color var(--jcs-transition),
+    background-color var(--jcs-transition),
+    box-shadow var(--jcs-transition),
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__primary-button {
+  min-width: 184px;
+
+  padding: 0 22px;
+
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background:
+    linear-gradient(
+      135deg,
+      #2479e4,
+      #125fc9 58%,
+      #0b4ba6
+    );
+
+  box-shadow:
+    0 14px 30px rgba(21, 101, 216, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.jcs-business-signup__primary-button
+span:last-child {
+  font-size: 22px;
+  font-weight: 470;
+  line-height: 1;
+
+  transition:
+    transform var(--jcs-transition);
+}
+
+.jcs-business-signup__primary-button:not(:disabled):hover {
+  background:
+    linear-gradient(
+      135deg,
+      #3187ee,
+      #1468d7 58%,
+      #0a4ca9
+    );
+
+  box-shadow:
+    0 18px 38px rgba(21, 101, 216, 0.34);
+
+  transform: translateY(-2px);
+}
+
+.jcs-business-signup__primary-button:not(:disabled):hover
+span:last-child {
+  transform: translateX(3px);
+}
+
+.jcs-business-signup__primary-button:not(:disabled):active {
+  box-shadow:
+    0 9px 20px rgba(21, 101, 216, 0.24);
+
+  transform: translateY(0) scale(0.985);
+}
+
+.jcs-business-signup__secondary-button {
+  min-width: 112px;
+
+  padding: 0 18px;
+
+  color: var(--jcs-text);
+
+  border: 1px solid var(--jcs-border-strong);
+
+  background: #ffffff;
+
+  box-shadow: var(--jcs-shadow-xs);
+}
+
+.jcs-business-signup__secondary-button:not(:disabled):hover {
+  color: var(--jcs-accent-strong);
+
+  border-color: var(--jcs-accent-border);
+
+  background: var(--jcs-accent-softer);
+
+  transform: translateY(-2px);
+}
+
+.jcs-business-signup__sign-in-button {
+  padding: 9px 4px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 13px;
+
+  background: transparent;
+
+  transition:
+    color var(--jcs-transition);
+}
+
+.jcs-business-signup__sign-in-button strong {
+  color: var(--jcs-accent-strong);
+}
+
+.jcs-business-signup__sign-in-button:not(:disabled):hover {
+  color: var(--jcs-ink);
+}
+
+.jcs-business-signup__primary-button:disabled,
+.jcs-business-signup__secondary-button:disabled,
+.jcs-business-signup__sign-in-button:disabled {
+  opacity: 0.62;
+  transform: none;
+}
+
+
+/* ================================================================
+   26. BUTTON SPINNER
+   ================================================================ */
+
+.jcs-business-signup__button-spinner {
+  width: 18px;
+  height: 18px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+
+  animation:
+    jcs-signup-spin
+    750ms
+    linear
+    infinite;
+}
+
+
+/* ================================================================
+   27. NOTICE
+   ================================================================ */
+
+.jcs-business-signup__notice {
+  position: fixed;
+  right: max(22px, env(safe-area-inset-right));
+  bottom: max(22px, env(safe-area-inset-bottom));
+  z-index: 120;
+
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  max-width: min(420px, calc(100vw - 32px));
+
+  padding: 14px 17px;
+
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(23, 34, 51, 0.97),
+      rgba(10, 18, 31, 0.97)
+    );
+
+  box-shadow:
+    0 20px 55px rgba(15, 23, 42, 0.28);
+
+  backdrop-filter: blur(22px);
+
+  animation:
+    jcs-signup-notice-enter
+    380ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.jcs-business-signup__notice
+> span {
+  flex: 0 0 auto;
+
+  font-size: 17px;
+}
+
+.jcs-business-signup__notice p {
+  font-size: 13px;
+  font-weight: 570;
+  line-height: 1.45;
+}
+
+
+/* ================================================================
+   28. REGISTRATION OVERLAY
+   ================================================================ */
+
+.jcs-business-signup__registration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: grid;
+  place-items: center;
+
+  padding: 24px;
+
+  background: rgba(9, 18, 32, 0.62);
+
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+
+  animation:
+    jcs-signup-overlay-enter
+    300ms
+    ease-out
+    both;
+}
+
+.jcs-business-signup__registration-modal {
+  position: relative;
+  overflow: hidden;
+
+  width: min(100%, 500px);
+
+  padding: 42px 36px 34px;
+
+  text-align: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 30px;
+
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(43, 128, 239, 0.13),
+      transparent 43%
+    ),
+    rgba(255, 255, 255, 0.985);
+
+  box-shadow:
+    0 40px 100px rgba(3, 12, 27, 0.34);
+
+  animation:
+    jcs-signup-modal-enter
+    480ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.jcs-business-signup__registration-modal::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 18%;
+  right: 18%;
+
+  height: 3px;
+
+  border-radius: 0 0 999px 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--jcs-accent),
+      transparent
+    );
+}
+
+.jcs-business-signup__registration-logo {
+  display: grid;
+  place-items: center;
+
+  width: 66px;
+  height: 66px;
+
+  margin: 0 auto;
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+
+  border-radius: 21px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #3488ef,
+      #125fc9 58%,
+      #08418f
+    );
+
+  box-shadow:
+    0 18px 38px rgba(21, 101, 216, 0.27),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.jcs-business-signup__registration-spinner {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: 54px;
+  height: 54px;
+
+  margin: 22px auto 16px;
+}
+
+.jcs-business-signup__registration-spinner::before,
+.jcs-business-signup__registration-spinner::after,
+.jcs-business-signup__registration-spinner span {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+}
+
+.jcs-business-signup__registration-spinner::before {
+  inset: 0;
+
+  border: 3px solid rgba(21, 101, 216, 0.12);
+  border-top-color: var(--jcs-accent);
+
+  animation:
+    jcs-signup-spin
+    900ms
+    linear
+    infinite;
+}
+
+.jcs-business-signup__registration-spinner::after {
+  inset: 8px;
+
+  border: 2px solid rgba(21, 101, 216, 0.1);
+  border-bottom-color: rgba(21, 101, 216, 0.65);
+
+  animation:
+    jcs-signup-spin-reverse
+    1.15s
+    linear
+    infinite;
+}
+
+.jcs-business-signup__registration-spinner span {
+  width: 7px;
+  height: 7px;
+
+  background: var(--jcs-accent);
+
+  box-shadow:
+    0 0 16px rgba(21, 101, 216, 0.55);
+}
+
+.jcs-business-signup__registration-modal h2 {
+  margin-top: 8px;
+
+  color: var(--jcs-ink-strong);
+
+  font-size: 28px;
+  font-weight: 770;
+  letter-spacing: -0.035em;
+}
+
+.jcs-business-signup__registration-modal
+> p:not(.jcs-business-signup__eyebrow) {
+  max-width: 390px;
+
+  margin: 11px auto 0;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.jcs-business-signup__registration-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+
+  margin-top: 26px;
+}
+
+.jcs-business-signup__registration-progress-track {
+  overflow: hidden;
+
+  height: 8px;
+
+  border-radius: var(--jcs-radius-pill);
+
+  background: #e7ecf3;
+}
+
+.jcs-business-signup__registration-progress-fill {
+  position: relative;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--jcs-accent-strong),
+      #2d8af2
+    );
+
+  box-shadow:
+    0 0 16px rgba(21, 101, 216, 0.35);
+
+  transition:
+    width
+    600ms
+    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.jcs-business-signup__registration-progress-fill::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.65),
+      transparent
+    );
+
+  animation:
+    jcs-signup-progress-shimmer
+    1.8s
+    ease-in-out
+    infinite;
+}
+
+.jcs-business-signup__registration-progress
+strong {
+  min-width: 42px;
+
+  color: var(--jcs-accent-strong);
+
+  font-size: 13px;
+  font-weight: 780;
+  text-align: right;
+}
+
+.jcs-business-signup__registration-modal
+> small {
+  display: block;
+
+  margin-top: 20px;
+
+  color: var(--jcs-text-tertiary);
+
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+
+/* ================================================================
+   29. STEP-SPECIFIC ACCENTS
+   ================================================================ */
+
+.jcs-business-signup[data-step="success"]
+.jcs-business-signup__hero {
+  background:
+    radial-gradient(
+      circle at 86% 14%,
+      rgba(255, 255, 255, 0.19),
+      transparent 31%
+    ),
+    radial-gradient(
+      circle at 7% 100%,
+      rgba(69, 205, 147, 0.25),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #07583a 0%,
+      #0c8053 52%,
+      #16a168 100%
+    );
+
+  box-shadow:
+    0 32px 70px rgba(7, 88, 58, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.jcs-business-signup[data-step="success"]
+.jcs-business-signup__hero-progress {
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(8, 105, 68, 0.98) 0 56%,
+      transparent 57%
+    ),
+    conic-gradient(
+      #ffffff 0deg,
+      #ffffff var(--jcs-progress-angle),
+      rgba(255, 255, 255, 0.2)
+        var(--jcs-progress-angle),
+      rgba(255, 255, 255, 0.2) 360deg
+    );
+}
+
+
+/* ================================================================
+   30. TABLET
+   ================================================================ */
+
+@media (max-width: 900px) {
+  .jcs-business-signup__container {
+    width: min(calc(100% - 30px), 820px);
+  }
+
+  .jcs-business-signup__hero {
+    padding: 36px;
+  }
+
+  .jcs-business-signup__hero-progress {
+    width: 122px;
+    height: 122px;
+  }
+
+  .jcs-business-signup__hero-progress-value strong {
+    font-size: 25px;
+  }
+
+  .jcs-business-signup__progress-step {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 7px;
+
+    text-align: center;
+  }
+
+  .jcs-business-signup__progress-step-title {
+    width: 100%;
+
+    font-size: 10px;
+  }
+
+  .jcs-business-signup__content-card {
+    padding: 34px;
+  }
+}
+
+
+/* ================================================================
+   31. MOBILE LANDSCAPE / SMALL TABLET
+   ================================================================ */
+
+@media (max-width: 720px) {
+  .jcs-business-signup__top-bar {
+    min-height: 74px;
+
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .jcs-business-signup__brand-mark {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 14px;
+  }
+
+  .jcs-business-signup__container {
+    width: min(calc(100% - 24px), 640px);
+
+    padding-top: 24px;
+  }
+
+  .jcs-business-signup__hero {
+    grid-template-columns: 1fr;
+    gap: 27px;
+
+    min-height: 0;
+
+    padding: 32px;
+
+    border-radius: 27px;
+  }
+
+  .jcs-business-signup__hero-progress {
+    width: 110px;
+    height: 110px;
+  }
+
+  .jcs-business-signup__progress-card {
+    overflow-x: auto;
+
+    padding: 20px 18px;
+  }
+
+  .jcs-business-signup__progress-steps {
+    min-width: 560px;
+  }
+
+  .jcs-business-signup__content-card {
+    min-height: 0;
+
+    padding: 28px;
+
+    border-radius: 27px;
+  }
+
+  .jcs-business-signup__feature-grid,
+  .jcs-business-signup__success-grid,
+  .jcs-business-signup__field-grid,
+  .jcs-business-signup__mode-grid,
+  .jcs-business-signup__owner-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .jcs-business-signup__field--wide {
+    grid-column: auto;
+  }
+
+  .jcs-business-signup__mode-grid {
+    padding-top: 1px;
+  }
+
+  .jcs-business-signup__section-heading {
+    gap: 16px;
+  }
+
+  .jcs-business-signup__section-icon {
+    width: 50px;
+    height: 50px;
+
+    font-size: 24px;
+
+    border-radius: 16px;
+  }
+
+  .jcs-business-signup__bottom-bar {
+    bottom: 10px;
+
+    padding: 12px;
+  }
+
+  .jcs-business-signup__primary-button {
+    min-width: 160px;
+  }
+}
+
+
+/* ================================================================
+   32. MOBILE
+   ================================================================ */
+
+@media (max-width: 520px) {
+  .jcs-business-signup {
+    --jcs-control-height: 52px;
+  }
+
+  .jcs-business-signup__brand-copy small {
+    display: none;
+  }
+
+  .jcs-business-signup__brand-copy strong {
+    max-width: 185px;
+  }
+
+  .jcs-business-signup__container {
+    width: calc(100% - 18px);
+
+    padding-top: 14px;
+    padding-bottom: 26px;
+  }
+
+  .jcs-business-signup__hero {
+    gap: 24px;
+
+    padding: 28px 24px;
+
+    border-radius: 24px;
+  }
+
+  .jcs-business-signup__hero h1 {
+    font-size: clamp(31px, 10vw, 42px);
+  }
+
+  .jcs-business-signup__hero-copy > p {
+    font-size: 14px;
+  }
+
+  .jcs-business-signup__hero-progress {
+    width: 102px;
+    height: 102px;
+  }
+
+  .jcs-business-signup__hero-progress-value strong {
+    font-size: 23px;
+  }
+
+  .jcs-business-signup__progress-card {
+    margin-top: 14px;
+
+    border-radius: 20px;
+  }
+
+  .jcs-business-signup__content-card {
+    margin-top: 14px;
+    padding: 24px 19px;
+
+    border-radius: 23px;
+  }
+
+  .jcs-business-signup__section-heading {
+    align-items: center;
+  }
+
+  .jcs-business-signup__section-heading h2,
+  .jcs-business-signup__welcome-copy h2,
+  .jcs-business-signup__success-copy h2 {
+    font-size: 27px;
+  }
+
+  .jcs-business-signup__section-icon {
+    display: none;
+  }
+
+  .jcs-business-signup__welcome-icon {
+    width: 68px;
+    height: 68px;
+
+    font-size: 29px;
+
+    border-radius: 22px;
+  }
+
+  .jcs-business-signup__feature-card {
+    min-height: 0;
+
+    padding: 18px;
+  }
+
+  .jcs-business-signup__selected-mode-card {
+    grid-template-columns: auto minmax(0, 1fr);
+
+    padding: 18px;
+  }
+
+  .jcs-business-signup__selected-mode-icon {
+    width: 52px;
+    height: 52px;
+
+    font-size: 26px;
+  }
+
+  .jcs-business-signup__change-mode-button {
+    grid-column: 1 / -1;
+
+    width: 100%;
+  }
+
+  .jcs-business-signup__industry-category-header {
+    min-height: 72px;
+
+    padding: 13px;
+  }
+
+  .jcs-business-signup__industry-category-icon {
+    width: 43px;
+    height: 43px;
+
+    font-size: 22px;
+  }
+
+  .jcs-business-signup__mode-card {
+    min-height: 82px;
+  }
+
+  .jcs-business-signup__owner-summary
+  > div {
+    min-height: 72px;
+  }
+
+  .jcs-business-signup__review-list
+  > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .jcs-business-signup__review-list dd {
+    text-align: left;
+  }
+
+  .jcs-business-signup__success-details
+  > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .jcs-business-signup__success-details dd {
+    text-align: left;
+  }
+
+  .jcs-business-signup__bottom-bar {
+    position: relative;
+    bottom: auto;
+
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+
+    margin-top: 14px;
+
+    border-radius: 20px;
+  }
+
+  .jcs-business-signup__bottom-secondary {
+    width: 100%;
+  }
+
+  .jcs-business-signup__secondary-button,
+  .jcs-business-signup__primary-button {
+    width: 100%;
+  }
+
+  .jcs-business-signup__sign-in-button {
+    width: 100%;
+
+    text-align: center;
+  }
+
+  .jcs-business-signup__notice {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+
+    max-width: none;
+  }
+
+  .jcs-business-signup__registration-overlay {
+    padding: 12px;
+  }
+
+  .jcs-business-signup__registration-modal {
+    padding: 34px 22px 28px;
+
+    border-radius: 25px;
+  }
+
+  .jcs-business-signup__registration-modal h2 {
+    font-size: 25px;
+  }
+}
+
+
+/* ================================================================
+   33. VERY SMALL DEVICES
+   ================================================================ */
+
+@media (max-width: 370px) {
+  .jcs-business-signup__brand-copy strong {
+    max-width: 145px;
+
+    font-size: 13px;
+  }
+
+  .jcs-business-signup__hero {
+    padding: 24px 20px;
+  }
+
+  .jcs-business-signup__content-card {
+    padding: 22px 16px;
+  }
+
+  .jcs-business-signup__input-shell > span {
+    width: 44px;
+  }
+
+  .jcs-business-signup__feature-card,
+  .jcs-business-signup__information-card,
+  .jcs-business-signup__review-card,
+  .jcs-business-signup__module-preview {
+    padding: 16px;
+  }
+}
+
+
+/* ================================================================
+   34. DARK MODE READY
+   ================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .jcs-business-signup {
+    --jcs-ink: #f4f7fb;
+    --jcs-ink-strong: #ffffff;
+
+    --jcs-text: #d7deea;
+    --jcs-text-secondary: #aab5c5;
+    --jcs-text-tertiary: #8290a4;
+    --jcs-placeholder: #718096;
+
+    --jcs-surface: rgba(18, 27, 42, 0.96);
+    --jcs-surface-solid: #131d2d;
+    --jcs-surface-subtle: #172234;
+    --jcs-surface-muted: #1d293b;
+    --jcs-surface-elevated: rgba(17, 26, 41, 0.975);
+
+    --jcs-border: rgba(255, 255, 255, 0.08);
+    --jcs-border-strong: rgba(255, 255, 255, 0.14);
+    --jcs-divider: rgba(255, 255, 255, 0.075);
+
+    background:
+      radial-gradient(
+        circle at 12% 0%,
+        rgba(38, 116, 238, 0.18),
+        transparent 34%
+      ),
+      radial-gradient(
+        circle at 90% 16%,
+        rgba(117, 75, 255, 0.12),
+        transparent 30%
+      ),
+      linear-gradient(
+        180deg,
+        #0d1624 0%,
+        #0b1320 50%,
+        #080f19 100%
+      );
+  }
+
+  .jcs-business-signup__top-bar {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+
+    background: rgba(10, 17, 28, 0.72);
+  }
+
+  .jcs-business-signup__brand:not(:disabled):hover {
+    background: rgba(255, 255, 255, 0.055);
+  }
+
+  .jcs-business-signup__close-button,
+  .jcs-business-signup__progress-card,
+  .jcs-business-signup__content-card,
+  .jcs-business-signup__bottom-bar {
+    background: rgba(17, 26, 41, 0.9);
+  }
+
+  .jcs-business-signup__feature-card,
+  .jcs-business-signup__industry-category,
+  .jcs-business-signup__mode-card,
+  .jcs-business-signup__input-shell,
+  .jcs-business-signup__industry-search,
+  .jcs-business-signup__selected-mode-icon,
+  .jcs-business-signup__change-mode-button,
+  .jcs-business-signup__success-grid article,
+  .jcs-business-signup__success-business-icon {
+    background: #131d2d;
+  }
+
+  .jcs-business-signup__feature-card,
+  .jcs-business-signup__owner-summary > div {
+    background:
+      linear-gradient(
+        145deg,
+        rgba(20, 30, 46, 0.98),
+        rgba(16, 25, 39, 0.98)
+      );
+  }
+
+  .jcs-business-signup__industry-category-header:not(:disabled):hover {
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .jcs-business-signup__industry-category-header[aria-expanded="true"] {
+    background:
+      linear-gradient(
+        135deg,
+        rgba(24, 43, 68, 0.96),
+        rgba(17, 27, 43, 0.96)
+      );
+  }
+
+  .jcs-business-signup__mode-grid {
+    background: rgba(9, 16, 27, 0.42);
+  }
+
+  .jcs-business-signup__selected-mode-card,
+  .jcs-business-signup__review-card,
+  .jcs-business-signup__success-business-card {
+    background:
+      linear-gradient(
+        135deg,
+        rgba(13, 48, 39, 0.95),
+        rgba(17, 27, 42, 0.98)
+      );
+  }
+
+  .jcs-business-signup__module-preview,
+  .jcs-business-signup__information-card {
+    background:
+      linear-gradient(
+        145deg,
+        rgba(20, 39, 64, 0.96),
+        rgba(17, 27, 42, 0.98)
+      );
+  }
+
+  .jcs-business-signup__module-chip {
+    background: rgba(20, 31, 48, 0.96);
+  }
+
+  .jcs-business-signup__review-list,
+  .jcs-business-signup__success-details {
+    background: rgba(10, 18, 30, 0.58);
+  }
+
+  .jcs-business-signup__registration-modal {
+    background:
+      radial-gradient(
+        circle at 50% -20%,
+        rgba(43, 128, 239, 0.15),
+        transparent 43%
+      ),
+      rgba(17, 26, 41, 0.985);
+  }
+}
+
+
+/* ================================================================
+   35. REDUCED MOTION
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .jcs-business-signup *,
+  .jcs-business-signup *::before,
+  .jcs-business-signup *::after {
+    scroll-behavior: auto !important;
+
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ================================================================
+   36. ANIMATIONS
+   ================================================================ */
+
+@keyframes jcs-signup-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes jcs-signup-step-enter {
+  from {
+    opacity: 0;
+    transform: translateY(13px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes jcs-signup-expand {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes jcs-signup-selected {
+  from {
+    opacity: 0;
+    transform: scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes jcs-signup-success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+
+  72% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes jcs-signup-error-shake {
+  0% {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+
+  45% {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+
+  75% {
+    transform: translateX(-2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes jcs-signup-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes jcs-signup-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes jcs-signup-progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  55%,
+  100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes jcs-signup-orb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(22px, 18px, 0) scale(1.05);
+  }
+}
+
+@keyframes jcs-signup-icon-float {
+  0%,
+  100% {
+    transform: rotate(-4deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-1deg) translateY(-7px);
+  }
+}
+
+@keyframes jcs-signup-hero-shine {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+
+  75%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes jcs-signup-notice-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes jcs-signup-overlay-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes jcs-signup-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.965);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

@@ -1,0 +1,662 @@
+/*
+ * JCS Business Suite Web
+ * JCSWeatherCard.css
+ *
+ * Premium local weather presentation.
+ */
+
+/* ======================================================
+   MARK: - Card
+====================================================== */
+
+.jcs-weather-card {
+  position: relative;
+  isolation: isolate;
+
+  min-width: 0;
+  min-height: 190px;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 18px;
+
+  border: 1px solid
+    rgba(148, 163, 184, 0.2);
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.72),
+      rgba(255, 255, 255, 0.34)
+    );
+
+  box-shadow:
+    0 18px 42px
+    rgba(15, 23, 42, 0.08);
+
+  backdrop-filter:
+    blur(22px);
+
+  -webkit-backdrop-filter:
+    blur(22px);
+}
+
+.jcs-weather-card__ambient {
+  position: absolute;
+  z-index: -1;
+  inset: auto -35px -55px auto;
+
+  width: 145px;
+  height: 145px;
+
+  border-radius: 999px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 22%,
+      transparent
+    );
+
+  filter:
+    blur(28px);
+
+  opacity: 0.72;
+
+  pointer-events: none;
+}
+
+/* ======================================================
+   MARK: - Header
+====================================================== */
+
+.jcs-weather-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+}
+
+.jcs-weather-card__condition-icon {
+  width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  color:
+    var(--jcs-accent);
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 18%,
+      transparent
+    );
+
+  border-radius: 16px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 11%,
+      transparent
+    );
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, 0.45);
+}
+
+.jcs-weather-card__refresh {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  color:
+    var(
+      --jcs-text-secondary,
+      rgba(15, 23, 42, 0.62)
+    );
+
+  border: 1px solid
+    rgba(148, 163, 184, 0.17);
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 255, 255, 0.38);
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.jcs-weather-card__refresh:hover {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 30%,
+      transparent
+    );
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 9%,
+      white
+    );
+}
+
+/* ======================================================
+   MARK: - Current Conditions
+====================================================== */
+
+.jcs-weather-card__main {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 16px;
+
+  margin-top: 12px;
+}
+
+.jcs-weather-card__temperature {
+  display: flex;
+  align-items: flex-start;
+
+  color:
+    var(
+      --jcs-text-primary,
+      #0f172a
+    );
+}
+
+.jcs-weather-card__temperature strong {
+  font-size:
+    clamp(
+      2.4rem,
+      4vw,
+      3.25rem
+    );
+
+  font-weight: 760;
+  line-height: 0.95;
+
+  letter-spacing: -0.075em;
+}
+
+.jcs-weather-card__temperature span {
+  margin-top: 3px;
+  margin-left: 5px;
+
+  font-size: 0.84rem;
+  font-weight: 740;
+}
+
+.jcs-weather-card__condition {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  padding-bottom: 4px;
+}
+
+.jcs-weather-card__condition strong {
+  overflow: hidden;
+
+  color:
+    var(
+      --jcs-text-primary,
+      #0f172a
+    );
+
+  font-size: 0.86rem;
+  font-weight: 720;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-weather-card__condition span {
+  color:
+    var(
+      --jcs-text-secondary,
+      rgba(15, 23, 42, 0.6)
+    );
+
+  font-size: 0.72rem;
+  font-weight: 540;
+}
+
+/* ======================================================
+   MARK: - Location
+====================================================== */
+
+.jcs-weather-card__location {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 14px;
+
+  color:
+    var(
+      --jcs-text-secondary,
+      rgba(15, 23, 42, 0.67)
+    );
+}
+
+.jcs-weather-card__location svg {
+  flex: 0 0 auto;
+
+  color:
+    var(--jcs-accent);
+}
+
+.jcs-weather-card__location span {
+  overflow: hidden;
+
+  font-size: 0.75rem;
+  font-weight: 650;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ======================================================
+   MARK: - Details
+====================================================== */
+
+.jcs-weather-card__details {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-top: 13px;
+}
+
+.jcs-weather-card__details > div {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr);
+
+  align-items: center;
+
+  column-gap: 7px;
+  row-gap: 2px;
+
+  padding: 9px 10px;
+
+  border: 1px solid
+    rgba(148, 163, 184, 0.14);
+
+  border-radius: 13px;
+
+  background:
+    rgba(255, 255, 255, 0.28);
+}
+
+.jcs-weather-card__details svg {
+  grid-row: 1 / 3;
+
+  color:
+    var(--jcs-accent);
+}
+
+.jcs-weather-card__details span {
+  overflow: hidden;
+
+  color:
+    var(
+      --jcs-text-primary,
+      #0f172a
+    );
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-weather-card__details small {
+  color:
+    var(
+      --jcs-text-tertiary,
+      rgba(15, 23, 42, 0.5)
+    );
+
+  font-size: 0.62rem;
+  font-weight: 540;
+}
+
+.jcs-weather-card__updated {
+  align-self: flex-end;
+
+  margin-top: 9px;
+
+  color:
+    var(
+      --jcs-text-tertiary,
+      rgba(15, 23, 42, 0.45)
+    );
+
+  font-size: 0.59rem;
+  font-weight: 570;
+}
+
+/* ======================================================
+   MARK: - Loading and Error States
+====================================================== */
+
+.jcs-weather-card__state {
+  min-height: 154px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  text-align: center;
+}
+
+.jcs-weather-card__state-icon {
+  width: 49px;
+  height: 49px;
+
+  display: grid;
+  place-items: center;
+
+  color:
+    var(--jcs-accent);
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 18%,
+      transparent
+    );
+
+  border-radius: 16px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 10%,
+      transparent
+    );
+}
+
+.jcs-weather-card__state-copy {
+  max-width: 250px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.jcs-weather-card__state-copy > span {
+  color:
+    var(
+      --jcs-text-tertiary,
+      rgba(15, 23, 42, 0.51)
+    );
+
+  font-size: 0.64rem;
+  font-weight: 740;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.jcs-weather-card__state-copy strong {
+  color:
+    var(
+      --jcs-text-primary,
+      #0f172a
+    );
+
+  font-size: 0.89rem;
+  font-weight: 720;
+}
+
+.jcs-weather-card__state-copy small {
+  color:
+    var(
+      --jcs-text-secondary,
+      rgba(15, 23, 42, 0.6)
+    );
+
+  font-size: 0.7rem;
+  font-weight: 520;
+  line-height: 1.45;
+}
+
+.jcs-weather-card__location-button {
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 7px 12px;
+
+  color:
+    var(--jcs-accent);
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 24%,
+      transparent
+    );
+
+  border-radius: 11px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 8%,
+      transparent
+    );
+
+  font-size: 0.69rem;
+  font-weight: 690;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.jcs-weather-card__location-button:hover {
+  transform:
+    translateY(-1px);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-accent) 14%,
+      transparent
+    );
+}
+
+.jcs-weather-card__spinner {
+  animation:
+    jcs-weather-spin
+    900ms linear infinite;
+}
+
+@keyframes jcs-weather-spin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+/* ======================================================
+   MARK: - Dark Appearance
+====================================================== */
+
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card {
+  border-color:
+    rgba(255, 255, 255, 0.1);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.075),
+      rgba(255, 255, 255, 0.025)
+    );
+
+  box-shadow:
+    0 20px 45px
+    rgba(0, 0, 0, 0.22);
+}
+
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__temperature,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__temperature strong,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__condition strong,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__details span,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__state-copy strong {
+  color:
+    rgba(248, 250, 252, 0.96);
+}
+
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__condition span,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__location,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__state-copy small {
+  color:
+    rgba(203, 213, 225, 0.67);
+}
+
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__details > div,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__refresh {
+  border-color:
+    rgba(255, 255, 255, 0.08);
+
+  background:
+    rgba(255, 255, 255, 0.035);
+}
+
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__details small,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__updated,
+.jcs-dashboard-shell[data-theme="dark"]
+.jcs-weather-card__state-copy > span {
+  color:
+    rgba(203, 213, 225, 0.49);
+}
+
+/* ======================================================
+   MARK: - Compact and Responsive
+====================================================== */
+
+.jcs-weather-card--compact {
+  min-height: 138px;
+
+  padding: 14px 15px;
+}
+
+.jcs-weather-card--compact
+.jcs-weather-card__condition-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.jcs-weather-card--compact
+.jcs-weather-card__main {
+  margin-top: 8px;
+}
+
+.jcs-weather-card--compact
+.jcs-weather-card__temperature strong {
+  font-size: 2.35rem;
+}
+
+.jcs-weather-card--compact
+.jcs-weather-card__location {
+  margin-top: 9px;
+}
+
+.jcs-weather-card--compact
+.jcs-weather-card__details {
+  margin-top: 9px;
+}
+
+.jcs-weather-card--compact
+.jcs-weather-card__details > div {
+  padding: 7px 9px;
+}
+
+.jcs-weather-card--compact
+.jcs-weather-card__updated {
+  margin-top: 6px;
+}
+
+@media (max-width: 620px) {
+  .jcs-weather-card {
+    min-height: auto;
+  }
+
+  .jcs-weather-card__temperature strong {
+    font-size: 2.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jcs-weather-card__spinner {
+    animation-duration:
+      1800ms;
+  }
+
+  .jcs-weather-card__refresh,
+  .jcs-weather-card__location-button {
+    transition: none;
+  }
+}

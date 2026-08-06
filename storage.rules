@@ -1,0 +1,271 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    /*
+     * JCS Business Suite
+     * Cloud Storage Security Rules
+     *
+     * Firestore user document:
+     *
+     * users/{firebaseUID}
+     *
+     * Supported business branding paths:
+     *
+     * businesses/{businessID}/branding/uploads/...
+     * businesses/{businessID}/branding/generated/...
+     * businesses/{businessID}/branding/temporary/...
+     * businesses/{businessID}/branding/active/...
+     */
+
+    // MARK: - Authentication
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // MARK: - Firestore User Record
+
+    function userDocumentExists() {
+      return isSignedIn()
+        && firestore.exists(
+          /databases/(default)/documents/users/$(request.auth.uid)
+        );
+    }
+
+    function userData() {
+      return firestore.get(
+        /databases/(default)/documents/users/$(request.auth.uid)
+      ).data;
+    }
+
+    // MARK: - User Status
+
+    function isActiveUser() {
+      return userDocumentExists()
+        && (
+          !('isActive' in userData())
+          || userData().isActive == true
+        );
+    }
+
+    // MARK: - Platform Administrator
+
+    function isPlatformAdministrator() {
+      return isActiveUser()
+        && (
+          (
+            'isPlatformAdministrator' in userData()
+            && userData().isPlatformAdministrator == true
+          )
+          ||
+          (
+            'role' in userData()
+            && (
+              userData().role == 'platform-admin'
+              || userData().role == 'platformAdministrator'
+              || userData().role == 'platform-administrator'
+            )
+          )
+        );
+    }
+
+    // MARK: - Business Membership
+
+    function belongsToBusiness(businessID) {
+      return isActiveUser()
+        && (
+          (
+            'businessID' in userData()
+            && userData().businessID == businessID
+          )
+          ||
+          (
+            'businessIDs' in userData()
+            && businessID in userData().businessIDs
+          )
+        );
+    }
+
+    // MARK: - Business Owner
+
+    function isBusinessOwner(businessID) {
+      return belongsToBusiness(businessID)
+        && (
+          (
+            'isBusinessOwner' in userData()
+            && userData().isBusinessOwner == true
+          )
+          ||
+          (
+            'role' in userData()
+            && (
+              userData().role == 'business-owner'
+              || userData().role == 'businessOwner'
+              || userData().role == 'owner'
+            )
+          )
+          ||
+          (
+            'ownerUID' in userData()
+            && userData().ownerUID == request.auth.uid
+          )
+        );
+    }
+
+    // MARK: - Business Administrator
+
+    function isBusinessAdministrator(businessID) {
+      return belongsToBusiness(businessID)
+        && (
+          (
+            'isBusinessAdministrator' in userData()
+            && userData().isBusinessAdministrator == true
+          )
+          ||
+          (
+            'role' in userData()
+            && (
+              userData().role == 'admin'
+              || userData().role == 'business-admin'
+              || userData().role == 'businessAdministrator'
+            )
+          )
+        );
+    }
+
+    // MARK: - Business Access
+
+    function canReadBusinessFiles(businessID) {
+      return isPlatformAdministrator()
+        || belongsToBusiness(businessID);
+    }
+
+    function canManageBusinessBranding(businessID) {
+      return isPlatformAdministrator()
+        || isBusinessOwner(businessID)
+        || isBusinessAdministrator(businessID);
+    }
+
+    // MARK: - Image Validation
+
+    function isSupportedBusinessLogoImage() {
+      return request.resource != null
+        && request.resource.contentType != null
+        && (
+          request.resource.contentType == 'image/png'
+          || request.resource.contentType == 'image/jpeg'
+          || request.resource.contentType == 'image/webp'
+        );
+    }
+
+    function isValidBusinessLogoSize() {
+      return request.resource != null
+        && request.resource.size > 0
+        && request.resource.size <= 8 * 1024 * 1024;
+    }
+
+    function isValidBusinessLogoUpload() {
+      return isSupportedBusinessLogoImage()
+        && isValidBusinessLogoSize();
+    }
+
+    // MARK: - Profile Images
+
+    match /users/{userUID}/profile/{fileName} {
+
+      /*
+       * The user can read and manage their own profile image.
+       * Platform Administrators can also access profile images.
+       */
+
+      allow read: if isSignedIn()
+        && (
+          request.auth.uid == userUID
+          || isPlatformAdministrator()
+        );
+
+      allow create, update: if isSignedIn()
+        && (
+          request.auth.uid == userUID
+          || isPlatformAdministrator()
+        )
+        && request.resource != null
+        && request.resource.size > 0
+        && request.resource.size <= 8 * 1024 * 1024
+        && request.resource.contentType != null
+        && request.resource.contentType.matches('image/.*');
+
+      allow delete: if isSignedIn()
+        && (
+          request.auth.uid == userUID
+          || isPlatformAdministrator()
+        );
+    }
+
+    // MARK: - Global Platform Branding
+
+match /platform/global/{fileName} {
+
+  /*
+   * The official JCS Business Suite platform logo belongs
+   * to the global platform identity.
+   *
+   * Only an active Platform Administrator may upload,
+   * replace or delete it.
+   *
+   * Authenticated users may read it so the official logo
+   * can appear throughout the platform.
+   */
+
+  allow read: if isSignedIn();
+
+  allow create, update: if isPlatformAdministrator()
+    && request.resource != null
+    && request.resource.size > 0
+    && request.resource.size <= 8 * 1024 * 1024
+    && request.resource.contentType != null
+    && (
+      request.resource.contentType == 'image/png'
+      || request.resource.contentType == 'image/jpeg'
+      || request.resource.contentType == 'image/webp'
+      || request.resource.contentType == 'image/svg+xml'
+    );
+
+  allow delete: if isPlatformAdministrator();
+}
+
+    // MARK: - Business Branding
+
+    match /businesses/{businessID}/branding/{brandingPath=**} {
+
+      /*
+       * Any active authenticated member of the same business may
+       * display the active logo in the Dashboard.
+       *
+       * Only PlatformAdmin, Business Owner or Business Admin may
+       * upload, replace or delete branding files.
+       */
+
+      allow read: if canReadBusinessFiles(
+        businessID
+      );
+
+      allow create, update: if canManageBusinessBranding(
+        businessID
+      )
+      && isValidBusinessLogoUpload();
+
+      allow delete: if canManageBusinessBranding(
+        businessID
+      );
+    }
+
+    // MARK: - Explicit Denial
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

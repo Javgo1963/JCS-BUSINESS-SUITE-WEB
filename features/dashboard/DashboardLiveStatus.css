@@ -1,0 +1,321 @@
+/*
+ * JCS Business Suite
+ * DashboardLiveStatus.css
+ */
+
+.jcs-live-status {
+  --jcs-live-status-color:
+    var(--jcs-success, #29885d);
+
+  min-width: 0;
+  min-height: 52px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px 9px 8px 11px;
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--jcs-live-status-color) 18%,
+      transparent
+    );
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--jcs-live-status-color) 8%,
+        transparent
+      ),
+      transparent 65%
+    ),
+    var(
+      --jcs-background-elevated,
+      rgba(255, 255, 255, 0.78)
+    );
+
+  box-shadow:
+    0 1px 2px rgba(40, 29, 24, 0.025),
+    0 8px 22px rgba(40, 29, 24, 0.04);
+
+  backdrop-filter: blur(18px)
+    saturate(145%);
+  -webkit-backdrop-filter: blur(18px)
+    saturate(145%);
+}
+
+.jcs-live-status[data-status="connected"] {
+  --jcs-live-status-color:
+    var(--jcs-success, #29885d);
+}
+
+.jcs-live-status[data-status="syncing"] {
+  --jcs-live-status-color:
+    var(--jcs-accent, #c45d2c);
+}
+
+.jcs-live-status[data-status="offline"] {
+  --jcs-live-status-color:
+    var(--jcs-warning, #b56f14);
+}
+
+.jcs-live-status[data-status="error"] {
+  --jcs-live-status-color:
+    var(--jcs-danger, #c34747);
+}
+
+.jcs-live-status__icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--jcs-live-status-color) 18%,
+      transparent
+    );
+
+  border-radius: 11px;
+
+  color:
+    var(--jcs-live-status-color);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-live-status-color) 10%,
+      transparent
+    );
+}
+
+.jcs-live-status__copy {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.jcs-live-status__title {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  color:
+    var(--jcs-live-status-color);
+}
+
+.jcs-live-status__title svg {
+  flex: 0 0 auto;
+}
+
+.jcs-live-status__title strong {
+  overflow: hidden;
+
+  font-size: 0.67rem;
+  font-weight: 770;
+  line-height: 1.2;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-live-status__copy > span {
+  overflow: hidden;
+
+  margin-top: 3px;
+
+  color:
+    var(
+      --jcs-text-tertiary,
+      #9b8981
+    );
+
+  font-size: 0.58rem;
+  font-weight: 550;
+  line-height: 1.3;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-live-status__refresh {
+  min-height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 7px 9px;
+
+  border: 1px solid
+    var(
+      --jcs-border,
+      rgba(67, 44, 35, 0.09)
+    );
+
+  border-radius: 11px;
+
+  color:
+    var(
+      --jcs-text-secondary,
+      #715f57
+    );
+
+  background:
+    var(
+      --jcs-card,
+      rgba(255, 255, 255, 0.74)
+    );
+
+  cursor: pointer;
+
+  font-size: 0.61rem;
+  font-weight: 700;
+
+  transition:
+    color 170ms ease,
+    border-color 170ms ease,
+    background 170ms ease,
+    transform 170ms ease,
+    opacity 170ms ease;
+}
+
+.jcs-live-status__refresh:hover:not(
+    :disabled
+  ) {
+  color:
+    var(--jcs-live-status-color);
+
+  border-color:
+    color-mix(
+      in srgb,
+      var(--jcs-live-status-color) 20%,
+      transparent
+    );
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-live-status-color) 7%,
+      var(
+        --jcs-card-hover,
+        #ffffff
+      )
+    );
+
+  transform: translateY(-1px);
+}
+
+.jcs-live-status__refresh:disabled {
+  cursor: wait;
+  opacity: 0.56;
+}
+
+.jcs-live-status__spinner,
+.jcs-live-status__refresh-icon--rotating {
+  animation:
+    jcs-live-status-rotation
+    900ms linear infinite;
+}
+
+/* Compact mode */
+
+.jcs-live-status--compact {
+  width: auto;
+  min-height: 42px;
+
+  padding: 5px 6px 5px 8px;
+
+  border-radius: 13px;
+}
+
+.jcs-live-status--compact
+  .jcs-live-status__icon {
+  width: 29px;
+  height: 29px;
+  flex-basis: 29px;
+
+  border-radius: 9px;
+}
+
+.jcs-live-status--compact
+  .jcs-live-status__copy {
+  flex: 0 1 auto;
+}
+
+.jcs-live-status--compact
+  .jcs-live-status__title strong {
+  font-size: 0.62rem;
+}
+
+.jcs-live-status--compact
+  .jcs-live-status__refresh {
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+
+  padding: 0;
+  border-radius: 9px;
+}
+
+/* Animation */
+
+@keyframes jcs-live-status-rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .jcs-live-status {
+    min-height: 48px;
+    border-radius: 14px;
+  }
+
+  .jcs-live-status__icon {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+
+  .jcs-live-status__refresh span {
+    display: none;
+  }
+
+  .jcs-live-status__refresh {
+    width: 34px;
+    padding: 0;
+  }
+}
+
+/* Reduced motion */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+  .jcs-live-status__spinner,
+  .jcs-live-status__refresh-icon--rotating {
+    animation-duration: 0.001ms;
+    animation-iteration-count: 1;
+  }
+}
