@@ -370,8 +370,7 @@ export default function JCSUserAvatarPicker({
             [
               "users",
               normalizedUID,
-              "profile",
-              "profile-image.jpg",
+              "image.jpg",
             ].join("/")
           );
 
