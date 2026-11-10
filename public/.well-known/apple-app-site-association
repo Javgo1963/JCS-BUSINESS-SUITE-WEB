@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "U4SB68C737.Javier-Vallejo.Javier-s-Custom-Software-Design",
+        "paths": [
+          "/create-business",
+          "/create-business/*",
+          "/invite",
+          "/invite/*",
+          "/premium/success",
+          "/premium/success/*",
+          "/premium/cancel",
+          "/premium/cancel/*",
+          "/base/success",
+          "/base/cancel"
+        ]
+      }
+    ]
+  }
+}
