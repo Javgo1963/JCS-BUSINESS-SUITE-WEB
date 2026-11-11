@@ -17,6 +17,7 @@
 
 import {
   FormEvent,
+  useCallback,
   useMemo,
   useState,
 } from "react";
@@ -128,6 +129,38 @@ export default function PlatformAppSettingsView({
   ] =
     useState(false);
 
+  const handlePlatformAccentColorChange =
+    useCallback(
+      (
+        accentColorName:
+          string,
+      ): void => {
+        onAccentColorChange?.(
+          accentColorName as
+            AppAccentColorName,
+        );
+      },
+      [
+        onAccentColorChange,
+      ],
+    );
+
+  const handlePlatformLanguageChange =
+    useCallback(
+      (
+        languageCode:
+          string,
+      ): void => {
+        onLanguageChange?.(
+          languageCode as
+            AppLanguageCode,
+        );
+      },
+      [
+        onLanguageChange,
+      ],
+    );
+
   const platformSettings =
     usePlatformSettings({
       actor,
@@ -137,23 +170,11 @@ export default function PlatformAppSettingsView({
       autoLoad:
         true,
 
-      onAccentColorChange: (
-        accentColorName,
-      ) => {
-        onAccentColorChange?.(
-          accentColorName as
-            AppAccentColorName,
-        );
-      },
+      onAccentColorChange:
+        handlePlatformAccentColorChange,
 
-      onLanguageChange: (
-        languageCode,
-      ) => {
-        onLanguageChange?.(
-          languageCode as
-            AppLanguageCode,
-        );
-      },
+      onLanguageChange:
+        handlePlatformLanguageChange,
 
       onSettingsSaved,
 
