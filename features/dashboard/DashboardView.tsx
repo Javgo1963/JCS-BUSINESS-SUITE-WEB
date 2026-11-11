@@ -1735,21 +1735,6 @@ const visibleModuleCount =
         route:
           "AppSettings" as DashboardRoute,
       },
-
-      ...(access.isPlatformAdmin
-        ? [
-            {
-              id:
-                "platform-settings",
-
-              title:
-                "Platform Settings",
-
-              icon:
-                Sparkles,
-            },
-          ]
-        : []),
     ],
     [
       access.isPlatformAdmin,

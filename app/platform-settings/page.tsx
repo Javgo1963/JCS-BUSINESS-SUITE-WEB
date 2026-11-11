@@ -18,7 +18,7 @@ import {
   useRouter,
 } from "next/navigation";
 
-import PlatformSettingsView from "@/features/platform-settings/PlatformSettingsView";
+import PlatformAppSettingsView from "@/features/app-settings/PlatformAppSettingsView";
 
 import {
   usePlatformSettingsContext,
@@ -156,7 +156,7 @@ export default function PlatformSettingsPage() {
 
   return (
     <main className="jcs-platform-settings-route">
-      <PlatformSettingsView
+      <PlatformAppSettingsView
         actor={
           actor
         }
