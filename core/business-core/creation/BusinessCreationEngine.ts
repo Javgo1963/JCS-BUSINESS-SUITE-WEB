@@ -37,6 +37,15 @@ import {
 } from "@/core/firebase/firebase";
 
 import {
+    DEFAULT_OFFICIAL_JCS_LOGO_ID,
+    officialJCSLogoForID,
+} from "@/features/official-jcs-branding/OfficialJCSLogoRegistry";
+
+import {
+    resolveOfficialJCSLogo,
+} from "@/features/official-jcs-branding/OfficialJCSLogoStorageService";
+
+import {
     JCSBusinessRegistrationManager,
     JCSBusinessRegistrationError,
     type BusinessRegistrationProgressCallback,
@@ -59,7 +68,7 @@ import {
 export const JCS_FIRESTORE_COLLECTIONS = {
     businesses: "businesses",
     users: "users",
-    appSettings: "appSettings",
+    appSettings: "businessSettings",
     platformClients: "platformClients",
     businessDNA: "businessDNA",
     businessWorkspaces: "businessWorkspaces",
@@ -601,20 +610,28 @@ function resolveEnabledModules(
 
 // MARK: - Document Factory
 
-function prepareBusinessDocuments(
+async function prepareBusinessDocuments(
     database: Firestore,
     input: JCSBusinessProvisioningInput,
     identity: BusinessCreationIdentity,
     options: ResolvedBusinessCreationOptions
-): PreparedBusinessDocuments {
+): Promise<PreparedBusinessDocuments> {
     const createdAtISO =
         identity.createdAtISO;
 
     const updatedAtISO =
         createdAtISO;
 
+    /*
+     * JCS_WEB_BUSINESS_SIGNUP_INACTIVE_BILLING_H2_C6D_J_F_R37A_1
+     *
+     * Business creation does NOT begin a subscription trial.
+     *
+     * These dates are structural sentinels only.
+     * Stripe/webhook supplies real verified trial dates later.
+     */
     const trialStartedAtISO =
-        createdAtISO;
+        new Date(0).toISOString();
 
     const trialStartedAt =
         new Date(trialStartedAtISO);
@@ -622,7 +639,7 @@ function prepareBusinessDocuments(
     const trialEndsAtISO =
         addDays(
             trialStartedAt,
-            options.defaultTrialLengthDays
+            0
         ).toISOString();
 
     const enabledModules =
@@ -878,13 +895,110 @@ function prepareBusinessDocuments(
             serverTimestamp(),
     };
 
+    // MARK: New Business Official Branding
+    //
+    // H2-C6D-J-F-LOGO-R37A-3
+    //
+    // Official JCS Logo 2 is the initial logo for every NEW
+    // business, independent of Starter/Premium selection.
+    //
+    // This does NOT grant Premium or Sofía entitlement.
+    // Stripe/webhook remains subscription authority.
+
+    const defaultOfficialLogoDefinition =
+        officialJCSLogoForID(
+            DEFAULT_OFFICIAL_JCS_LOGO_ID
+        );
+
+    if (!defaultOfficialLogoDefinition) {
+        throw new JCSBusinessRegistrationError(
+            "business-creation-failed",
+            "The default Official JCS Logo 2 is not registered."
+        );
+    }
+
+    const defaultOfficialLogo =
+        await resolveOfficialJCSLogo(
+            defaultOfficialLogoDefinition
+        );
+
+    if (
+        !defaultOfficialLogo.isAvailable ||
+        !cleanText(
+            defaultOfficialLogo.downloadURL
+        )
+    ) {
+        throw new JCSBusinessRegistrationError(
+            "business-creation-failed",
+            "Official JCS Logo 2 could not be resolved from Firebase Storage."
+        );
+    }
+
+    const defaultOfficialLogoFileName =
+        cleanText(
+            defaultOfficialLogo
+                .storagePath
+                .split("/")
+                .pop()
+        );
+
     // MARK: AppSettings Factory
+    //
+    // Keep legacy fields for compatibility, then enrich the
+    // NEW business document with the modern branding contract.
+
+    const legacyAppSettingsDocument =
+        AppSettingsFactory.create(
+            factoryContext,
+            {
+                logoFileName:
+                    defaultOfficialLogoFileName,
+
+                useAccentColorForLogo:
+                    false,
+            }
+        );
 
     const appSettingsDocument:
-        JCSAppSettingsDocument =
-        AppSettingsFactory.create(
-            factoryContext
-        );
+        JCSAppSettingsDocument & {
+            activeLogoID: string;
+            activeLogoSource: "official-jcs";
+            logoStoragePath: string;
+            logoDownloadURL: string;
+            logoRenderingMode: "original";
+            logoSupportsAccentColor: false;
+            brandingUpdatedAt: FieldValue;
+            activeLogoUpdatedAt: FieldValue;
+        } = {
+            ...legacyAppSettingsDocument,
+
+            activeLogoID:
+                defaultOfficialLogo.id,
+
+            activeLogoSource:
+                "official-jcs",
+
+            logoStoragePath:
+                defaultOfficialLogo.storagePath,
+
+            logoDownloadURL:
+                defaultOfficialLogo.downloadURL,
+
+            logoRenderingMode:
+                "original",
+
+            logoSupportsAccentColor:
+                false,
+
+            useAccentColorForLogo:
+                false,
+
+            brandingUpdatedAt:
+                serverTimestamp(),
+
+            activeLogoUpdatedAt:
+                serverTimestamp(),
+        };
 
     // MARK: PlatformClient Factory
 
@@ -1045,14 +1159,14 @@ export class BusinessCreationEngine
         this.defaultPlanName =
             cleanText(
                 options.defaultPlanName
-            ) || "JCS Business Trial";
+            ) || "Starter";
 
         this.defaultTrialLengthDays =
             Math.max(
                 0,
                 Math.round(
                     options.defaultTrialLengthDays ??
-                    30
+                    0
                 )
             );
 
@@ -1074,7 +1188,7 @@ export class BusinessCreationEngine
         this.defaultAccentColorName =
             cleanText(
                 options.defaultAccentColorName
-            ) || "blue";
+            ) || "copper";
     }
 
     // MARK: Create Business
@@ -1151,7 +1265,7 @@ export class BusinessCreationEngine
         );
 
         const preparedDocuments =
-            prepareBusinessDocuments(
+            await prepareBusinessDocuments(
                 this.database,
                 input,
                 identity,
@@ -1291,7 +1405,7 @@ export class BusinessCreationEngine
                 undefined,
 
             logoStatus:
-                "pending",
+                "ready",
 
             nextRoute:
                 this.dashboardRoute,
@@ -1473,10 +1587,10 @@ export class BusinessCreationEngine
 export const businessCreationEngine =
  new BusinessCreationEngine({
   defaultPlanName:
-   "JCS Business Trial",
+   "Starter",
 
   defaultTrialLengthDays:
-   30,
+   0,
 
   dashboardRoute:
    "/dashboard",
@@ -1488,7 +1602,7 @@ export const businessCreationEngine =
    "USD",
 
   defaultAccentColorName:
-   "blue",
+   "copper",
  });
 
 // MARK: - Registration Manager Connection

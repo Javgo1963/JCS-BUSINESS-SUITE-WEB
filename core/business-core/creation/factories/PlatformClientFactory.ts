@@ -28,10 +28,14 @@ export type PlatformClientOnboardingStatus =
   | "failed";
 
 export type PlatformClientSubscriptionStatus =
-  | "trial"
-  | "active"
-  | "pastDue"
-  | "cancelled";
+  | "Free Trial"
+  | "Active"
+  | "Past Due"
+  | "Grace Period"
+  | "Trial Expired"
+  | "Suspended"
+  | "Canceled"
+  | "Inactive";
 
 export type PlatformOwnerInvitationStatus =
   | "notInvited"
@@ -334,7 +338,7 @@ export class PlatformClientFactory {
 
       clientStatus:
         overrides.clientStatus ??
-        "active",
+        "pending",
 
       onboardingStatus:
         overrides.onboardingStatus ??
@@ -342,7 +346,7 @@ export class PlatformClientFactory {
 
       subscriptionStatus:
         overrides.subscriptionStatus ??
-        "trial",
+        "Inactive",
 
       planName,
 

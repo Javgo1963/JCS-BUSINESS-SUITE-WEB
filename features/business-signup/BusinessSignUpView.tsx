@@ -3,6 +3,7 @@
 import {
   JCSBusinessRegistrationManager,
 } from "@/core/business-core/registration/JCSBusinessRegistrationManager";
+
 import "./BusinessSignUpView.css";
 
 import "@/core/business-core/creation/BusinessCreationEngine";
@@ -25,6 +26,13 @@ export type BusinessSignUpStep =
   | "industry"
   | "owner"
   | "success";
+
+// MARK: - Billing Plan Selection
+
+export type BusinessSignUpBillingPlan =
+  | "Starter"
+  | "Premium";
+
 
 // MARK: - Incoming Platform Invitation
 
@@ -290,7 +298,7 @@ const STEP_SUBTITLES: Readonly<
     "Create the main owner account for this business.",
 
   success:
-    "Your trial is active and your dashboard is ready.",
+    "Your business was created securely. Complete billing verification to activate access.",
 };
 
 const STEP_LABELS: Readonly<
@@ -310,7 +318,7 @@ const PRIMARY_BUTTON_TITLES: Readonly<
   business: "Continue",
   industry: "Continue",
   owner: "Create Business",
-  success: "Go to Dashboard",
+  success: "Continue to Secure Billing",
 };
 
 // MARK: - Text Normalization
@@ -637,6 +645,26 @@ export default function BusinessSignUpView({
   const [fieldErrors, setFieldErrors] =
     useState<BusinessSignUpFieldErrors>({});
 
+  // MARK: Billing Plan
+  //
+  // IMPORTANT:
+  // This selection controls ONLY the Stripe route after
+  // business creation. It is never local entitlement authority.
+
+  const [
+    selectedBillingPlan,
+    setSelectedBillingPlan,
+  ] =
+    useState<BusinessSignUpBillingPlan>(
+      "Starter"
+    );
+
+  const [
+    isStartingBilling,
+    setIsStartingBilling,
+  ] =
+    useState(false);
+
   // MARK: Industry State
 
   const [
@@ -847,6 +875,7 @@ export default function BusinessSignUpView({
 
   const isBusy =
     isCreatingBusiness ||
+    isStartingBilling ||
     registrationProgress.stage ===
       "finalizing";
 
@@ -1393,7 +1422,7 @@ setRegistrationProgress({
   stage: "completed",
   percentage: 100,
   message:
-    "Your business workspace is ready.",
+    "Business created. Secure billing verification is required before workspace access.",
 });
 
 setStep("success");
@@ -1450,6 +1479,112 @@ showNotice(
       validateAllSteps,
     ]);
 
+  // MARK: Secure Billing
+
+  /*
+   Web signup never creates Stripe Checkout directly.
+
+   Business creation completes first.
+
+   The authenticated business then moves into the
+   dedicated JCS billing workspace where:
+
+   - Firebase callable ownership is verified server-side.
+   - checkoutPresentation = embedded.
+   - Stripe Embedded Checkout is mounted.
+   - Stripe webhook + PlatformClient remain entitlement authority.
+
+   Query parameters are navigation context only.
+   They never grant subscription access.
+  */
+
+  const startSelectedPlanBilling =
+    useCallback((): void => {
+      const businessID =
+        cleanText(
+          registrationResult?.businessID
+        );
+
+      if (!businessID) {
+        showNotice(
+          "Secure billing cannot begin because the Business ID is missing."
+        );
+
+        return;
+      }
+
+      setRegistrationError("");
+      setIsStartingBilling(true);
+
+      try {
+        const billingPlan =
+          selectedBillingPlan === "Premium"
+            ? "premium"
+            : "starter";
+
+        const billingURL =
+          new URL(
+            "/billing/checkout",
+            window.location.origin
+          );
+
+        billingURL.searchParams.set(
+          "businessID",
+          businessID
+        );
+
+        billingURL.searchParams.set(
+          "plan",
+          billingPlan
+        );
+
+        /*
+         Same-origin JCS navigation only.
+
+         No Stripe URL is accepted from the browser,
+         and no entitlement is granted here.
+        */
+        if (
+          billingURL.origin !==
+          window.location.origin
+        ) {
+          throw new Error(
+            "Secure billing navigation must remain inside JCS Business Suite."
+          );
+        }
+
+        showNotice(
+          selectedBillingPlan === "Premium"
+            ? "Opening JCS Premium secure billing..."
+            : "Opening JCS Starter secure billing..."
+        );
+
+        window.location.assign(
+          billingURL.toString()
+        );
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Secure billing could not be opened.";
+
+        setRegistrationError(
+          message
+        );
+
+        setIsStartingBilling(false);
+
+        showNotice(
+          message
+        );
+      }
+    }, [
+      registrationResult?.businessID,
+      selectedBillingPlan,
+      showNotice,
+    ]);
+
+
   // MARK: Primary Action
 
   const handlePrimaryAction =
@@ -1476,35 +1611,12 @@ showNotice(
           return;
 
         case "success":
-          if (
-            registrationResult &&
-            onSignUpSuccess
-          ) {
-            await onSignUpSuccess(
-              registrationResult
-            );
-
-            return;
-          }
-
-          if (
-            typeof window !==
-            "undefined"
-          ) {
-            window.location.assign(
-              registrationResult
-                ?.nextRoute ||
-                dashboardRoute
-            );
-          }
-
+          await startSelectedPlanBilling();
           return;
       }
     }, [
       createBusiness,
-      dashboardRoute,
-      onSignUpSuccess,
-      registrationResult,
+      startSelectedPlanBilling,
       step,
       validateBusinessStep,
       validateIndustryStep,
@@ -2451,6 +2563,145 @@ showNotice(
                 )}
               </dl>
             </aside>
+
+            <section
+              className="jcs-business-signup__plan-section"
+              aria-labelledby="business-signup-plan-title"
+            >
+              <div className="jcs-business-signup__section-heading">
+                <div>
+                  <p className="jcs-business-signup__eyebrow">
+                    JCS subscription
+                  </p>
+
+                  <h2 id="business-signup-plan-title">
+                    Choose how you want to begin
+                  </h2>
+
+                  <p>
+                    Your business will first be created securely as
+                    Starter / Inactive. Your selection below controls
+                    only the Stripe billing route.
+                  </p>
+                </div>
+
+                <div
+                  className="jcs-business-signup__section-icon"
+                  aria-hidden="true"
+                >
+                  ◈
+                </div>
+              </div>
+
+              <div
+                className="jcs-business-signup__plan-grid"
+                role="radiogroup"
+                aria-label="JCS subscription plan"
+              >
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={
+                    selectedBillingPlan ===
+                    "Starter"
+                  }
+                  className={[
+                    "jcs-business-signup__plan-card",
+                    selectedBillingPlan === "Starter"
+                      ? "jcs-business-signup__plan-card--selected"
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() =>
+                    setSelectedBillingPlan(
+                      "Starter"
+                    )
+                  }
+                  disabled={isBusy}
+                >
+                  <span className="jcs-business-signup__plan-badge">
+                    Recommended
+                  </span>
+
+                  <strong>
+                    Starter
+                  </strong>
+
+                  <span className="jcs-business-signup__plan-lead">
+                    7-day free trial
+                  </span>
+
+                  <ul>
+                    <li>
+                      Card required
+                    </li>
+                    <li>
+                      No charge to begin the verified trial
+                    </li>
+                    <li>
+                      Monthly billing begins after 7 days unless canceled
+                    </li>
+                  </ul>
+
+                  <span className="jcs-business-signup__plan-authority">
+                    Trial begins only after Stripe verifies the payment method.
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={
+                    selectedBillingPlan ===
+                    "Premium"
+                  }
+                  className={[
+                    "jcs-business-signup__plan-card",
+                    "jcs-business-signup__plan-card--premium",
+                    selectedBillingPlan === "Premium"
+                      ? "jcs-business-signup__plan-card--selected"
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() =>
+                    setSelectedBillingPlan(
+                      "Premium"
+                    )
+                  }
+                  disabled={isBusy}
+                >
+                  <span className="jcs-business-signup__plan-badge">
+                    JCS Premium
+                  </span>
+
+                  <strong>
+                    Premium
+                  </strong>
+
+                  <span className="jcs-business-signup__plan-lead">
+                    Immediate payment
+                  </span>
+
+                  <ul>
+                    <li>
+                      No free trial
+                    </li>
+                    <li>
+                      Premium billing begins immediately
+                    </li>
+                    <li>
+                      Sofía and Premium branding require verified activation
+                    </li>
+                  </ul>
+
+                  <span className="jcs-business-signup__plan-authority">
+                    Premium activates only after Stripe confirms payment.
+                  </span>
+                </button>
+              </div>
+            </section>
           </section>
         );
 
@@ -2470,12 +2721,14 @@ showNotice(
               </p>
 
               <h2 id="business-signup-success-title">
-                Your business is ready
+                Your business has been created
               </h2>
 
               <p>
-                Welcome to JCS Business Suite. Your secure workspace
-                has been created and configured.
+                Your workspace record is secure, but subscription
+                access is not active yet. Continue to Stripe to
+                complete the billing verification for your selected
+                JCS plan.
               </p>
             </div>
 
@@ -2565,18 +2818,18 @@ showNotice(
                 </div>
 
                 <div>
-                  <dt>Plan</dt>
+                  <dt>Billing choice</dt>
 
                   <dd>
-                    {registrationResult.planName}
+                    {selectedBillingPlan}
                   </dd>
                 </div>
 
                 <div>
-                  <dt>Trial</dt>
+                  <dt>Access</dt>
 
                   <dd>
-                    {registrationResult.trialLengthDays} days
+                    Awaiting Stripe verification
                   </dd>
                 </div>
               </dl>
@@ -2609,6 +2862,7 @@ showNotice(
     onOpenMigrationWizard,
     registrationResult,
     selectBusinessMode,
+    selectedBillingPlan,
     selectedBusinessModeName,
     selectedIndustryCategoryTitle,
     selectedMode,

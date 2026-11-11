@@ -83,10 +83,29 @@ import {
   signOut,
 } from "@/core/services/AuthService";
 
+import {
+  doc,
+  getDoc,
+} from "firebase/firestore";
+
+import {
+  db,
+} from "@/core/firebase/firebase";
+
+import {
+  normalizePlatformClientRecord,
+} from "@/features/platform-executive-center/PlatformClientDomain";
+
+import {
+  PLATFORM_SUBSCRIPTION_STATUSES,
+  type PlatformClientFirestoreData,
+} from "@/features/platform-executive-center/PlatformExecutiveTypes";
+
 import "./DashboardView.css";
 
 import {
   useCallback,
+  useEffect,
   useMemo,
   useState,
   type ComponentType,
@@ -1054,8 +1073,144 @@ const appSettingsActor =
     ],
   );
 
+// =====================================================
+// MARK: - Canonical Premium Branding Entitlement
+// H2-C6D-J-F-LOGO-R37B-R3
+// =====================================================
+
+const [
+  hasVerifiedPremiumBrandingAccess,
+  setHasVerifiedPremiumBrandingAccess,
+] = useState(false);
+
+useEffect(() => {
+  let isCurrent = true;
+
+  const verifyPremiumBrandingAccess =
+    async (): Promise<void> => {
+
+      /*
+       * PlatformAdmin is a global platform identity.
+       *
+       * It does not depend on a business subscription and
+       * therefore keeps the existing platform bypass.
+       */
+      if (access.isPlatformAdmin) {
+        if (isCurrent) {
+          setHasVerifiedPremiumBrandingAccess(
+            true
+          );
+        }
+
+        return;
+      }
+
+      const normalizedBusinessID =
+        cleanText(
+          businessID
+        );
+
+      /*
+       * Fail closed.
+       *
+       * A business tenant without a canonical Business ID
+       * cannot receive Premium branding entitlement.
+       */
+      if (!normalizedBusinessID) {
+        if (isCurrent) {
+          setHasVerifiedPremiumBrandingAccess(
+            false
+          );
+        }
+
+        return;
+      }
+
+      try {
+        const reference =
+          doc(
+            db,
+            "platformClients",
+            normalizedBusinessID
+          );
+
+        const snapshot =
+          await getDoc(
+            reference
+          );
+
+        if (!snapshot.exists()) {
+          if (isCurrent) {
+            setHasVerifiedPremiumBrandingAccess(
+              false
+            );
+          }
+
+          return;
+        }
+
+        const rawPlatformClient =
+          snapshot.data() as
+            PlatformClientFirestoreData;
+
+        const platformClient =
+          normalizePlatformClientRecord(
+            snapshot.id,
+            rawPlatformClient
+          );
+
+        /*
+         * Premium branding must be explicitly verified by
+         * canonical Stripe/webhook-backed PlatformClient state.
+         *
+         * We intentionally verify the RAW
+         * canUseAutomaticLogo field as literal true so an old
+         * document cannot inherit a permissive normalization
+         * fallback.
+         */
+        const isVerifiedPremium =
+          cleanText(
+            platformClient.planName
+          ).toLowerCase() ===
+            "premium" &&
+          platformClient.subscriptionStatus ===
+            PLATFORM_SUBSCRIPTION_STATUSES
+              .active &&
+          rawPlatformClient
+            .canUseAutomaticLogo === true;
+
+        if (isCurrent) {
+          setHasVerifiedPremiumBrandingAccess(
+            isVerifiedPremium
+          );
+        }
+      } catch (error: unknown) {
+        console.error(
+          "❌ JCS Web Premium branding verification failed:",
+          error
+        );
+
+        if (isCurrent) {
+          setHasVerifiedPremiumBrandingAccess(
+            false
+          );
+        }
+      }
+    };
+
+  void verifyPremiumBrandingAccess();
+
+  return () => {
+    isCurrent = false;
+  };
+}, [
+  access.isPlatformAdmin,
+  businessID,
+]);
+
 const hasPremiumBrandingAccess =
-  true;
+  access.isPlatformAdmin ||
+  hasVerifiedPremiumBrandingAccess;
 
   const languageCode =
   normalizedLanguageCode(

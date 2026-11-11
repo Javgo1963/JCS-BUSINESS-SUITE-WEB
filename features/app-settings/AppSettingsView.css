@@ -2471,3 +2471,235 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================
+   MARK: - Official JCS Logo Library
+========================================================= */
+
+.app-settings-official-logo-library {
+  display: grid;
+  gap: 20px;
+}
+
+.app-settings-official-logo-library__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.app-settings-official-logo-library__header > div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.app-settings-official-logo-library__header h3 {
+  margin: 0;
+  color: var(--app-settings-text-primary);
+  font-size: 19px;
+  font-weight: 850;
+}
+
+.app-settings-official-logo-library__header p {
+  margin: 0;
+  color: var(--app-settings-text-secondary);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.app-settings-official-logo-library__header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.app-settings-official-logo-library__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 11px;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--app-settings-accent) 24%,
+      transparent
+    );
+  border-radius: 999px;
+  color: var(--app-settings-accent);
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.app-settings-official-logo-library__apply-button {
+  min-height: 38px;
+  padding-inline: 18px;
+  white-space: nowrap;
+}
+
+.app-settings-official-logo-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.app-settings-official-logo-card {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid
+    var(--app-settings-border);
+  border-radius: 18px;
+  color: inherit;
+  background:
+    var(--app-settings-surface-solid);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.app-settings-official-logo-card:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color:
+    var(--app-settings-accent);
+}
+
+.app-settings-official-logo-card--selected {
+  border-color:
+    var(--app-settings-accent);
+  box-shadow:
+    0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--app-settings-accent) 12%,
+      transparent
+    );
+}
+
+.app-settings-official-logo-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.app-settings-official-logo-card__preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f1f5f9
+    );
+}
+
+.app-settings-official-logo-card__image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.app-settings-official-logo-card__empty {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 12px;
+  color:
+    var(--app-settings-text-secondary);
+  text-align: center;
+}
+
+.app-settings-official-logo-card__check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  background:
+    var(--app-settings-accent);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.app-settings-official-logo-card__copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  padding: 0 2px 2px;
+}
+
+.app-settings-official-logo-card__copy strong {
+  overflow: hidden;
+  color:
+    var(--app-settings-text-primary);
+  font-size: 12px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-settings-official-logo-card__copy span {
+  color:
+    var(--app-settings-text-secondary);
+  font-size: 10px;
+}
+
+.app-settings-official-logo-library__success {
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.app-settings-official-logo-library__error {
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+@media (max-width: 1100px) {
+  .app-settings-official-logo-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .app-settings-official-logo-library__header {
+    flex-direction: column;
+  }
+
+  .app-settings-official-logo-library__header-actions {
+    width: 100%;
+  }
+
+  .app-settings-official-logo-library__apply-button {
+    width: 100%;
+  }
+
+  .app-settings-official-logo-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -35,6 +35,20 @@ import {
 } from "react";
 
 import {
+  doc,
+  getDoc,
+} from "firebase/firestore";
+
+import {
+  httpsCallable,
+} from "firebase/functions";
+
+import {
+  db,
+  firebaseFunctions,
+} from "@/core/firebase/firebase";
+
+import {
   APP_ACCENT_COLOR_VALUES,
   APP_LANGUAGE_OPTIONS,
 } from "./AppSettingsTypes";
@@ -49,6 +63,15 @@ import {
 
 import BusinessLogoPicker from "../business-branding/BusinessLogoPicker";
 import CompanyLogoView from "../business-branding/CompanyLogoView";
+
+
+import {
+  useOfficialJCSLogos,
+} from "../official-jcs-branding/useOfficialJCSLogos";
+
+import {
+  applyOfficialJCSLogoToBusiness,
+} from "../official-jcs-branding/OfficialJCSLogoFirestoreService";
 
 import "./AppSettingsView.css";
 
@@ -571,6 +594,26 @@ export default function AppSettingsView({
         true,
     });
 
+  // =====================================================
+  // MARK: - Premium Billing State
+  // H2-C6D-J-F-LOGO-R37B-R12-R4
+  // =====================================================
+
+  const [
+    isStartingPremiumBilling,
+    setIsStartingPremiumBilling,
+  ] = useState(false);
+
+  const [
+    premiumBillingMessage,
+    setPremiumBillingMessage,
+  ] = useState("");
+
+  const [
+    premiumBillingError,
+    setPremiumBillingError,
+  ] = useState("");
+
   const canGeneratePremiumLogo =
     appSettings.permissions
       .canGeneratePremiumLogo &&
@@ -671,6 +714,243 @@ export default function AppSettingsView({
     }, [
       businessLogo,
       canGeneratePremiumLogo,
+    ]);
+
+
+  // =====================================================
+  // MARK: - Shared Premium Billing
+  // H2-C6D-J-F-LOGO-R37B-R12-R4
+  // =====================================================
+
+  const handleUpgradeToPremium =
+    useCallback(async (): Promise<void> => {
+      const cleanBillingText =
+        (value: unknown): string =>
+          typeof value === "string"
+            ? value.trim()
+            : "";
+
+      const normalizedBusinessID =
+        cleanBillingText(
+          businessID
+        );
+
+      if (!normalizedBusinessID) {
+        setPremiumBillingMessage("");
+        setPremiumBillingError(
+          "Premium billing cannot begin because the Business ID is missing."
+        );
+        return;
+      }
+
+      if (!appSettings.canManageSettings) {
+        setPremiumBillingMessage("");
+        setPremiumBillingError(
+          "You do not have permission to manage this business subscription."
+        );
+        return;
+      }
+
+      setIsStartingPremiumBilling(true);
+      setPremiumBillingMessage(
+        "JCS is preparing secure Premium billing..."
+      );
+      setPremiumBillingError("");
+
+      try {
+        /*
+         * PlatformClient is read only to select the correct
+         * shared server billing path.
+         *
+         * Browser state is never Premium entitlement authority.
+         */
+        const platformClientReference =
+          doc(
+            db,
+            "platformClients",
+            normalizedBusinessID
+          );
+
+        const platformClientSnapshot =
+          await getDoc(
+            platformClientReference
+          );
+
+        if (!platformClientSnapshot.exists()) {
+          throw new Error(
+            "The canonical JCS subscription record could not be found."
+          );
+        }
+
+        const platformClientData =
+          platformClientSnapshot.data();
+
+        const existingSubscriptionID =
+          cleanBillingText(
+            platformClientData
+              .stripeSubscriptionID
+          );
+
+        // ==================================================
+        // Existing Stripe subscription
+        // SAME subscription → Starter/Base to Premium
+        // ==================================================
+
+        if (existingSubscriptionID) {
+          setPremiumBillingMessage(
+            "JCS is securely upgrading your existing subscription to Premium..."
+          );
+
+          const upgradeCallable =
+            httpsCallable<
+              {
+                businessID: string;
+              },
+              {
+                success?: boolean;
+                businessID?: string;
+                stripeSubscriptionID?: string;
+                stripeStatus?: string;
+                premiumEntitlementVerified?: boolean;
+              }
+            >(
+              firebaseFunctions,
+              "upgradeBaseSubscriptionToPremium"
+            );
+
+          const response =
+            await upgradeCallable({
+              businessID:
+                normalizedBusinessID,
+            });
+
+          const returnedBusinessID =
+            cleanBillingText(
+              response.data
+                ?.businessID
+            );
+
+          if (
+            returnedBusinessID !==
+            normalizedBusinessID
+          ) {
+            throw new Error(
+              "Premium upgrade returned a Business ID mismatch."
+            );
+          }
+
+          const returnedSubscriptionID =
+            cleanBillingText(
+              response.data
+                ?.stripeSubscriptionID
+            );
+
+          if (
+            returnedSubscriptionID !==
+            existingSubscriptionID
+          ) {
+            throw new Error(
+              "Premium upgrade returned a Stripe subscription mismatch."
+            );
+          }
+
+          /*
+           * Callable success is deliberately NOT entitlement proof.
+           *
+           * stripePremiumWebhook remains the authority that may set:
+           *
+           * planName = Premium
+           * subscriptionStatus = Active
+           * canUseAutomaticLogo = true
+           */
+          if (
+            response.data
+              ?.premiumEntitlementVerified !==
+            false
+          ) {
+            throw new Error(
+              "Premium upgrade returned an unexpected entitlement state."
+            );
+          }
+
+          setPremiumBillingMessage(
+            "Premium upgrade submitted. JCS is waiting for verified payment activation."
+          );
+
+          return;
+        }
+
+        // ==================================================
+        // No Stripe subscription
+        // JCS Embedded Premium Checkout
+        // ==================================================
+
+        setPremiumBillingMessage(
+          "JCS is opening secure Premium billing..."
+        );
+
+        /*
+         * Checkout creation now belongs to the dedicated
+         * JCS Embedded Billing workspace.
+         *
+         * Browser navigation is context only.
+         * Stripe webhook + canonical PlatformClient remain
+         * Premium entitlement authority.
+         */
+        const billingURL =
+          new URL(
+            "/billing/checkout",
+            window.location.origin
+          );
+
+        billingURL.searchParams.set(
+          "businessID",
+          normalizedBusinessID
+        );
+
+        billingURL.searchParams.set(
+          "plan",
+          "premium"
+        );
+
+        if (
+          billingURL.origin !==
+          window.location.origin
+        ) {
+          throw new Error(
+            "Premium billing navigation must remain inside JCS Business Suite."
+          );
+        }
+
+        setPremiumBillingMessage(
+          "Secure JCS Premium billing is opening. Premium remains locked until Stripe confirms the subscription."
+        );
+
+        window.location.assign(
+          billingURL.toString()
+        );
+      } catch (error: unknown) {
+        console.error(
+          "❌ JCS Web Premium billing failed:",
+          error
+        );
+
+        setPremiumBillingMessage("");
+
+        setPremiumBillingError(
+          error instanceof Error &&
+          error.message.trim()
+            ? error.message
+            : "JCS could not start Premium billing."
+        );
+      } finally {
+        setIsStartingPremiumBilling(
+          false
+        );
+      }
+    }, [
+      appSettings.canManageSettings,
+      businessID,
     ]);
 
   if (
@@ -852,6 +1132,9 @@ export default function AppSettingsView({
               {selectedSection ===
               "branding" ? (
                 <BrandingSection
+                  businessID={
+                    businessID
+                  }
                   businessName={
                     effectiveBusinessName
                   }
@@ -873,6 +1156,18 @@ export default function AppSettingsView({
                   }
                   onGeneratePremiumLogos={
                     handleGeneratePremiumLogos
+                  }
+                  onUpgradeToPremium={
+                    handleUpgradeToPremium
+                  }
+                  isStartingPremiumBilling={
+                    isStartingPremiumBilling
+                  }
+                  premiumBillingMessage={
+                    premiumBillingMessage
+                  }
+                  premiumBillingError={
+                    premiumBillingError
                   }
                 />
               ) : null}
@@ -1263,6 +1558,7 @@ function CompanyInformationSection({
 // MARK: - Branding Section
 
 interface BrandingSectionProps {
+  businessID: string;
   businessName: string;
   accentColor: string;
 
@@ -1277,9 +1573,22 @@ interface BrandingSectionProps {
 
   onGeneratePremiumLogos:
     () => Promise<void>;
+
+  onUpgradeToPremium:
+    () => Promise<void>;
+
+  isStartingPremiumBilling:
+    boolean;
+
+  premiumBillingMessage:
+    string;
+
+  premiumBillingError:
+    string;
 }
 
 function BrandingSection({
+  businessID,
   businessName,
   accentColor,
 
@@ -1290,9 +1599,237 @@ function BrandingSection({
   businessLogo,
 
   onGeneratePremiumLogos,
+
+  onUpgradeToPremium,
+
+  isStartingPremiumBilling,
+
+  premiumBillingMessage,
+
+  premiumBillingError,
 }: BrandingSectionProps) {
+  const officialLogos =
+    useOfficialJCSLogos();
+
+  const [
+    isApplyingOfficialLogo,
+    setIsApplyingOfficialLogo,
+  ] = useState(false);
+
+  const [
+    officialLogoMessage,
+    setOfficialLogoMessage,
+  ] = useState("");
+
+  const [
+    officialLogoError,
+    setOfficialLogoError,
+  ] = useState("");
+
+  const handleApplyOfficialLogo =
+    async () => {
+      const selectedLogo =
+        officialLogos.selectedLogo;
+
+      if (
+        !selectedLogo ||
+        !selectedLogo.isAvailable
+      ) {
+        setOfficialLogoError(
+          "Select an available official JCS logo first.",
+        );
+
+        return;
+      }
+
+      if (!canManage) {
+        setOfficialLogoError(
+          "You do not have permission to change this business logo.",
+        );
+
+        return;
+      }
+
+      setIsApplyingOfficialLogo(true);
+      setOfficialLogoMessage("");
+      setOfficialLogoError("");
+
+      try {
+        await applyOfficialJCSLogoToBusiness({
+          businessID,
+          companyName:
+            businessName,
+          accentColorName:
+            accentColor,
+          logo:
+            selectedLogo,
+        });
+
+        await businessLogo
+          .reloadActiveLogo();
+
+        setOfficialLogoMessage(
+          "Official JCS logo applied successfully.",
+        );
+      } catch (error: unknown) {
+        console.error(
+          "Official JCS logo apply failed:",
+          error,
+        );
+
+        setOfficialLogoError(
+          error instanceof Error &&
+          error.message.trim()
+            ? error.message
+            : "The official JCS logo could not be applied.",
+        );
+      } finally {
+        setIsApplyingOfficialLogo(false);
+      }
+    };
+
   return (
     <div className="app-settings-section-stack">
+      <AppSettingsPanel
+        eyebrow="JCS Business Suite"
+        title="Official JCS Logo Collection"
+        description="Choose from the eight official JCS Business Suite logos. These logos are included and managed by JCS."
+      >
+        <div className="app-settings-official-logo-library">
+          <div className="app-settings-official-logo-library__header">
+            <div>
+              <h3>
+                8 Official Logos
+              </h3>
+
+              <p>
+                Select the logo that best matches your
+                business branding.
+              </p>
+            </div>
+
+            <div className="app-settings-official-logo-library__header-actions">
+              <span className="app-settings-official-logo-library__badge">
+                Included
+              </span>
+
+              <button
+                type="button"
+                className="app-settings-primary-button app-settings-official-logo-library__apply-button"
+                disabled={
+                  !canManage ||
+                  isApplyingOfficialLogo ||
+                  !officialLogos.selectedLogo ||
+                  !officialLogos.selectedLogo.isAvailable
+                }
+                onClick={() => {
+                  void handleApplyOfficialLogo();
+                }}
+              >
+                {isApplyingOfficialLogo
+                  ? "Applying..."
+                  : "Apply Official Logo"}
+              </button>
+            </div>
+          </div>
+
+          {officialLogos.errorMessage ? (
+            <div className="app-settings-official-logo-library__error">
+              {officialLogos.errorMessage}
+            </div>
+          ) : null}
+
+          <div className="app-settings-official-logo-grid">
+            {officialLogos.logos.map(
+              (logo) => {
+                const isSelected =
+                  officialLogos.selectedLogoID ===
+                  logo.id;
+
+                return (
+                  <button
+                    key={logo.id}
+                    type="button"
+                    className={[
+                      "app-settings-official-logo-card",
+                      isSelected
+                        ? "app-settings-official-logo-card--selected"
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    disabled={
+                      officialLogos.isLoading ||
+                      !logo.isAvailable
+                    }
+                    onClick={() => {
+                      officialLogos.setSelectedLogoID(
+                        logo.id,
+                      );
+                    }}
+                    aria-pressed={
+                      isSelected
+                    }
+                  >
+                    <span className="app-settings-official-logo-card__preview">
+                      {logo.downloadURL ? (
+                        <img
+                          src={
+                            logo.downloadURL
+                          }
+                          alt={
+                            logo.title
+                          }
+                          className="app-settings-official-logo-card__image"
+                        />
+                      ) : (
+                        <span className="app-settings-official-logo-card__empty">
+                          <strong>
+                            Slot {logo.slot}
+                          </strong>
+
+                          <small>
+                            Logo unavailable
+                          </small>
+                        </span>
+                      )}
+
+                      {isSelected ? (
+                        <span className="app-settings-official-logo-card__check">
+                          ✓
+                        </span>
+                      ) : null}
+                    </span>
+
+                    <span className="app-settings-official-logo-card__copy">
+                      <strong>
+                        {logo.title}
+                      </strong>
+
+                      <span>
+                        Official JCS Business Suite
+                      </span>
+                    </span>
+                  </button>
+                );
+              },
+            )}
+          </div>
+
+          {officialLogoMessage ? (
+            <div className="app-settings-official-logo-library__success">
+              {officialLogoMessage}
+            </div>
+          ) : null}
+
+          {officialLogoError ? (
+            <div className="app-settings-official-logo-library__error">
+              {officialLogoError}
+            </div>
+          ) : null}
+        </div>
+      </AppSettingsPanel>
+
       <AppSettingsPanel
         eyebrow="Premium branding"
         title="Create Your Logo with Sofía"
@@ -1341,10 +1878,30 @@ function BrandingSection({
               <button
                 type="button"
                 className="app-settings-primary-button"
-                disabled
+                disabled={
+                  !canManage ||
+                  isStartingPremiumBilling
+                }
+                onClick={() => {
+                  void onUpgradeToPremium();
+                }}
               >
-                Premium Required
+                {isStartingPremiumBilling
+                  ? "Preparing Premium..."
+                  : "Upgrade to Premium"}
               </button>
+
+              {premiumBillingMessage ? (
+                <div className="app-settings-official-logo-library__success">
+                  {premiumBillingMessage}
+                </div>
+              ) : null}
+
+              {premiumBillingError ? (
+                <div className="app-settings-official-logo-library__error">
+                  {premiumBillingError}
+                </div>
+              ) : null}
             </div>
           ) : (
             <button

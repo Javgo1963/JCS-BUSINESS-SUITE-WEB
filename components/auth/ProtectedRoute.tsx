@@ -12,11 +12,18 @@ import {
   getDoc,
 } from "firebase/firestore";
 
+import {
+  httpsCallable,
+} from "firebase/functions";
+
 import { useRouter } from "next/navigation";
 
 import { LoadingScreen } from "@/components/auth/LoadingScreen";
 
-import { db } from "@/core/firebase/firebase";
+import {
+  db,
+  firebaseFunctions,
+} from "@/core/firebase/firebase";
 
 import { useAuth } from "@/core/hooks/useAuth";
 
@@ -64,6 +71,32 @@ type SubscriptionGateState =
   | "blocked"
   | "error";
 
+
+type RecoveryAction =
+  | "new-checkout"
+  | "portal"
+  | "already-current"
+  | "terminal-renewal-required";
+
+
+interface SubscriptionRecoveryRequest {
+  businessID: string;
+}
+
+
+interface SubscriptionRecoveryResponse {
+  success?: boolean;
+  businessID?: string;
+  plan?: string;
+  action?: RecoveryAction;
+  stripeStatus?: string;
+  portalURL?: string;
+  terminalRenewalOperationID?: string;
+  checkoutSessionID?: string;
+  checkoutClientSecret?: string;
+  reused?: boolean;
+}
+
 export function ProtectedRoute({
   children,
   redirectTo = "/login",
@@ -103,6 +136,18 @@ export function ProtectedRoute({
   const [
     verificationError,
     setVerificationError,
+  ] = useState("");
+
+
+  const [
+    isRecoveringSubscription,
+    setIsRecoveringSubscription,
+  ] = useState(false);
+
+
+  const [
+    recoveryError,
+    setRecoveryError,
   ] = useState("");
 
   // ============================================================
@@ -305,6 +350,206 @@ export function ProtectedRoute({
   }, [
     verifyPlatformClientAccess,
   ]);
+
+  // ============================================================
+  // MARK: - Subscription Recovery
+  // ============================================================
+
+  const recoverSubscription =
+    useCallback(
+      async (): Promise<void> => {
+
+        const normalizedBusinessID =
+          (
+            businessID ?? ""
+          ).trim();
+
+        if (
+          !normalizedBusinessID ||
+          isPlatformAdministrator
+        ) {
+          return;
+        }
+
+
+        setIsRecoveringSubscription(
+          true
+        );
+
+        setRecoveryError(
+          ""
+        );
+
+
+        try {
+
+          const recover =
+            httpsCallable<
+              SubscriptionRecoveryRequest,
+              SubscriptionRecoveryResponse
+            >(
+              firebaseFunctions,
+              "createSubscriptionRecoverySession"
+            );
+
+
+          const result =
+            await recover(
+              {
+                businessID:
+                  normalizedBusinessID,
+              }
+            );
+
+
+          const response =
+            result.data;
+
+
+          if (
+            response.success !==
+              true ||
+            (
+              response.businessID ??
+              ""
+            ).trim() !==
+              normalizedBusinessID
+          ) {
+            throw new Error(
+              "JCS subscription recovery returned an unexpected business identity."
+            );
+          }
+
+
+          const plan =
+            (
+              response.plan ??
+              subscriptionPlan
+            )
+              .trim()
+              .toLowerCase() ===
+              "premium"
+              ? "premium"
+              : "starter";
+
+
+          switch (
+            response.action
+          ) {
+
+          case "already-current":
+
+            await verifyPlatformClientAccess();
+
+            return;
+
+
+          case "portal": {
+
+            const portalURL =
+              (
+                response.portalURL ??
+                ""
+              ).trim();
+
+            if (!portalURL) {
+              throw new Error(
+                "JCS subscription recovery did not return a Billing Portal URL."
+              );
+            }
+
+
+            const parsed =
+              new URL(
+                portalURL
+              );
+
+
+            if (
+              parsed.protocol !==
+                "https:"
+            ) {
+              throw new Error(
+                "JCS subscription recovery returned an insecure Billing Portal URL."
+              );
+            }
+
+
+            window.location.assign(
+              parsed.toString()
+            );
+
+            return;
+          }
+
+
+          case "new-checkout":
+
+            router.push(
+              "/billing/checkout" +
+              "?businessID=" +
+              encodeURIComponent(
+                normalizedBusinessID
+              ) +
+              "&plan=" +
+              plan
+            );
+
+            return;
+
+
+          case "terminal-renewal-required":
+
+            router.push(
+              "/billing/checkout" +
+              "?businessID=" +
+              encodeURIComponent(
+                normalizedBusinessID
+              ) +
+              "&plan=" +
+              plan +
+              "&flow=recovery"
+            );
+
+            return;
+
+
+          default:
+
+            throw new Error(
+              "JCS subscription recovery returned an unsupported action."
+            );
+          }
+
+        } catch (error: unknown) {
+
+          console.error(
+            "❌ JCS subscription recovery failed:",
+            error
+          );
+
+          setRecoveryError(
+            error instanceof Error
+              ? error.message
+              : "JCS could not start subscription recovery."
+          );
+
+        } finally {
+
+          setIsRecoveringSubscription(
+            false
+          );
+        }
+      },
+      [
+        businessID,
+        isPlatformAdministrator,
+        router,
+        subscriptionPlan,
+        verifyPlatformClientAccess,
+      ]
+    );
+
 
   // ============================================================
   // MARK: - Authentication Loading
@@ -727,6 +972,27 @@ export function ProtectedRoute({
               refresh the subscription status below.
             </p>
 
+            {recoveryError ? (
+              <div
+                className="
+                  mt-6
+                  rounded-2xl
+                  border
+                  border-amber-200
+                  bg-amber-50
+                  px-4
+                  py-3
+                  text-sm
+                  text-amber-900
+                  dark:border-amber-400/20
+                  dark:bg-amber-400/10
+                  dark:text-amber-200
+                "
+              >
+                {recoveryError}
+              </div>
+            ) : null}
+
             <div
               className="
                 mt-8
@@ -737,6 +1003,36 @@ export function ProtectedRoute({
             >
               <button
                 type="button"
+                disabled={
+                  isRecoveringSubscription
+                }
+                onClick={() => {
+                  void recoverSubscription();
+                }}
+                className="
+                  rounded-xl
+                  bg-sky-600
+                  px-5
+                  py-3
+                  text-sm
+                  font-semibold
+                  text-white
+                  transition
+                  hover:bg-sky-500
+                  disabled:cursor-not-allowed
+                  disabled:opacity-60
+                "
+              >
+                {isRecoveringSubscription
+                  ? "Preparing Recovery..."
+                  : "Recover / Renew Subscription"}
+              </button>
+
+              <button
+                type="button"
+                disabled={
+                  isRecoveringSubscription
+                }
                 onClick={() => {
                   void verifyPlatformClientAccess();
                 }}
