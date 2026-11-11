@@ -139,6 +139,12 @@ export default function JCSBillingReturnView() {
       null
     );
 
+  const [
+    automaticVerificationComplete,
+    setAutomaticVerificationComplete,
+  ] =
+    useState(false);
+
 
   useEffect(() => {
 
@@ -383,10 +389,36 @@ export default function JCSBillingReturnView() {
 
 
         if (
-          result !==
-            "blocked" ||
+          result ===
+          "error"
+        ) {
+
+          setAutomaticVerificationComplete(
+            true
+          );
+
+          return;
+        }
+
+
+        if (
+          result ===
+            "blocked" &&
           automaticVerificationAttemptRef.current >=
             AUTOMATIC_VERIFICATION_MAX_ATTEMPTS
+        ) {
+
+          setAutomaticVerificationComplete(
+            true
+          );
+
+          return;
+        }
+
+
+        if (
+          result !==
+          "blocked"
         ) {
 
           return;
@@ -406,6 +438,10 @@ export default function JCSBillingReturnView() {
 
     automaticVerificationAttemptRef.current =
       0;
+
+    setAutomaticVerificationComplete(
+      false
+    );
 
 
     void runAutomaticVerification();
@@ -481,54 +517,20 @@ export default function JCSBillingReturnView() {
     isLoadingBusinessContext
   ) {
 
-    return (
-      <main
-        className={
-          styles.billingPage
-        }
-      >
-        <div
-          className={
-            styles.shell
-          }
-        >
-          <section
-            className={
-              styles.card
-            }
-          >
-            <div
-              className={
-                styles.statusPanel
-              }
-            >
-              <h1
-                className={
-                  styles.statusTitle
-                }
-              >
-                Verifying subscription
-              </h1>
-
-              <p
-                className={
-                  styles.statusText
-                }
-              >
-                JCS Business Suite is
-                checking the canonical
-                subscription record.
-              </p>
-            </div>
-          </section>
-        </div>
-      </main>
-    );
+    return null;
   }
 
 
   if (
     !isAuthenticated
+  ) {
+
+    return null;
+  }
+
+
+  if (
+    !automaticVerificationComplete
   ) {
 
     return null;
