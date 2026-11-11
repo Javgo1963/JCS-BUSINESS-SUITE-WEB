@@ -823,12 +823,24 @@ export function normalizePlatformSettingsRecord(
   const logoDownloadURL =
     settings.logoDownloadURL.trim();
 
-  const hasCustomLogo =
-    settings.hasCustomLogo ===
-      true &&
+  /*
+   * A platform logo may come from either:
+   *
+   * - the official JCS logo collection, or
+   * - a custom Platform Administrator upload.
+   *
+   * hasCustomLogo identifies only the second case.
+   * Valid official logo metadata must still be preserved.
+   */
+  const hasPlatformLogo =
     Boolean(
       logoDownloadURL,
     );
+
+  const hasCustomLogo =
+    settings.hasCustomLogo ===
+      true &&
+    hasPlatformLogo;
 
   return {
     ...settings,
@@ -867,17 +879,17 @@ export function normalizePlatformSettingsRecord(
       ),
 
     logoStoragePath:
-      hasCustomLogo
+      hasPlatformLogo
         ? logoStoragePath
         : "",
 
     logoDownloadURL:
-      hasCustomLogo
+      hasPlatformLogo
         ? logoDownloadURL
         : "",
 
     logoFileName:
-      hasCustomLogo
+      hasPlatformLogo
         ? settings
             .logoFileName
             .trim()
