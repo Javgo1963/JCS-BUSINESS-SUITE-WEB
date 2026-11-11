@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -43,6 +44,13 @@ type VerificationState =
   | "allowed"
   | "blocked"
   | "error";
+
+
+const AUTOMATIC_VERIFICATION_MAX_ATTEMPTS =
+  8;
+
+const AUTOMATIC_VERIFICATION_DELAY_MS =
+  1500;
 
 
 function clean(
@@ -123,6 +131,15 @@ export default function JCSBillingReturnView() {
     useState("");
 
 
+  const automaticVerificationAttemptRef =
+    useRef(0);
+
+  const automaticVerificationTimerRef =
+    useRef<number | null>(
+      null
+    );
+
+
   useEffect(() => {
 
     const params =
@@ -178,7 +195,7 @@ export default function JCSBillingReturnView() {
 
   const verifyCanonicalSubscription =
     useCallback(
-      async (): Promise<void> => {
+      async (): Promise<VerificationState> => {
 
         const normalizedBusinessID =
           clean(
@@ -198,7 +215,7 @@ export default function JCSBillingReturnView() {
             "JCS could not resolve the authenticated business identity."
           );
 
-          return;
+          return "error";
         }
 
 
@@ -243,7 +260,7 @@ export default function JCSBillingReturnView() {
               "blocked"
             );
 
-            return;
+            return "blocked";
           }
 
 
@@ -277,13 +294,15 @@ export default function JCSBillingReturnView() {
               "allowed"
             );
 
-            return;
+            return "allowed";
           }
 
 
           setVerificationState(
             "blocked"
           );
+
+          return "blocked";
 
         } catch (error: unknown) {
 
@@ -302,6 +321,8 @@ export default function JCSBillingReturnView() {
               ? error.message
               : "JCS could not verify the subscription."
           );
+
+          return "error";
         }
       },
       [
@@ -323,13 +344,99 @@ export default function JCSBillingReturnView() {
     }
 
 
-    void verifyCanonicalSubscription();
+    let isCancelled =
+      false;
+
+
+    const runAutomaticVerification =
+      async (): Promise<void> => {
+
+        if (isCancelled) {
+          return;
+        }
+
+
+        automaticVerificationAttemptRef.current +=
+          1;
+
+
+        const result =
+          await verifyCanonicalSubscription();
+
+
+        if (isCancelled) {
+          return;
+        }
+
+
+        if (
+          result ===
+          "allowed"
+        ) {
+
+          router.replace(
+            "/dashboard"
+          );
+
+          return;
+        }
+
+
+        if (
+          result !==
+            "blocked" ||
+          automaticVerificationAttemptRef.current >=
+            AUTOMATIC_VERIFICATION_MAX_ATTEMPTS
+        ) {
+
+          return;
+        }
+
+
+        automaticVerificationTimerRef.current =
+          window.setTimeout(
+            () => {
+
+              void runAutomaticVerification();
+            },
+            AUTOMATIC_VERIFICATION_DELAY_MS
+          );
+      };
+
+
+    automaticVerificationAttemptRef.current =
+      0;
+
+
+    void runAutomaticVerification();
+
+
+    return () => {
+
+      isCancelled =
+        true;
+
+
+      if (
+        automaticVerificationTimerRef.current !==
+        null
+      ) {
+
+        window.clearTimeout(
+          automaticVerificationTimerRef.current
+        );
+
+        automaticVerificationTimerRef.current =
+          null;
+      }
+    };
 
   }, [
     isAuthenticated,
     isBusinessContextReady,
     isLoading,
     isLoadingBusinessContext,
+    router,
     verifyCanonicalSubscription,
   ]);
 
