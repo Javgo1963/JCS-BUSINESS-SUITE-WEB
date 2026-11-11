@@ -525,7 +525,7 @@ export default function PlatformAppSettingsView({
             ) => {
               const isSelected =
                 selectedSection ===
-                item.id;
+                  item.id;
 
               return (
                 <button
@@ -534,52 +534,33 @@ export default function PlatformAppSettingsView({
                   }
                   type="button"
                   className={[
-                    "app-settings-secondary-button",
+                    "app-settings-navigation__item",
                     isSelected
-                      ? "app-settings-navigation-selected"
+                      ? "app-settings-navigation__item--selected"
                       : "",
                   ]
                     .filter(Boolean)
                     .join(" ")}
+                  aria-current={
+                    isSelected
+                      ? "page"
+                      : undefined
+                  }
                   onClick={() => {
                     setSelectedSection(
                       item.id,
                     );
                   }}
-                  style={{
-                    width:
-                      "100%",
-                    display:
-                      "grid",
-                    gridTemplateColumns:
-                      "34px 1fr",
-                    gap:
-                      "10px",
-                    textAlign:
-                      "left",
-                    alignItems:
-                      "center",
-                    marginBottom:
-                      "10px",
-                  }}
                 >
                   <span
+                    className="app-settings-navigation__icon"
                     aria-hidden="true"
-                    style={{
-                      fontSize:
-                        "20px",
-                    }}
                   >
                     {item.icon}
                   </span>
 
-                  <span>
-                    <strong
-                      style={{
-                        display:
-                          "block",
-                      }}
-                    >
+                  <span className="app-settings-navigation__copy">
+                    <strong>
                       {item.title}
                     </strong>
 
@@ -632,127 +613,142 @@ export default function PlatformAppSettingsView({
             "platform" ? (
             <div className="app-settings-section-stack">
               <section className="app-settings-panel">
-                <span className="app-settings-eyebrow">
-                  Platform identity
-                </span>
-
-                <h2>
-                  Platform Information
-                </h2>
-
-                <p>
-                  These values belong to the global JCS platform and are not attached to an individual business.
-                </p>
-
-                <div className="app-settings-form-grid">
-                  <label className="app-settings-text-field">
-                    <span>
-                      Platform name
+                <header className="app-settings-panel__header">
+                  <div>
+                    <span className="app-settings-eyebrow">
+                      Platform identity
                     </span>
 
-                    <input
-                      value={
-                        platformSettings
-                          .formValues
-                          .platformName
-                      }
-                      disabled={
-                        isBusy ||
-                        !platformSettings
-                          .permissions
-                          .canEditPlatformInformation
-                      }
-                      onChange={(event) => {
-                        platformSettings
-                          .setFieldValue(
-                            "platformName",
-                            event.target.value,
-                          );
-                      }}
-                    />
-                  </label>
+                    <h2>
+                      Platform Information
+                    </h2>
 
-                  <label className="app-settings-text-field">
-                    <span>
-                      Tagline
-                    </span>
+                    <p>
+                      These values belong to the global JCS platform and are not attached to an individual business.
+                    </p>
+                  </div>
+                </header>
 
-                    <input
-                      value={
-                        platformSettings
-                          .formValues
-                          .tagline
-                      }
-                      disabled={
-                        isBusy ||
-                        !platformSettings
-                          .permissions
-                          .canEditPlatformInformation
-                      }
-                      onChange={(event) => {
-                        platformSettings
-                          .setFieldValue(
-                            "tagline",
-                            event.target.value,
-                          );
-                      }}
-                    />
-                  </label>
+                <div className="app-settings-panel__body">
+                  <div className="app-settings-field-grid">
+                    <div className="app-settings-field">
+                      <label htmlFor="platform-name">
+                        Platform name
+                      </label>
 
-                  <label className="app-settings-text-field">
-                    <span>
-                      Support email
-                    </span>
+                      <input
+                        id="platform-name"
+                        autoComplete="organization"
+                        value={
+                          platformSettings
+                            .formValues
+                            .platformName
+                        }
+                        disabled={
+                          isBusy ||
+                          !platformSettings
+                            .permissions
+                            .canEditPlatformInformation
+                        }
+                        onChange={(event) => {
+                          platformSettings
+                            .setFieldValue(
+                              "platformName",
+                              event.target.value,
+                            );
+                        }}
+                      />
+                    </div>
 
-                    <input
-                      type="email"
-                      value={
-                        platformSettings
-                          .formValues
-                          .supportEmail
-                      }
-                      disabled={
-                        isBusy ||
-                        !platformSettings
-                          .permissions
-                          .canEditPlatformInformation
-                      }
-                      onChange={(event) => {
-                        platformSettings
-                          .setFieldValue(
-                            "supportEmail",
-                            event.target.value,
-                          );
-                      }}
-                    />
-                  </label>
+                    <div className="app-settings-field">
+                      <label htmlFor="platform-tagline">
+                        Tagline
+                      </label>
 
-                  <label className="app-settings-text-field">
-                    <span>
-                      Website
-                    </span>
+                      <input
+                        id="platform-tagline"
+                        autoComplete="off"
+                        value={
+                          platformSettings
+                            .formValues
+                            .tagline
+                        }
+                        disabled={
+                          isBusy ||
+                          !platformSettings
+                            .permissions
+                            .canEditPlatformInformation
+                        }
+                        onChange={(event) => {
+                          platformSettings
+                            .setFieldValue(
+                              "tagline",
+                              event.target.value,
+                            );
+                        }}
+                      />
+                    </div>
 
-                    <input
-                      value={
-                        platformSettings
-                          .formValues
-                          .websiteURL
-                      }
-                      disabled={
-                        isBusy ||
-                        !platformSettings
-                          .permissions
-                          .canEditPlatformInformation
-                      }
-                      onChange={(event) => {
-                        platformSettings
-                          .setFieldValue(
-                            "websiteURL",
-                            event.target.value,
-                          );
-                      }}
-                    />
-                  </label>
+                    <div className="app-settings-field">
+                      <label htmlFor="platform-support-email">
+                        Support email
+                      </label>
+
+                      <input
+                        id="platform-support-email"
+                        type="email"
+                        autoComplete="email"
+                        value={
+                          platformSettings
+                            .formValues
+                            .supportEmail
+                        }
+                        disabled={
+                          isBusy ||
+                          !platformSettings
+                            .permissions
+                            .canEditPlatformInformation
+                        }
+                        onChange={(event) => {
+                          platformSettings
+                            .setFieldValue(
+                              "supportEmail",
+                              event.target.value,
+                            );
+                        }}
+                      />
+                    </div>
+
+                    <div className="app-settings-field">
+                      <label htmlFor="platform-website">
+                        Website
+                      </label>
+
+                      <input
+                        id="platform-website"
+                        type="url"
+                        autoComplete="url"
+                        value={
+                          platformSettings
+                            .formValues
+                            .websiteURL
+                        }
+                        disabled={
+                          isBusy ||
+                          !platformSettings
+                            .permissions
+                            .canEditPlatformInformation
+                        }
+                        onChange={(event) => {
+                          platformSettings
+                            .setFieldValue(
+                              "websiteURL",
+                              event.target.value,
+                            );
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </section>
             </div>
@@ -764,168 +760,174 @@ export default function PlatformAppSettingsView({
             "branding" ? (
             <div className="app-settings-section-stack">
               <section className="app-settings-panel">
-                <span className="app-settings-eyebrow">
-                  JCS Business Suite
-                </span>
+                <header className="app-settings-panel__header">
+                  <div>
+                    <span className="app-settings-eyebrow">
+                      JCS Business Suite
+                    </span>
 
-                <h2>
-                  Official JCS Logo Collection
-                </h2>
+                    <h2>
+                      Official JCS Logo Collection
+                    </h2>
 
-                <p>
-                  Choose the official logo used by Platform Admin and the global JCS experience.
-                </p>
-
-                <div className="app-settings-official-logo-library">
-                  <div className="app-settings-official-logo-library__header">
-                    <div>
-                      <h3>
-                        8 Official Logos
-                      </h3>
-
-                      <p>
-                        The same official collection available to new JCS businesses.
-                      </p>
-                    </div>
-
-                    <div className="app-settings-official-logo-library__header-actions">
-                      <span className="app-settings-official-logo-library__badge">
-                        Platform
-                      </span>
-
-                      <button
-                        type="button"
-                        className="app-settings-primary-button app-settings-official-logo-library__apply-button"
-                        disabled={
-                          isBusy ||
-                          !officialLogos
-                            .selectedLogo ||
-                          !officialLogos
-                            .selectedLogo
-                            .isAvailable ||
-                          !platformSettings
-                            .permissions
-                            .canManageSettings
-                        }
-                        onClick={() => {
-                          void handleApplyOfficialLogo();
-                        }}
-                      >
-                        {isApplyingOfficialLogo
-                          ? "Applying..."
-                          : "Apply Official Logo"}
-                      </button>
-                    </div>
+                    <p>
+                      Choose the official logo used by Platform Admin and the global JCS experience.
+                    </p>
                   </div>
+                </header>
 
-                  {officialLogos
-                    .errorMessage ? (
-                    <div className="app-settings-official-logo-library__error">
-                      {officialLogos
-                        .errorMessage}
+                <div className="app-settings-panel__body">
+                  <div className="app-settings-official-logo-library">
+                    <div className="app-settings-official-logo-library__header">
+                      <div>
+                        <h3>
+                          8 Official Logos
+                        </h3>
+
+                        <p>
+                          The same official collection available to new JCS businesses.
+                        </p>
+                      </div>
+
+                      <div className="app-settings-official-logo-library__header-actions">
+                        <span className="app-settings-official-logo-library__badge">
+                          Platform
+                        </span>
+
+                        <button
+                          type="button"
+                          className="app-settings-primary-button app-settings-official-logo-library__apply-button"
+                          disabled={
+                            isBusy ||
+                            !officialLogos
+                              .selectedLogo ||
+                            !officialLogos
+                              .selectedLogo
+                              .isAvailable ||
+                            !platformSettings
+                              .permissions
+                              .canManageSettings
+                          }
+                          onClick={() => {
+                            void handleApplyOfficialLogo();
+                          }}
+                        >
+                          {isApplyingOfficialLogo
+                            ? "Applying..."
+                            : "Apply Official Logo"}
+                        </button>
+                      </div>
                     </div>
-                  ) : null}
 
-                  <div className="app-settings-official-logo-grid">
                     {officialLogos
-                      .logos
-                      .map(
-                        (
-                          logo,
-                        ) => {
-                          const isSelected =
-                            officialLogos
-                              .selectedLogoID ===
-                            logo.id;
+                      .errorMessage ? (
+                      <div className="app-settings-official-logo-library__error">
+                        {officialLogos
+                          .errorMessage}
+                      </div>
+                    ) : null}
 
-                          return (
-                            <button
-                              key={
-                                logo.id
-                              }
-                              type="button"
-                              className={[
-                                "app-settings-official-logo-card",
-                                isSelected
-                                  ? "app-settings-official-logo-card--selected"
-                                  : "",
-                              ]
-                                .filter(Boolean)
-                                .join(" ")}
-                              disabled={
-                                officialLogos
-                                  .isLoading ||
-                                !logo
-                                  .isAvailable
-                              }
-                              onClick={() => {
-                                officialLogos
-                                  .setSelectedLogoID(
-                                    logo.id,
-                                  );
-                              }}
-                              aria-pressed={
-                                isSelected
-                              }
-                            >
-                              <span className="app-settings-official-logo-card__preview">
-                                {logo
-                                  .downloadURL ? (
-                                  <img
-                                    src={
-                                      logo.downloadURL
-                                    }
-                                    alt={
-                                      logo.title
-                                    }
-                                    className="app-settings-official-logo-card__image"
-                                  />
-                                ) : (
-                                  <span className="app-settings-official-logo-card__empty">
-                                    <strong>
-                                      Slot{" "}
-                                      {logo.slot}
-                                    </strong>
+                    <div className="app-settings-official-logo-grid">
+                      {officialLogos
+                        .logos
+                        .map(
+                          (
+                            logo,
+                          ) => {
+                            const isSelected =
+                              officialLogos
+                                .selectedLogoID ===
+                              logo.id;
 
-                                    <small>
-                                      Logo unavailable
-                                    </small>
-                                  </span>
-                                )}
+                            return (
+                              <button
+                                key={
+                                  logo.id
+                                }
+                                type="button"
+                                className={[
+                                  "app-settings-official-logo-card",
+                                  isSelected
+                                    ? "app-settings-official-logo-card--selected"
+                                    : "",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                                disabled={
+                                  officialLogos
+                                    .isLoading ||
+                                  !logo
+                                    .isAvailable
+                                }
+                                onClick={() => {
+                                  officialLogos
+                                    .setSelectedLogoID(
+                                      logo.id,
+                                    );
+                                }}
+                                aria-pressed={
+                                  isSelected
+                                }
+                              >
+                                <span className="app-settings-official-logo-card__preview">
+                                  {logo
+                                    .downloadURL ? (
+                                    <img
+                                      src={
+                                        logo.downloadURL
+                                      }
+                                      alt={
+                                        logo.title
+                                      }
+                                      className="app-settings-official-logo-card__image"
+                                    />
+                                  ) : (
+                                    <span className="app-settings-official-logo-card__empty">
+                                      <strong>
+                                        Slot{" "}
+                                        {logo.slot}
+                                      </strong>
 
-                                {isSelected ? (
-                                  <span className="app-settings-official-logo-card__check">
-                                    ✓
-                                  </span>
-                                ) : null}
-                              </span>
+                                      <small>
+                                        Logo unavailable
+                                      </small>
+                                    </span>
+                                  )}
 
-                              <span className="app-settings-official-logo-card__copy">
-                                <strong>
-                                  {logo.title}
-                                </strong>
-
-                                <span>
-                                  Official JCS Business Suite
+                                  {isSelected ? (
+                                    <span className="app-settings-official-logo-card__check">
+                                      ✓
+                                    </span>
+                                  ) : null}
                                 </span>
-                              </span>
-                            </button>
-                          );
-                        },
-                      )}
+
+                                <span className="app-settings-official-logo-card__copy">
+                                  <strong>
+                                    {logo.title}
+                                  </strong>
+
+                                  <span>
+                                    Official JCS Business Suite
+                                  </span>
+                                </span>
+                              </button>
+                            );
+                          },
+                        )}
+                    </div>
+
+                    {officialLogoMessage ? (
+                      <div className="app-settings-official-logo-library__success">
+                        {officialLogoMessage}
+                      </div>
+                    ) : null}
+
+                    {officialLogoError ? (
+                      <div className="app-settings-official-logo-library__error">
+                        {officialLogoError}
+                      </div>
+                    ) : null}
                   </div>
-
-                  {officialLogoMessage ? (
-                    <div className="app-settings-official-logo-library__success">
-                      {officialLogoMessage}
-                    </div>
-                  ) : null}
-
-                  {officialLogoError ? (
-                    <div className="app-settings-official-logo-library__error">
-                      {officialLogoError}
-                    </div>
-                  ) : null}
                 </div>
               </section>
             </div>
@@ -937,140 +939,170 @@ export default function PlatformAppSettingsView({
             "appearance" ? (
             <div className="app-settings-section-stack">
               <section className="app-settings-panel">
-                <span className="app-settings-eyebrow">
-                  Platform theme
-                </span>
-
-                <h2>
-                  Appearance
-                </h2>
-
-                <p>
-                  Configure the global Platform Admin Accent Color and application language.
-                </p>
-
-                <div className="app-settings-form-grid">
-                  <label className="app-settings-select-field">
-                    <span>
-                      Accent Color
+                <header className="app-settings-panel__header">
+                  <div>
+                    <span className="app-settings-eyebrow">
+                      Platform theme
                     </span>
 
-                    <select
-                      value={
-                        platformSettings
-                          .formValues
-                          .accentColorName
-                      }
-                      disabled={
-                        isBusy ||
-                        !platformSettings
-                          .permissions
-                          .canEditAppearance
-                      }
-                      onChange={(event) => {
-                        const value =
-                          event.target.value as
-                            AppAccentColorName;
+                    <h2>
+                      Appearance
+                    </h2>
 
-                        platformSettings
-                          .setFieldValue(
-                            "accentColorName",
+                    <p>
+                      Configure the global Platform Admin Accent Color and application language.
+                    </p>
+                  </div>
+                </header>
+
+                <div className="app-settings-panel__body">
+                  <div className="app-settings-field-grid">
+                    <div className="app-settings-select-field">
+                      <label htmlFor="platform-accent-color">
+                        Accent Color
+                      </label>
+
+                      <select
+                        id="platform-accent-color"
+                        value={
+                          platformSettings
+                            .formValues
+                            .accentColorName
+                        }
+                        disabled={
+                          isBusy ||
+                          !platformSettings
+                            .permissions
+                            .canEditAppearance
+                        }
+                        onChange={(event) => {
+                          const value =
+                            event.target.value as
+                              AppAccentColorName;
+
+                          platformSettings
+                            .setFieldValue(
+                              "accentColorName",
+                              value,
+                            );
+
+                          onAccentColorChange?.(
                             value,
                           );
+                        }}
+                      >
+                        {APP_ACCENT_COLOR_VALUES.map(
+                          (
+                            accent,
+                          ) => (
+                            <option
+                              key={
+                                accent
+                              }
+                              value={
+                                accent
+                              }
+                            >
+                              {accent}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    </div>
 
-                        onAccentColorChange?.(
-                          value,
-                        );
-                      }}
-                    >
-                      {APP_ACCENT_COLOR_VALUES.map(
-                        (
-                          accent,
-                        ) => (
-                          <option
-                            key={
-                              accent
-                            }
-                            value={
-                              accent
-                            }
-                          >
-                            {accent}
-                          </option>
-                        ),
-                      )}
-                    </select>
-                  </label>
+                    <div className="app-settings-select-field">
+                      <label htmlFor="platform-language">
+                        Application Language
+                      </label>
 
-                  <label className="app-settings-select-field">
-                    <span>
-                      Application Language
-                    </span>
+                      <select
+                        id="platform-language"
+                        value={
+                          platformSettings
+                            .formValues
+                            .languageCode
+                        }
+                        disabled={
+                          isBusy ||
+                          !platformSettings
+                            .permissions
+                            .canEditAppearance
+                        }
+                        onChange={(event) => {
+                          const value =
+                            event.target.value as
+                              AppLanguageCode;
 
-                    <select
-                      value={
-                        platformSettings
-                          .formValues
-                          .languageCode
-                      }
-                      disabled={
-                        isBusy ||
-                        !platformSettings
-                          .permissions
-                          .canEditAppearance
-                      }
-                      onChange={(event) => {
-                        const value =
-                          event.target.value as
-                            AppLanguageCode;
+                          platformSettings
+                            .setFieldValue(
+                              "languageCode",
+                              value,
+                            );
 
-                        platformSettings
-                          .setFieldValue(
-                            "languageCode",
+                          onLanguageChange?.(
                             value,
                           );
-
-                        onLanguageChange?.(
-                          value,
-                        );
-                      }}
-                    >
-                      {APP_LANGUAGE_OPTIONS.map(
-                        (
-                          option,
-                        ) => (
-                          <option
-                            key={
-                              option.code
-                            }
-                            value={
-                              option.code
-                            }
-                          >
-                            {option.nativeTitle}
-                          </option>
-                        ),
-                      )}
-                    </select>
-                  </label>
+                        }}
+                      >
+                        {APP_LANGUAGE_OPTIONS.map(
+                          (
+                            option,
+                          ) => (
+                            <option
+                              key={
+                                option.code
+                              }
+                              value={
+                                option.code
+                              }
+                            >
+                              {option.nativeTitle}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </section>
 
               <section className="app-settings-panel">
-                <span className="app-settings-eyebrow">
-                  Coming next
-                </span>
+                <header className="app-settings-panel__header">
+                  <div>
+                    <span className="app-settings-eyebrow">
+                      Coming next
+                    </span>
 
-                <h2>
-                  Official Background Collection
-                </h2>
+                    <h2>
+                      Official Background Collection
+                    </h2>
 
-                <p>
-                  The official JCS background library will be connected here after the background assets are installed.
-                </p>
+                    <p>
+                      The official JCS background library will be connected here after the background assets are installed.
+                    </p>
+                  </div>
+                </header>
+
+                <div className="app-settings-panel__body">
+                  <p
+                    style={{
+                      margin:
+                        0,
+                      color:
+                        "var(--app-settings-text-secondary)",
+                      fontSize:
+                        "13px",
+                      lineHeight:
+                        1.6,
+                    }}
+                  >
+                    Platform background controls will appear here when the official JCS background assets are installed.
+                  </p>
+                </div>
               </section>
             </div>
           ) : null}
+
         </form>
       </div>
     </main>
