@@ -58,6 +58,10 @@ import type {
 } from "../app-settings/AppSettingsTypes";
 
 import type {
+  JCSScreenBackgroundID,
+} from "../../components/layout/JCSScreenBackground";
+
+import type {
   PlatformSettingsActor,
   PlatformSettingsRecord,
 } from "./PlatformSettingsTypes";
@@ -87,6 +91,9 @@ export interface PlatformSettingsContextValue {
 
   platformLanguageCode:
     AppLanguageCode;
+
+  platformBackgroundID:
+    JCSScreenBackgroundID;
 
   hasCustomPlatformLogo:
     boolean;
@@ -459,6 +466,9 @@ export function PlatformSettingsContextProvider({
 
         platformLanguageCode:
           settings.languageCode,
+
+        platformBackgroundID:
+          settings.backgroundID,
 
         hasCustomPlatformLogo:
           settings.hasCustomLogo ===

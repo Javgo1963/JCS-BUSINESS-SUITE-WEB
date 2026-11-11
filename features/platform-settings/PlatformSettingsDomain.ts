@@ -48,6 +48,10 @@ import type {
   SavePlatformSettingsInput,
 } from "./PlatformSettingsTypes";
 
+import {
+  normalizeJCSScreenBackgroundID,
+} from "../../components/layout/JCSScreenBackground";
+
 // =======================================================
 // MARK: - Constants
 // =======================================================
@@ -317,6 +321,11 @@ export function normalizePlatformSettingsFormValues(
       normalizeAppLanguageCode(
         values.languageCode,
       ),
+
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        values.backgroundID,
+      ),
   };
 }
 
@@ -348,6 +357,11 @@ export function createPlatformSettingsFormValues(
 
     languageCode:
       settings.languageCode,
+
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        settings.backgroundID,
+      ),
   });
 }
 
@@ -536,6 +550,13 @@ export function createPlatformSettingsRecordFromSaveInput(
         .formValues
         .languageCode,
 
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        normalizedInput
+          .formValues
+          .backgroundID,
+      ),
+
     createdByUID:
       baseRecord.createdByUID ||
       normalizedInput
@@ -671,6 +692,10 @@ export function serializePlatformSettingsForFirestore(
       normalizedRecord
         .languageCode,
 
+    backgroundID:
+      normalizedRecord
+        .backgroundID,
+
     logoStoragePath:
       normalizedRecord
         .logoStoragePath,
@@ -759,6 +784,11 @@ export function deserializePlatformSettingsRecord(
     languageCode:
       normalizeAppLanguageCode(
         data.languageCode,
+      ),
+
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        data.backgroundID,
       ),
 
     logoStoragePath:
@@ -878,6 +908,11 @@ export function normalizePlatformSettingsRecord(
         settings.languageCode,
       ),
 
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        settings.backgroundID,
+      ),
+
     logoStoragePath:
       hasPlatformLogo
         ? logoStoragePath
@@ -949,7 +984,9 @@ export function arePlatformSettingsFormValuesEqual(
     normalizedFirst.accentColorName ===
       normalizedSecond.accentColorName &&
     normalizedFirst.languageCode ===
-      normalizedSecond.languageCode
+      normalizedSecond.languageCode &&
+    normalizedFirst.backgroundID ===
+      normalizedSecond.backgroundID
   );
 }
 

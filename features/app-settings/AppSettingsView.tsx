@@ -73,6 +73,10 @@ import {
   applyOfficialJCSLogoToBusiness,
 } from "../official-jcs-branding/OfficialJCSLogoFirestoreService";
 
+import {
+  JCS_SCREEN_BACKGROUND_OPTIONS,
+} from "../../components/layout/JCSScreenBackground";
+
 import "./AppSettingsView.css";
 
 import type {
@@ -1184,6 +1188,10 @@ export default function AppSettingsView({
                   accentColorName={
                     effectiveAccentColorName
                   }
+                  backgroundID={
+                    appSettings.formValues
+                      .backgroundID
+                  }
                   languageCode={
                     appSettings.formValues
                       .languageCode
@@ -1194,6 +1202,14 @@ export default function AppSettingsView({
                   onAccentColorSelection={
                     handleAccentColorSelection
                   }
+                  onBackgroundSelection={(
+                    backgroundID,
+                  ) => {
+                    appSettings.setFieldValue(
+                      "backgroundID",
+                      backgroundID,
+                    );
+                  }}
                   onLanguageChange={
                     handleLanguageChange
                   }
@@ -2280,6 +2296,10 @@ interface AppearanceSectionProps {
   accentColorName:
     AppAccentColorName;
 
+  backgroundID:
+    import("../../components/layout/JCSScreenBackground")
+      .JCSScreenBackgroundID;
+
   languageCode:
     AppLanguageCode;
 
@@ -2288,6 +2308,12 @@ interface AppearanceSectionProps {
 
   onAccentColorSelection: (
     name: AppAccentColorName,
+  ) => void;
+
+  onBackgroundSelection: (
+    backgroundID:
+      import("../../components/layout/JCSScreenBackground")
+        .JCSScreenBackgroundID,
   ) => void;
 
   onLanguageChange: (
@@ -2313,11 +2339,13 @@ function AppearanceSection({
   disabled,
 
   accentColorName,
+  backgroundID,
   languageCode,
 
   errors,
 
   onAccentColorSelection,
+  onBackgroundSelection,
   onLanguageChange,
 
   branding,
@@ -2452,6 +2480,108 @@ function AppearanceSection({
             >
               Dashboard Action
             </button>
+          </div>
+        </div>
+      </AppSettingsPanel>
+
+      <AppSettingsPanel
+        eyebrow="Dashboard background"
+        title="Official Background Collection"
+        description="Choose from the 32 official JCS backgrounds available for your business workspace."
+      >
+        <div className="app-settings-background-library">
+          <div className="app-settings-background-library__header">
+            <div>
+              <h3>
+                32 Official Backgrounds
+              </h3>
+
+              <p>
+                Select a background and save App Settings to make it the preferred background for this business.
+              </p>
+            </div>
+
+            <span className="app-settings-background-library__badge">
+              Business
+            </span>
+          </div>
+
+          <div
+            className="app-settings-background-grid"
+            role="radiogroup"
+            aria-label="Business Official Background Collection"
+          >
+            {JCS_SCREEN_BACKGROUND_OPTIONS.map(
+              (
+                option,
+              ) => {
+                const isSelected =
+                  backgroundID ===
+                  option.id;
+
+                return (
+                  <button
+                    key={
+                      option.id
+                    }
+                    type="button"
+                    role="radio"
+                    aria-checked={
+                      isSelected
+                    }
+                    className={[
+                      "app-settings-background-option",
+                      isSelected
+                        ? "app-settings-background-option--selected"
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    disabled={
+                      disabled
+                    }
+                    onClick={() => {
+                      onBackgroundSelection(
+                        option.id,
+                      );
+                    }}
+                  >
+                    <span
+                      className="app-settings-background-option__preview"
+                      style={{
+                        background:
+                          option.background,
+                      }}
+                    >
+                      <span
+                        className="app-settings-background-option__preview-accent"
+                        style={{
+                          background:
+                            option.previewAccentHex,
+                        }}
+                        aria-hidden="true"
+                      />
+
+                      {isSelected ? (
+                        <span className="app-settings-background-option__check">
+                          ✓
+                        </span>
+                      ) : null}
+                    </span>
+
+                    <span className="app-settings-background-option__copy">
+                      <strong>
+                        {option.title}
+                      </strong>
+
+                      <span>
+                        {option.subtitle}
+                      </span>
+                    </span>
+                  </button>
+                );
+              },
+            )}
           </div>
         </div>
       </AppSettingsPanel>

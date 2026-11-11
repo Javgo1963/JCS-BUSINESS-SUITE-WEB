@@ -24,6 +24,10 @@ import type {
   BusinessLogoSource,
 } from "../business-branding/BusinessLogoTypes";
 
+import type {
+  JCSScreenBackgroundID,
+} from "../../components/layout/JCSScreenBackground";
+
 // MARK: - Languages
 
 export const APP_LANGUAGE_VALUES = [
@@ -300,6 +304,9 @@ export interface AppSettingsLocalization {
 
 export interface AppSettingsAppearance {
   accentColorName: AppAccentColorName;
+
+  backgroundID:
+    JCSScreenBackgroundID;
 }
 
 // MARK: - Branding
@@ -397,6 +404,9 @@ export interface AppSettingsFirestoreDocument {
   languageCode: AppLanguageCode;
   accentColorName: AppAccentColorName;
 
+  backgroundID:
+    JCSScreenBackgroundID;
+
   activeLogoID: string;
   activeLogoSource: BusinessLogoSource;
 
@@ -447,6 +457,9 @@ export interface AppSettingsFormValues {
 
   languageCode: AppLanguageCode;
   accentColorName: AppAccentColorName;
+
+  backgroundID:
+    JCSScreenBackgroundID;
 }
 
 // MARK: - Form Errors
@@ -603,6 +616,8 @@ export const DEFAULT_APP_SETTINGS_FORM_VALUES: AppSettingsFormValues = {
 
   languageCode: "system",
   accentColorName: "blue",
+
+  backgroundID: "default",
 };
 
 export const EMPTY_APP_SETTINGS_FORM_ERRORS: AppSettingsFormErrors = {
@@ -751,6 +766,9 @@ export function createDefaultAppSettingsRecord(
 
     accentColorName:
       "blue",
+
+    backgroundID:
+      "default",
 
     activeLogoID:
       "",

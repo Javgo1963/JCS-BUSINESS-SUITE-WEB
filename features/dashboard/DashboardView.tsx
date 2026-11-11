@@ -748,6 +748,7 @@ const {
   platformLogoDownloadURL,
   platformAccentColorName,
   platformLanguageCode,
+  platformBackgroundID,
 
   hasCustomPlatformLogo,
 
@@ -909,6 +910,24 @@ const accentName =
       ? platformAccentColorName
       : activeAccentColorName
   );
+
+const activeBackgroundID =
+  access.isPlatformAdmin
+    ? platformBackgroundID
+    : (
+        appSettings
+          ?.backgroundID ??
+        "default"
+      );
+
+const activeBackgroundDownloadURL =
+  access.isPlatformAdmin
+    ? ""
+    : (
+        appSettings
+          ?.backgroundDownloadURL ??
+        ""
+      );
 
 const companyName =
   activeIdentityName;
@@ -1955,6 +1974,12 @@ const officialShellConfiguration =
       isDarkMode
         ? "dark"
         : "light",
+
+    backgroundID:
+      activeBackgroundID,
+
+    backgroundDownloadURL:
+      activeBackgroundDownloadURL,
 
     access,
 
@@ -3198,6 +3223,8 @@ if (
                 setAppSettingsOpen(
                   false
                 );
+
+                void refresh();
 
                 void businessLogo
                   .reloadActiveLogo();

@@ -22,6 +22,10 @@ import type {
   AppLanguageCode,
 } from "../app-settings/AppSettingsTypes";
 
+import type {
+  JCSScreenBackgroundID,
+} from "../../components/layout/JCSScreenBackground";
+
 // =======================================================
 // MARK: - Firestore
 // =======================================================
@@ -114,6 +118,9 @@ export interface PlatformAppearance {
   languageCode:
     AppLanguageCode;
 
+  backgroundID:
+    JCSScreenBackgroundID;
+
   logoStoragePath:
     string;
 
@@ -165,6 +172,9 @@ export interface PlatformSettingsFirestoreDocument {
   languageCode:
     AppLanguageCode;
 
+  backgroundID:
+    JCSScreenBackgroundID;
+
   logoStoragePath: string;
   logoDownloadURL: string;
   logoFileName: string;
@@ -196,6 +206,9 @@ export interface PlatformSettingsFormValues {
 
   languageCode:
     AppLanguageCode;
+
+  backgroundID:
+    JCSScreenBackgroundID;
 }
 
 export interface PlatformSettingsFormErrors {
@@ -210,6 +223,8 @@ export interface PlatformSettingsFormErrors {
   accentColorName: string;
 
   languageCode: string;
+
+  backgroundID: string;
 }
 
 export interface PlatformSettingsValidationSuccess {
@@ -318,6 +333,9 @@ export const DEFAULT_PLATFORM_SETTINGS_FORM_VALUES:
 
     languageCode:
       "en",
+
+    backgroundID:
+      "default",
   };
 
 export const EMPTY_PLATFORM_SETTINGS_FORM_ERRORS:
@@ -338,6 +356,9 @@ export const EMPTY_PLATFORM_SETTINGS_FORM_ERRORS:
       "",
 
     languageCode:
+      "",
+
+    backgroundID:
       "",
   };
 

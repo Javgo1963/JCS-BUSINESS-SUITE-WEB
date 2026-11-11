@@ -30,6 +30,14 @@ import {
 } from "@/core/services/AuthService";
 
 import {
+  deserializeAppSettingsRecord,
+} from "@/features/app-settings/AppSettingsDomain";
+
+import type {
+  JCSScreenBackgroundID,
+} from "@/components/layout/JCSScreenBackground";
+
+import {
   db,
 } from "@/core/firebase/firebase";
 
@@ -95,6 +103,15 @@ export interface JCSAppSettings {
   companyName: string;
 
   accentColorName: string;
+
+  backgroundID:
+    JCSScreenBackgroundID;
+
+  backgroundStoragePath:
+    string;
+
+  backgroundDownloadURL:
+    string;
 
   logoFileName?: string;
   backgroundFileName?: string;
@@ -410,6 +427,15 @@ const setActiveAccentColor =
               accentColorName:
                 normalizedAccentColor,
 
+              backgroundID:
+                "default",
+
+              backgroundStoragePath:
+                "",
+
+              backgroundDownloadURL:
+                "",
+
               taxPercent:
                 0,
 
@@ -636,9 +662,76 @@ const setActiveAccentColor =
           if (
             settingsSnapshot.exists()
           ) {
-            setAppSettings(
-              settingsSnapshot.data() as JCSAppSettings
-            );
+            const normalizedSettings =
+              deserializeAppSettingsRecord(
+                resolvedBusinessID,
+                settingsSnapshot.data(),
+              );
+
+            setAppSettings({
+              businessID:
+                normalizedSettings.businessID,
+
+              companyName:
+                normalizedSettings.companyName,
+
+              accentColorName:
+                normalizedSettings.accentColorName,
+
+              backgroundID:
+                normalizedSettings.backgroundID,
+
+              backgroundStoragePath:
+                normalizedSettings
+                  .backgroundStoragePath,
+
+              backgroundDownloadURL:
+                normalizedSettings
+                  .backgroundDownloadURL,
+
+              logoFileName:
+                cleanText(
+                  settingsSnapshot.data()
+                    .logoFileName,
+                ) ||
+                undefined,
+
+              backgroundFileName:
+                cleanText(
+                  settingsSnapshot.data()
+                    .backgroundFileName,
+                ) ||
+                undefined,
+
+              taxPercent:
+                normalizedSettings.taxPercent,
+
+              languageCode:
+                normalizedSettings.languageCode,
+
+              localeIdentifier:
+                cleanText(
+                  settingsSnapshot.data()
+                    .localeIdentifier,
+                ) ||
+                "en-US",
+
+              timeZoneIdentifier:
+                cleanText(
+                  settingsSnapshot.data()
+                    .timeZoneIdentifier,
+                ) ||
+                Intl.DateTimeFormat()
+                  .resolvedOptions()
+                  .timeZone,
+
+              currencyCode:
+                cleanText(
+                  settingsSnapshot.data()
+                    .currencyCode,
+                ) ||
+                "USD",
+            });
           } else {
             setAppSettings(null);
           }

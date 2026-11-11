@@ -39,6 +39,10 @@ import {
   usePlatformSettings,
 } from "../platform-settings/usePlatformSettings";
 
+import {
+  JCS_SCREEN_BACKGROUND_OPTIONS,
+} from "../../components/layout/JCSScreenBackground";
+
 import type {
   AppAccentColorName,
   AppLanguageCode,
@@ -1427,7 +1431,7 @@ export default function PlatformAppSettingsView({
                 <header className="app-settings-panel__header">
                   <div>
                     <span className="app-settings-eyebrow">
-                      Coming next
+                      JCS visual library
                     </span>
 
                     <h2>
@@ -1435,26 +1439,114 @@ export default function PlatformAppSettingsView({
                     </h2>
 
                     <p>
-                      The official JCS background library will be connected here after the background assets are installed.
+                      Choose the official background used by Platform Admin. The same 32-background authority is shared with JCS Business Suite.
                     </p>
                   </div>
                 </header>
 
                 <div className="app-settings-panel__body">
-                  <p
-                    style={{
-                      margin:
-                        0,
-                      color:
-                        "var(--app-settings-text-secondary)",
-                      fontSize:
-                        "13px",
-                      lineHeight:
-                        1.6,
-                    }}
-                  >
-                    Platform background controls will appear here when the official JCS background assets are installed.
-                  </p>
+                  <div className="app-settings-background-library">
+                    <div className="app-settings-background-library__header">
+                      <div>
+                        <h3>
+                          32 Official Backgrounds
+                        </h3>
+
+                        <p>
+                          Select a background and save App Settings to make it the global Platform Admin preference.
+                        </p>
+                      </div>
+
+                      <span className="app-settings-background-library__badge">
+                        Platform
+                      </span>
+                    </div>
+
+                    <div
+                      className="app-settings-background-grid"
+                      role="radiogroup"
+                      aria-label="Platform Admin Official Background Collection"
+                    >
+                      {JCS_SCREEN_BACKGROUND_OPTIONS.map(
+                        (
+                          option,
+                        ) => {
+                          const isSelected =
+                            platformSettings
+                              .formValues
+                              .backgroundID ===
+                            option.id;
+
+                          return (
+                            <button
+                              key={
+                                option.id
+                              }
+                              type="button"
+                              role="radio"
+                              aria-checked={
+                                isSelected
+                              }
+                              className={[
+                                "app-settings-background-option",
+                                isSelected
+                                  ? "app-settings-background-option--selected"
+                                  : "",
+                              ]
+                                .filter(Boolean)
+                                .join(" ")}
+                              disabled={
+                                isBusy ||
+                                !platformSettings
+                                  .permissions
+                                  .canEditAppearance
+                              }
+                              onClick={() => {
+                                platformSettings
+                                  .setFieldValue(
+                                    "backgroundID",
+                                    option.id,
+                                  );
+                              }}
+                            >
+                              <span
+                                className="app-settings-background-option__preview"
+                                style={{
+                                  background:
+                                    option.background,
+                                }}
+                              >
+                                <span
+                                  className="app-settings-background-option__preview-accent"
+                                  style={{
+                                    background:
+                                      option.previewAccentHex,
+                                  }}
+                                  aria-hidden="true"
+                                />
+
+                                {isSelected ? (
+                                  <span className="app-settings-background-option__check">
+                                    ✓
+                                  </span>
+                                ) : null}
+                              </span>
+
+                              <span className="app-settings-background-option__copy">
+                                <strong>
+                                  {option.title}
+                                </strong>
+
+                                <span>
+                                  {option.subtitle}
+                                </span>
+                              </span>
+                            </button>
+                          );
+                        },
+                      )}
+                    </div>
+                  </div>
                 </div>
               </section>
             </div>

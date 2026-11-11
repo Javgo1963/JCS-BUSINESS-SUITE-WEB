@@ -4,6 +4,10 @@ import type {
   ReactNode,
 } from "react";
 
+import type {
+  JCSScreenBackgroundID,
+} from "../layout/JCSScreenBackground";
+
 /*
  * JCS Business Suite Web
  * JCSShellTypes.ts
@@ -258,6 +262,12 @@ export interface JCSOfficialShellProps {
 
   appearance:
     JCSShellAppearance;
+
+  backgroundID:
+    JCSScreenBackgroundID;
+
+  backgroundDownloadURL?:
+    string;
 
   identity:
     JCSShellIdentity;

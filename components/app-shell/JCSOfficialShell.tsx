@@ -26,6 +26,10 @@ import DashboardIcon from
 import DashboardLiveStatus from
   "@/features/dashboard/DashboardLiveStatus";
 
+import {
+  getJCSScreenBackgroundOption,
+} from "@/components/layout/JCSScreenBackground";
+
 import JCSUserAvatarPicker from
   "@/components/app-shell/JCSUserAvatarPicker";
 
@@ -48,6 +52,9 @@ export default function JCSOfficialShell({
   accentName,
   accentColorCSS,
   appearance,
+
+  backgroundID,
+  backgroundDownloadURL,
 
   identity,
   user,
@@ -235,6 +242,29 @@ export default function JCSOfficialShell({
   }
 
   // =====================================================
+  // MARK: - Screen Background
+  // =====================================================
+
+  const selectedBackground =
+    getJCSScreenBackgroundOption(
+      backgroundID,
+    );
+
+  const customBackgroundURL =
+    backgroundDownloadURL
+      ?.trim() ?? "";
+
+  const shellBackground =
+    backgroundID ===
+      "custom" &&
+    customBackgroundURL
+      ? `center / cover no-repeat url(${JSON.stringify(
+          customBackgroundURL,
+        )})`
+      : selectedBackground
+          .background;
+
+  // =====================================================
   // MARK: - Shell View
   // =====================================================
 
@@ -259,6 +289,9 @@ export default function JCSOfficialShell({
 
     "--jcs-accent":
       accentColorCSS,
+
+    background:
+      shellBackground,
   } as JCSShellStyle
 }
     >

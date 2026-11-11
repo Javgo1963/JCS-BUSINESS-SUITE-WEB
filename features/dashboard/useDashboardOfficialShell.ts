@@ -108,6 +108,14 @@ export interface UseDashboardOfficialShellInput {
   appearance:
     JCSShellAppearance;
 
+  backgroundID:
+    JCSOfficialShellProps[
+      "backgroundID"
+    ];
+
+  backgroundDownloadURL?:
+    string;
+
   access:
     DashboardAccess;
 
@@ -212,6 +220,9 @@ export function useDashboardOfficialShell({
   accentName,
   accentColorCSS,
   appearance,
+
+  backgroundID,
+  backgroundDownloadURL,
 
   access,
   identity,
@@ -492,6 +503,9 @@ export function useDashboardOfficialShell({
       accentColorCSS,
       appearance,
 
+      backgroundID,
+      backgroundDownloadURL,
+
       identity,
       user,
 
@@ -569,6 +583,8 @@ export function useDashboardOfficialShell({
       accentName,
       actions,
       appearance,
+      backgroundDownloadURL,
+      backgroundID,
       commandItems,
       identity,
       isSigningOut,

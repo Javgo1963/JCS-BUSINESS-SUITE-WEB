@@ -64,6 +64,10 @@ import type {
   BusinessLogoSource,
 } from "../business-branding/BusinessLogoTypes";
 
+import {
+  normalizeJCSScreenBackgroundID,
+} from "../../components/layout/JCSScreenBackground";
+
 // MARK: - Constants
 
 export const APP_SETTINGS_COMPANY_NAME_MAX_LENGTH =
@@ -456,6 +460,11 @@ export function normalizeAppSettingsFormValues(
       normalizeAppAccentColorName(
         values.accentColorName,
       ),
+
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        values.backgroundID,
+      ),
   };
 }
 
@@ -494,6 +503,11 @@ export function createAppSettingsFormValues(
 
     accentColorName:
       settings.accentColorName,
+
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        settings.backgroundID,
+      ),
   });
 }
 
@@ -803,6 +817,13 @@ export function createAppSettingsRecordFromSaveInput(
         .formValues
         .accentColorName,
 
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        normalizedInput
+          .formValues
+          .backgroundID,
+      ),
+
     activeLogoID:
       branding.activeLogoID,
 
@@ -891,6 +912,9 @@ export function serializeAppSettingsForFirestore(
 
     accentColorName:
       normalizedRecord.accentColorName,
+
+    backgroundID:
+      normalizedRecord.backgroundID,
 
     activeLogoID:
       normalizedRecord.activeLogoID,
@@ -1090,6 +1114,11 @@ export function deserializeAppSettingsRecord(
         data.accentColorName,
       ),
 
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        data.backgroundID,
+      ),
+
     activeLogoID:
       readString(
         data.activeLogoID,
@@ -1244,6 +1273,11 @@ export function normalizeAppSettingsRecord(
     accentColorName:
       normalizeAppAccentColorName(
         settings.accentColorName,
+      ),
+
+    backgroundID:
+      normalizeJCSScreenBackgroundID(
+        settings.backgroundID,
       ),
 
     activeLogoID:
@@ -1777,7 +1811,9 @@ export function areAppSettingsFormValuesEqual(
     normalizedFirst.languageCode ===
       normalizedSecond.languageCode &&
     normalizedFirst.accentColorName ===
-      normalizedSecond.accentColorName
+      normalizedSecond.accentColorName &&
+    normalizedFirst.backgroundID ===
+      normalizedSecond.backgroundID
   );
 }
 
