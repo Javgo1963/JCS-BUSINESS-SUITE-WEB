@@ -33,15 +33,18 @@ import {
 import {
   archivePlatformClient,
   cancelPlatformClientDeletionRequest,
+  createPlatformBusinessOwnerInvitation,
   disablePlatformOwnerAccess,
   enablePlatformOwnerAccess,
   fetchPlatformClients,
   fetchPlatformOwnerInvitations,
   requestPlatformClientDeletion,
   restorePlatformClientFromArchive,
+  sendPlatformBusinessOwnerInvitationEmail,
   setPlatformClientActivation,
   subscribeToPlatformClients,
   subscribeToPlatformOwnerInvitations,
+  type CreatePlatformBusinessOwnerInvitationInput,
   type PlatformExecutiveActor,
 } from "./PlatformExecutiveFirestoreService";
 
@@ -185,6 +188,14 @@ export interface UsePlatformExecutiveCenterResult {
     (
       businessID: string
     ) => Promise<void>;
+
+  // Business Owner Invitations
+
+  inviteBusinessOwner:
+    (
+      input:
+        CreatePlatformBusinessOwnerInvitationInput
+    ) => Promise<PlatformOwnerInvitationRecord>;
 
   // Owner Access
 
@@ -1412,6 +1423,116 @@ useEffect(() => {
     );
 
   // ==========================================================
+  // MARK: - Business Owner Invitations
+  // ==========================================================
+
+  const inviteBusinessOwner =
+    useCallback(
+      async (
+        input:
+          CreatePlatformBusinessOwnerInvitationInput
+      ): Promise<PlatformOwnerInvitationRecord> => {
+        assertPlatformAdministrator(
+          actor
+        );
+
+        beginMutation();
+
+        if (
+          isMountedRef.current
+        ) {
+          setErrorMessage(
+            null
+          );
+        }
+
+        try {
+          /*
+           * Step 1
+           *
+           * Persist the invitation first. If email delivery
+           * fails, the invitation remains available as pending
+           * and can be retried later.
+           */
+          const invitation =
+            await createPlatformBusinessOwnerInvitation(
+              actor,
+              input
+            );
+
+          /*
+           * Step 2
+           *
+           * Deliver the existing JCS Business Owner invitation
+           * email using the authenticated Platform Administrator.
+           */
+          await sendPlatformBusinessOwnerInvitationEmail(
+            actor,
+            invitation
+          );
+
+          /*
+           * Step 3
+           *
+           * Refresh direct state. Realtime listeners will also
+           * receive the Firestore update, but this keeps the
+           * action deterministic in either listener mode.
+           */
+          if (
+            isMountedRef.current
+          ) {
+            try {
+              const updatedInvitations =
+                await fetchPlatformOwnerInvitations(
+                  actor
+                );
+
+              if (
+                isMountedRef.current
+              ) {
+                setInvitations(
+                  sortInvitations(
+                    updatedInvitations
+                  )
+                );
+
+                setLastRefreshedAt(
+                  new Date()
+                );
+              }
+            } catch (
+              refreshError: unknown
+            ) {
+              console.warn(
+                "Business Owner invitation was sent, but invitation refresh failed:",
+                refreshError
+              );
+            }
+          }
+
+          return invitation;
+        } catch (
+          error: unknown
+        ) {
+          registerError(
+            error,
+            "Unable to send the Business Owner invitation."
+          );
+
+          throw error;
+        } finally {
+          finishMutation();
+        }
+      },
+      [
+        actor,
+        beginMutation,
+        finishMutation,
+        registerError,
+      ]
+    );
+
+  // ==========================================================
   // MARK: - Owner Access
   // ==========================================================
 
@@ -1520,6 +1641,8 @@ useEffect(() => {
 
     requestDeletion,
     cancelDeletion,
+
+    inviteBusinessOwner,
 
     enableOwnerAccess,
     disableOwnerAccess,

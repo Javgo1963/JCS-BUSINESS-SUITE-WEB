@@ -37,6 +37,7 @@ import {
 
 import {
   db,
+  firebaseAuth,
 } from "@/core/firebase/firebase";
 
 import {
@@ -478,6 +479,408 @@ export function subscribeToPlatformClients(
 // MARK: - Owner Invitations
 // ============================================================
 
+export interface CreatePlatformBusinessOwnerInvitationInput {
+  recipientName: string;
+  recipientEmail: string;
+  recipientPhone?: string;
+}
+
+export async function createPlatformBusinessOwnerInvitation(
+  actor: PlatformExecutiveActor,
+  input: CreatePlatformBusinessOwnerInvitationInput
+): Promise<PlatformOwnerInvitationRecord> {
+  requirePlatformAdministrator(actor);
+
+  const recipientName =
+    cleanPlatformText(
+      input.recipientName
+    );
+
+  const recipientEmail =
+    cleanPlatformEmail(
+      input.recipientEmail
+    );
+
+  const recipientPhone =
+    cleanPlatformText(
+      input.recipientPhone ?? ""
+    );
+
+  if (!recipientName) {
+    throw new PlatformExecutiveServiceError(
+      "required-field",
+      "Business Owner name is required."
+    );
+  }
+
+  if (!recipientEmail) {
+    throw new PlatformExecutiveServiceError(
+      "required-field",
+      "Business Owner email is required."
+    );
+  }
+
+  const invitedByPlatformUID =
+    cleanPlatformText(
+      actor.firebaseUID
+    );
+
+  if (!invitedByPlatformUID) {
+    throw new PlatformExecutiveServiceError(
+      "required-field",
+      "Platform Administrator UID is required."
+    );
+  }
+
+  const invitationReference =
+    doc(
+      platformOwnerInvitationsCollection()
+    );
+
+  const invitationID =
+    invitationReference.id;
+
+  const invitationCode =
+    crypto.randomUUID()
+      .replace(/-/g, "")
+      .toUpperCase();
+
+  const invitationLink =
+    `https://www.jcsbusinesssuite.com/create-business?invitation=${encodeURIComponent(
+      invitationCode
+    )}&source=platform`;
+
+  /*
+   * Preserve both naming contracts:
+   *
+   * Web:
+   * ownerFullName / ownerEmail / ownerPhone
+   *
+   * Apple:
+   * prospectFullName / prospectEmail / prospectPhone
+   *
+   * Both applications therefore read the same invitation document.
+   */
+  const payload = {
+    invitationType:
+      "platformBusinessOwner",
+
+    id:
+      invitationID,
+
+    invitationID,
+    invitationCode,
+    invitationLink,
+
+    invitedByPlatformUID,
+
+    ownerFullName:
+      recipientName,
+
+    ownerEmail:
+      recipientEmail,
+
+    ownerPhone:
+      recipientPhone,
+
+    prospectFullName:
+      recipientName,
+
+    prospectEmail:
+      recipientEmail,
+
+    prospectPhone:
+      recipientPhone,
+
+    recipientName,
+    recipientEmail,
+    recipientPhone,
+
+    prospectiveBusinessName:
+      "",
+
+    status:
+      PLATFORM_OWNER_INVITATION_STATUSES
+        .pending,
+
+    statusRawValue:
+      PLATFORM_OWNER_INVITATION_STATUSES
+        .pending,
+
+    /*
+     * Business Owner platform invitations intentionally
+     * do not expire automatically.
+     */
+    expiresAt:
+      null,
+
+    sentAt:
+      null,
+
+    acceptedAt:
+      null,
+
+    canceledAt:
+      null,
+
+    businessID:
+      "",
+
+    ownerUID:
+      "",
+
+    createdAt:
+      serverTimestamp(),
+
+    updatedAt:
+      serverTimestamp(),
+  };
+
+  await setDoc(
+    invitationReference,
+    payload
+  );
+
+  return normalizePlatformOwnerInvitationRecord(
+    invitationID,
+    {
+      ...payload,
+      createdAt:
+        new Date(),
+      updatedAt:
+        new Date(),
+    } as never
+  );
+}
+
+export interface PlatformBusinessOwnerInvitationEmailResult {
+  success: boolean;
+  message: string;
+  messageID: string | null;
+}
+
+const PLATFORM_BUSINESS_OWNER_INVITATION_EMAIL_URL =
+  process.env
+    .NEXT_PUBLIC_JCS_PLATFORM_OWNER_INVITATION_EMAIL_URL
+    ?.trim() ||
+  "https://us-central1-jcs-business-suite.cloudfunctions.net/sendPlatformBusinessOwnerInvitationEmail";
+
+export async function sendPlatformBusinessOwnerInvitationEmail(
+  actor: PlatformExecutiveActor,
+  invitation: PlatformOwnerInvitationRecord
+): Promise<PlatformBusinessOwnerInvitationEmailResult> {
+  requirePlatformAdministrator(
+    actor
+  );
+
+  const invitationID =
+    requireText(
+      invitation.id,
+      "Invitation ID"
+    );
+
+  const invitationCode =
+    requireText(
+      invitation.invitationCode,
+      "Invitation code"
+    )
+      .toUpperCase();
+
+  const recipientName =
+    requireText(
+      invitation.ownerFullName,
+      "Business Owner name"
+    );
+
+  const recipientEmail =
+    cleanPlatformEmail(
+      invitation.ownerEmail
+    );
+
+  const recipientPhone =
+    cleanPlatformText(
+      invitation.ownerPhone
+    );
+
+  const invitedByPlatformUID =
+    cleanPlatformText(
+      actor.firebaseUID
+    );
+
+  const invitationLink =
+    requireText(
+      invitation.invitationLink,
+      "Invitation link"
+    );
+
+  if (!recipientEmail) {
+    throw new PlatformExecutiveServiceError(
+      "owner-email-required",
+      "A valid Business Owner email is required."
+    );
+  }
+
+  const authenticatedUser =
+    firebaseAuth.currentUser;
+
+  if (!authenticatedUser) {
+    throw new PlatformExecutiveServiceError(
+      "authentication-required",
+      "Platform Administrator authentication is required before sending an invitation."
+    );
+  }
+
+  if (
+    authenticatedUser.uid !==
+    invitedByPlatformUID
+  ) {
+    throw new PlatformExecutiveServiceError(
+      "platform-admin-auth-mismatch",
+      "The authenticated Firebase user does not match the Platform Administrator sending this invitation."
+    );
+  }
+
+  const firebaseIDToken =
+    await authenticatedUser
+      .getIdToken();
+
+  const response =
+    await fetch(
+      PLATFORM_BUSINESS_OWNER_INVITATION_EMAIL_URL,
+      {
+        method:
+          "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+
+          Authorization:
+            `Bearer ${firebaseIDToken}`,
+        },
+
+        body:
+          JSON.stringify({
+            invitationType:
+              "platformBusinessOwner",
+
+            invitationID,
+            invitationCode,
+
+            invitedByPlatformUID,
+
+            recipientName,
+            recipientEmail,
+            recipientPhone,
+
+            prospectiveBusinessName:
+              "",
+
+            invitationLink,
+
+            websiteURL:
+              "https://www.jcsbusinesssuite.com",
+
+            createBusinessURL:
+              "https://www.jcsbusinesssuite.com/create-business",
+
+            senderName:
+              cleanPlatformText(
+                actor.displayName
+              ) ||
+              "JCS Business Suite",
+
+            replyToEmail:
+              cleanPlatformEmail(
+                actor.email
+              ),
+
+            logoURL:
+              "",
+
+            notes:
+              "",
+          }),
+      }
+    );
+
+  let responseBody:
+    {
+      success?: boolean;
+      message?: string;
+      messageID?: string | null;
+      error?: string;
+    } = {};
+
+  try {
+    responseBody =
+      await response.json();
+  } catch {
+    responseBody = {};
+  }
+
+  if (
+    !response.ok ||
+    responseBody.success !== true
+  ) {
+    throw new PlatformExecutiveServiceError(
+      "owner-invitation-email-failed",
+      responseBody.message ||
+      responseBody.error ||
+      `Business Owner invitation email failed with HTTP ${response.status}.`
+    );
+  }
+
+  /*
+   * Email delivery succeeded.
+   *
+   * Now update the authoritative invitation document.
+   * If SendGrid fails, this block never runs and the
+   * invitation remains pending for a future retry.
+   */
+  const invitationReference =
+    doc(
+      platformOwnerInvitationsCollection(),
+      invitationID
+    );
+
+  await setDoc(
+    invitationReference,
+    {
+      status:
+        PLATFORM_OWNER_INVITATION_STATUSES
+          .sent,
+
+      statusRawValue:
+        PLATFORM_OWNER_INVITATION_STATUSES
+          .sent,
+
+      sentAt:
+        serverTimestamp(),
+
+      updatedAt:
+        serverTimestamp(),
+    },
+    {
+      merge:
+        true,
+    }
+  );
+
+  return {
+    success:
+      true,
+
+    message:
+      responseBody.message ||
+      "Business Owner invitation email sent successfully.",
+
+    messageID:
+      responseBody.messageID ??
+      null,
+  };
+}
+
 export async function fetchPlatformOwnerInvitations(
   actor:
     PlatformExecutiveActor
@@ -644,17 +1047,65 @@ export async function createPlatformClient(
 
       businessName,
 
+      // Canonical business identity
+      industryCategoryKey:
+        cleanPlatformText(
+          input.industryCategoryKey
+        ) ||
+        cleanPlatformText(
+          input.businessCategory
+        ),
+
+      industryCategoryTitle:
+        cleanPlatformText(
+          input.industryCategoryTitle
+        ) ||
+        cleanPlatformText(
+          input.industry
+        ),
+
+      businessModeKey:
+        cleanPlatformText(
+          input.businessModeKey
+        ) ||
+        cleanPlatformText(
+          input.businessModeRawValue
+        ) ||
+        "Retail",
+
+      businessModeName:
+        cleanPlatformText(
+          input.businessModeName
+        ) ||
+        cleanPlatformText(
+          input.businessModeRawValue
+        ) ||
+        "Retail",
+
+      // Legacy compatibility mirrors canonical authority
       industry:
+        cleanPlatformText(
+          input.industryCategoryTitle
+        ) ||
         cleanPlatformText(
           input.industry
         ),
 
       businessCategory:
         cleanPlatformText(
+          input.industryCategoryKey
+        ) ||
+        cleanPlatformText(
           input.businessCategory
         ),
 
       businessModeRawValue:
+        cleanPlatformText(
+          input.businessModeKey
+        ) ||
+        cleanPlatformText(
+          input.businessModeName
+        ) ||
         cleanPlatformText(
           input.businessModeRawValue
         ) ||
@@ -2452,17 +2903,63 @@ export async function updatePlatformClientBusinessProfile(
       const updates = {
         businessName,
 
+        // Canonical business identity
+        industryCategoryKey:
+          cleanPlatformText(
+            input.industryCategoryKey
+          ) ||
+          cleanPlatformText(
+            input.businessCategory
+          ),
+
+        industryCategoryTitle:
+          cleanPlatformText(
+            input.industryCategoryTitle
+          ) ||
+          cleanPlatformText(
+            input.industry
+          ),
+
+        businessModeKey:
+          cleanPlatformText(
+            input.businessModeKey
+          ) ||
+          cleanPlatformText(
+            input.businessModeRawValue
+          ),
+
+        businessModeName:
+          cleanPlatformText(
+            input.businessModeName
+          ) ||
+          cleanPlatformText(
+            input.businessModeRawValue
+          ),
+
+        // Legacy compatibility mirrors canonical authority
         industry:
+          cleanPlatformText(
+            input.industryCategoryTitle
+          ) ||
           cleanPlatformText(
             input.industry
           ),
 
         businessCategory:
           cleanPlatformText(
+            input.industryCategoryKey
+          ) ||
+          cleanPlatformText(
             input.businessCategory
           ),
 
         businessModeRawValue:
+          cleanPlatformText(
+            input.businessModeKey
+          ) ||
+          cleanPlatformText(
+            input.businessModeName
+          ) ||
           cleanPlatformText(
             input.businessModeRawValue
           ),
@@ -2519,6 +3016,18 @@ export async function updatePlatformClientBusinessProfile(
           previousValues: {
             businessName:
               currentRecord.businessName,
+
+            industryCategoryKey:
+              currentRecord.industryCategoryKey,
+
+            industryCategoryTitle:
+              currentRecord.industryCategoryTitle,
+
+            businessModeKey:
+              currentRecord.businessModeKey,
+
+            businessModeName:
+              currentRecord.businessModeName,
 
             industry:
               currentRecord.industry,
@@ -3255,6 +3764,11 @@ export const PlatformExecutiveFirestoreService = {
 
   fetchPlatformOwnerInvitations,
   subscribeToPlatformOwnerInvitations,
+
+  // Platform Business Owner invitations
+
+  createPlatformBusinessOwnerInvitation,
+  sendPlatformBusinessOwnerInvitationEmail,
 
   // Creation
 

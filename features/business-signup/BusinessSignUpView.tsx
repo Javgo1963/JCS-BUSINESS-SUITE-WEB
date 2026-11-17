@@ -6,6 +6,8 @@ import {
 
 import "./BusinessSignUpView.css";
 
+import JCSBusinessIndustrySelector from "./JCSBusinessIndustrySelector";
+
 import "@/core/business-core/creation/BusinessCreationEngine";
 
 import {
@@ -78,24 +80,6 @@ export interface BusinessSignUpIndustryMode {
   icon?: string;
 
   recommendedModules: string[],
-}
-
-export interface BusinessSignUpIndustryCategory {
-  /**
-   * Stable category identifier.
-   *
-   * Example:
-   * "restaurants-food-service"
-   * "automotive"
-   * "transportation-logistics"
-   */
-  key: string;
-
-  title: string;
-  icon?: string;
-  emoji?: string;
-
-  modes: BusinessSignUpIndustryMode[];
 }
 
 // MARK: - Selected Business Mode
@@ -206,17 +190,7 @@ export type BusinessSignUpFieldErrors = Partial<
 
 export interface BusinessSignUpViewProps {
   incomingInvitation?: JCSIncomingBusinessInvitation | null;
-  
-
-  /**
-   * These categories will come from BusinessModeLibrary.ts.
-   *
-   * BusinessSignUpView must never maintain its own duplicate
-   * industry library.
-   */
-  industryCategories: BusinessSignUpIndustryCategory[];
-
-  onInvitationOpened?: (
+onInvitationOpened?: (
     invitation: JCSIncomingBusinessInvitation
   ) => void | Promise<void>;
 
@@ -432,149 +406,6 @@ function invitationBusinessNameFrom(
 
 // MARK: - Industry Helpers
 
-function slugFromTitle(value: string): string {
-  return cleanText(value)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-function emojiForIndustry(title: string): string {
-  const clean = title.toLowerCase();
-
-  if (clean.includes("retail")) {
-    return "🏪";
-  }
-
-  if (
-    clean.includes("restaurant") ||
-    clean.includes("food")
-  ) {
-    return "🍔";
-  }
-
-  if (
-    clean.includes("beauty") ||
-    clean.includes("personal care")
-  ) {
-    return "💇";
-  }
-
-  if (
-    clean.includes("medical") ||
-    clean.includes("health")
-  ) {
-    return "🩺";
-  }
-
-  if (
-    clean.includes("construction") ||
-    clean.includes("trade")
-  ) {
-    return "🏗️";
-  }
-
-  if (
-    clean.includes("transportation") ||
-    clean.includes("logistics")
-  ) {
-    return "🚚";
-  }
-
-  if (clean.includes("automotive")) {
-    return "🚗";
-  }
-
-  if (
-    clean.includes("professional") ||
-    clean.includes("consulting")
-  ) {
-    return "💼";
-  }
-
-  if (clean.includes("engineering")) {
-    return "📐";
-  }
-
-  if (
-    clean.includes("real estate") ||
-    clean.includes("property")
-  ) {
-    return "🏠";
-  }
-
-  if (
-    clean.includes("technology") ||
-    clean.includes("digital")
-  ) {
-    return "💻";
-  }
-
-  if (clean.includes("education")) {
-    return "🎓";
-  }
-
-  if (
-    clean.includes("fitness") ||
-    clean.includes("sports")
-  ) {
-    return "🏋️";
-  }
-
-  if (
-    clean.includes("creative") ||
-    clean.includes("media")
-  ) {
-    return "🎥";
-  }
-
-  if (
-    clean.includes("event") ||
-    clean.includes("entertainment")
-  ) {
-    return "🎉";
-  }
-
-  if (
-    clean.includes("hospitality") ||
-    clean.includes("travel")
-  ) {
-    return "🏨";
-  }
-
-  if (
-    clean.includes("industrial") ||
-    clean.includes("manufacturing")
-  ) {
-    return "🏭";
-  }
-
-  if (
-    clean.includes("agriculture") ||
-    clean.includes("farming")
-  ) {
-    return "🌱";
-  }
-
-  if (
-    clean.includes("nonprofit") ||
-    clean.includes("community")
-  ) {
-    return "❤️";
-  }
-
-  if (
-    clean.includes("online") ||
-    clean.includes("e-commerce")
-  ) {
-    return "🌐";
-  }
-
-  return "✨";
-}
-
 // MARK: - Step Navigation Helpers
 
 function stepIndex(
@@ -619,8 +450,6 @@ function nextStepFrom(
 
 export default function BusinessSignUpView({
   incomingInvitation = null,
-  industryCategories,
-
   onInvitationOpened,
   onSignUpSuccess,
 
@@ -666,18 +495,7 @@ export default function BusinessSignUpView({
     useState(false);
 
   // MARK: Industry State
-
-  const [
-    industrySearchText,
-    setIndustrySearchText,
-  ] = useState("");
-
-  const [
-    expandedCategoryKey,
-    setExpandedCategoryKey,
-  ] = useState<string | null>(null);
-
-  // MARK: Invitation State
+// MARK: Invitation State
 
   const [
     activePlatformInvitationCode,
@@ -763,113 +581,13 @@ export default function BusinessSignUpView({
   const selectedIndustryCategoryTitle =
     selectedMode?.industryCategoryTitle ?? "";
 
-  // MARK: Normalize Business Mode Library
-
-  const normalizedIndustryCategories =
-    useMemo<BusinessSignUpIndustryCategory[]>(
-      () => {
-        return industryCategories.map(
-          (category) => {
-            const categoryKey =
-              cleanText(category.key) ||
-              slugFromTitle(category.title);
-
-            return {
-              ...category,
-
-              key: categoryKey,
-
-              emoji:
-                category.emoji ||
-                emojiForIndustry(
-                  category.title
-                ),
-
-              modes: category.modes.map(
-                (mode) => ({
-                  ...mode,
-
-                  key:
-                    cleanText(mode.key) ||
-                    slugFromTitle(mode.name),
-
-                  recommendedModules:
-                    mode.recommendedModules ?? [],
-                })
-              ),
-            };
-          }
-        );
-      },
-      [industryCategories]
-    );
-
-  // MARK: Search Filtering
-
-  const filteredIndustryCategories =
-    useMemo<BusinessSignUpIndustryCategory[]>(
-      () => {
-        const search = industrySearchText
-          .trim()
-          .toLowerCase();
-
-        if (!search) {
-          return normalizedIndustryCategories;
-        }
-
-        return normalizedIndustryCategories
-          .map((category) => {
-            const categoryMatches =
-              category.title
-                .toLowerCase()
-                .includes(search);
-
-            const matchingModes =
-              category.modes.filter((mode) => {
-                const nameMatches =
-                  mode.name
-                    .toLowerCase()
-                    .includes(search);
-
-                const descriptionMatches =
-                  mode.description
-                    ?.toLowerCase()
-                    .includes(search) ??
-                  false;
-
-                return (
-                  nameMatches ||
-                  descriptionMatches
-                );
-              });
-
-            if (
-              !categoryMatches &&
-              matchingModes.length === 0
-            ) {
-              return null;
-            }
-
-            return {
-              ...category,
-
-              modes: categoryMatches
-                ? category.modes
-                : matchingModes,
-            };
-          })
-          .filter(
-            (
-              category
-            ): category is BusinessSignUpIndustryCategory =>
-              category !== null
-          );
-      },
-      [
-        industrySearchText,
-        normalizedIndustryCategories,
-      ]
-    );
+  /*
+   * Industry search, filtering, category expansion and visual
+   * selection are owned by JCSBusinessIndustrySelector.
+   *
+   * That shared selector reads BusinessModeLibrary directly,
+   * matching the Apple creation-flow authority.
+   */
 
   // MARK: Busy State
 
@@ -1198,78 +916,10 @@ useEffect(() => {
       validateOwnerStep,
     ]);
 
-  // MARK: Select Business Mode
-
-  const selectBusinessMode =
-    useCallback(
-      (
-        category:
-          BusinessSignUpIndustryCategory,
-
-        mode:
-          BusinessSignUpIndustryMode
-      ) => {
-        setForm((current) => ({
-          ...current,
-
-          selectedMode: {
-            businessModeKey: mode.key,
-            businessModeName: mode.name,
-
-            industryCategoryKey:
-              category.key,
-
-            industryCategoryTitle:
-              category.title,
-
-            icon:
-              mode.icon ||
-              category.icon,
-
-            emoji:
-              category.emoji ||
-              emojiForIndustry(
-                category.title
-              ),
-
-            recommendedModules:
-              mode.recommendedModules ??
-              [],
-          },
-        }));
-
-        setIndustrySearchText("");
-        setExpandedCategoryKey(null);
-
-        setFieldErrors((current) => {
-          if (!current.industry) {
-            return current;
-          }
-
-          const nextErrors = {
-            ...current,
-          };
-
-          delete nextErrors.industry;
-
-          return nextErrors;
-        });
-      },
-      []
-    );
-
-  // MARK: Clear Business Mode
-
-  const clearBusinessModeSelection =
-    useCallback(() => {
-      setForm((current) => ({
-        ...current,
-        selectedMode: null,
-      }));
-
-      setIndustrySearchText("");
-      setExpandedCategoryKey(null);
-    }, []);
+  /*
+   * Business-mode selection and Change behavior are owned by
+   * JCSBusinessIndustrySelector.
+   */
 
   // MARK: Previous Step
 
@@ -1973,13 +1623,12 @@ showNotice(
                 </p>
 
                 <h2 id="business-signup-industry-title">
-                  Select your business type
+                  Choose Industry
                 </h2>
 
                 <p>
-                  JCS Business Suite will use this selection to
-                  determine the correct configuration and recommended
-                  modules.
+                  Select the exact business type from the
+                  official JCS Business Mode Library.
                 </p>
               </div>
 
@@ -1991,249 +1640,38 @@ showNotice(
               </div>
             </div>
 
-            {selectedMode ? (
-              <article className="jcs-business-signup__selected-mode-card">
-                <div className="jcs-business-signup__selected-mode-icon">
-                  <span aria-hidden="true">
-                    {selectedMode.emoji || "✨"}
-                  </span>
-                </div>
+            <JCSBusinessIndustrySelector
+              selected={selectedMode}
+              disabled={isBusy}
+              errorMessage={
+                fieldErrors.industry
+              }
+              onChange={(selection) => {
+                setForm((current) => ({
+                  ...current,
+                  selectedMode:
+                    selection,
+                }));
 
-                <div className="jcs-business-signup__selected-mode-copy">
-                  <p>Selected business type</p>
-
-                  <h3>{selectedMode.businessModeName}</h3>
-
-                  <span>
-                    {selectedMode.industryCategoryTitle}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  className="jcs-business-signup__change-mode-button"
-                  onClick={clearBusinessModeSelection}
-                  disabled={isBusy}
-                >
-                  Change
-                </button>
-              </article>
-            ) : (
-              <>
-                <div className="jcs-business-signup__industry-search">
-                  <span aria-hidden="true">🔎</span>
-
-                  <input
-                    type="search"
-                    value={industrySearchText}
-                    onChange={(event) =>
-                      setIndustrySearchText(event.target.value)
+                setFieldErrors(
+                  (current) => {
+                    if (
+                      !current.industry
+                    ) {
+                      return current;
                     }
-                    placeholder="Search industries or business types"
-                    aria-label="Search industries or business types"
-                    disabled={isBusy}
-                  />
 
-                  {industrySearchText && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setIndustrySearchText("")
-                      }
-                      aria-label="Clear industry search"
-                      disabled={isBusy}
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
+                    const nextErrors = {
+                      ...current,
+                    };
 
-                {fieldErrors.industry && (
-                  <p
-                    className="jcs-business-signup__field-error"
-                    role="alert"
-                  >
-                    {fieldErrors.industry}
-                  </p>
-                )}
+                    delete nextErrors.industry;
 
-                <div className="jcs-business-signup__industry-list">
-                  {filteredIndustryCategories.length > 0 ? (
-                    filteredIndustryCategories.map((category) => {
-                      const isExpanded =
-                        expandedCategoryKey === category.key ||
-                        Boolean(industrySearchText.trim());
-
-                      return (
-                        <article
-                          key={category.key}
-                          className="jcs-business-signup__industry-category"
-                        >
-                          <button
-                            type="button"
-                            className="jcs-business-signup__industry-category-header"
-                            onClick={() =>
-                              setExpandedCategoryKey((current) =>
-                                current === category.key
-                                  ? null
-                                  : category.key
-                              )
-                            }
-                            aria-expanded={isExpanded}
-                            disabled={isBusy}
-                          >
-                            <span className="jcs-business-signup__industry-category-icon">
-                              {category.emoji ||
-                                emojiForIndustry(
-                                  category.title
-                                )}
-                            </span>
-
-                            <span className="jcs-business-signup__industry-category-copy">
-                              <strong>{category.title}</strong>
-
-                              <small>
-                                {category.modes.length} business{" "}
-                                {category.modes.length === 1
-                                  ? "type"
-                                  : "types"}
-                              </small>
-                            </span>
-
-                            <span
-                              className={[
-                                "jcs-business-signup__industry-chevron",
-                                isExpanded
-                                  ? "jcs-business-signup__industry-chevron--expanded"
-                                  : "",
-                              ]
-                                .filter(Boolean)
-                                .join(" ")}
-                              aria-hidden="true"
-                            >
-                             ⌄
-                            </span>
-                          </button>
-
-                          {isExpanded && (
-                            <div className="jcs-business-signup__mode-grid">
-                              {category.modes.map((mode) => (
-                                <button
-                                  key={mode.key}
-                                  type="button"
-                                  className="jcs-business-signup__mode-card"
-                                  onClick={() =>
-                                    selectBusinessMode(
-                                      category,
-                                      mode
-                                    )
-                                  }
-                                  disabled={isBusy}
-                                >
-                                  <span className="jcs-business-signup__mode-icon">
-                                    {mode.icon ||
-                                      category.emoji ||
-                                      "✨"}
-                                  </span>
-
-                                  <span className="jcs-business-signup__mode-copy">
-                                    <strong>{mode.name}</strong>
-
-                                    {mode.description && (
-                                      <small>
-                                        {mode.description}
-                                      </small>
-                                    )}
-                                  </span>
-
-                                  <span
-                                    className="jcs-business-signup__mode-select-indicator"
-                                    aria-hidden="true"
-                                  >
-                                    →
-                                  </span>
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </article>
-                      );
-                    })
-                  ) : (
-                    <div className="jcs-business-signup__empty-state">
-                      <span aria-hidden="true">🔍</span>
-
-                      <h3>No matching business type</h3>
-
-                      <p>
-                        Try another search term or clear the search to
-                        see every available category.
-                      </p>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setIndustrySearchText("")
-                        }
-                      >
-                        Show all industries
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-
-            {selectedMode && (
-              <aside className="jcs-business-signup__module-preview">
-                <div className="jcs-business-signup__module-preview-heading">
-                  <div>
-                    <p className="jcs-business-signup__eyebrow">
-                      Workspace preview
-                    </p>
-
-                    <h3>Recommended modules</h3>
-                  </div>
-
-                  <span aria-hidden="true">⚙️</span>
-                </div>
-
-                <div className="jcs-business-signup__module-chip-list">
-                  {selectedMode.recommendedModules.length > 0 ? (
-                    selectedMode.recommendedModules.map((module) => (
-                      <span
-                        key={module}
-                        className="jcs-business-signup__module-chip"
-                      >
-                        {module}
-                      </span>
-                    ))
-                  ) : (
-                    <>
-                      <span className="jcs-business-signup__module-chip">
-                        Dashboard
-                      </span>
-
-                      <span className="jcs-business-signup__module-chip">
-                        Customers
-                      </span>
-
-                      <span className="jcs-business-signup__module-chip">
-                        Orders
-                      </span>
-
-                      <span className="jcs-business-signup__module-chip">
-                        Reports
-                      </span>
-
-                      <span className="jcs-business-signup__module-chip">
-                        Settings
-                      </span>
-                    </>
-                  )}
-                </div>
-              </aside>
-            )}
+                    return nextErrors;
+                  },
+                );
+              }}
+            />
           </section>
         );
 
@@ -2840,8 +2278,6 @@ showNotice(
   }, [
 
     activePlatformInvitationCode,
-    clearBusinessModeSelection,
-    expandedCategoryKey,
     fieldErrors.businessName,
     fieldErrors.confirmPassword,
     fieldErrors.email,
@@ -2849,7 +2285,6 @@ showNotice(
     fieldErrors.industry,
     fieldErrors.password,
     fieldErrors.website,
-    filteredIndustryCategories,
     form.businessName,
     form.businessPhone,
     form.confirmPassword,
@@ -2857,11 +2292,9 @@ showNotice(
     form.fullName,
     form.password,
     form.website,
-    industrySearchText,
     isBusy,
     onOpenMigrationWizard,
     registrationResult,
-    selectBusinessMode,
     selectedBillingPlan,
     selectedBusinessModeName,
     selectedIndustryCategoryTitle,

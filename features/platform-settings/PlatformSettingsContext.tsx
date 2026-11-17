@@ -55,11 +55,8 @@ import {
 import type {
   AppAccentColorName,
   AppLanguageCode,
+  AppScreenBackgroundID,
 } from "../app-settings/AppSettingsTypes";
-
-import type {
-  JCSScreenBackgroundID,
-} from "../../components/layout/JCSScreenBackground";
 
 import type {
   PlatformSettingsActor,
@@ -89,11 +86,11 @@ export interface PlatformSettingsContextValue {
   platformAccentColorName:
     AppAccentColorName;
 
+  platformScreenBackgroundID:
+    AppScreenBackgroundID;
+
   platformLanguageCode:
     AppLanguageCode;
-
-  platformBackgroundID:
-    JCSScreenBackgroundID;
 
   hasCustomPlatformLogo:
     boolean;
@@ -111,6 +108,12 @@ export interface PlatformSettingsContextValue {
     (
       accentColorName:
         AppAccentColorName
+    ) => void;
+
+  setPlatformScreenBackground:
+    (
+      screenBackgroundID:
+        AppScreenBackgroundID
     ) => void;
 
   applyPlatformSettings:
@@ -294,6 +297,39 @@ export function PlatformSettingsContextProvider({
     );
 
   // =====================================================
+  // MARK: - Background Preview
+  // =====================================================
+
+  const setPlatformScreenBackground =
+    useCallback(
+      (
+        screenBackgroundID:
+          AppScreenBackgroundID,
+      ): void => {
+        setSettings(
+          (
+            currentSettings
+          ) => {
+            if (
+              currentSettings
+                .screenBackgroundID ===
+              screenBackgroundID
+            ) {
+              return currentSettings;
+            }
+
+            return {
+              ...currentSettings,
+
+              screenBackgroundID,
+            };
+          },
+        );
+      },
+      [],
+    );
+
+  // =====================================================
   // MARK: - Load Platform Settings
   // =====================================================
 
@@ -464,11 +500,11 @@ export function PlatformSettingsContextProvider({
         platformAccentColorName:
           settings.accentColorName,
 
+        platformScreenBackgroundID:
+          settings.screenBackgroundID,
+
         platformLanguageCode:
           settings.languageCode,
-
-        platformBackgroundID:
-          settings.backgroundID,
 
         hasCustomPlatformLogo:
           settings.hasCustomLogo ===
@@ -488,6 +524,8 @@ export function PlatformSettingsContextProvider({
 
         setPlatformAccentColor,
 
+        setPlatformScreenBackground,
+
         applyPlatformSettings,
 
         refreshPlatformSettings,
@@ -499,6 +537,7 @@ export function PlatformSettingsContextProvider({
         isLoading,
         refreshPlatformSettings,
         setPlatformAccentColor,
+        setPlatformScreenBackground,
         settings,
       ],
     );

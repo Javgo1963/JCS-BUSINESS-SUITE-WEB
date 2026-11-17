@@ -24,8 +24,10 @@
 import {
   APP_ACCENT_COLOR_VALUES,
   APP_LANGUAGE_VALUES,
+  APP_SCREEN_BACKGROUND_VALUES,
   normalizeAppAccentColorName,
   normalizeAppLanguageCode,
+  normalizeAppScreenBackgroundID,
 } from "../app-settings/AppSettingsTypes";
 
 import {
@@ -47,10 +49,6 @@ import type {
   PlatformSettingsValidationResult,
   SavePlatformSettingsInput,
 } from "./PlatformSettingsTypes";
-
-import {
-  normalizeJCSScreenBackgroundID,
-} from "../../components/layout/JCSScreenBackground";
 
 // =======================================================
 // MARK: - Constants
@@ -254,6 +252,16 @@ export function validatePlatformSettingsForm(
   }
 
   if (
+    !APP_SCREEN_BACKGROUND_VALUES.includes(
+      normalizedValues
+        .screenBackgroundID,
+    )
+  ) {
+    errors.screenBackgroundID =
+      "Choose a valid screen background.";
+  }
+
+  if (
     !APP_LANGUAGE_VALUES.includes(
       normalizedValues
         .languageCode,
@@ -317,14 +325,14 @@ export function normalizePlatformSettingsFormValues(
         values.accentColorName,
       ),
 
+    screenBackgroundID:
+      normalizeAppScreenBackgroundID(
+        values.screenBackgroundID,
+      ),
+
     languageCode:
       normalizeAppLanguageCode(
         values.languageCode,
-      ),
-
-    backgroundID:
-      normalizeJCSScreenBackgroundID(
-        values.backgroundID,
       ),
   };
 }
@@ -355,13 +363,11 @@ export function createPlatformSettingsFormValues(
     accentColorName:
       settings.accentColorName,
 
+    screenBackgroundID:
+      settings.screenBackgroundID,
+
     languageCode:
       settings.languageCode,
-
-    backgroundID:
-      normalizeJCSScreenBackgroundID(
-        settings.backgroundID,
-      ),
   });
 }
 
@@ -545,17 +551,15 @@ export function createPlatformSettingsRecordFromSaveInput(
         .formValues
         .accentColorName,
 
+    screenBackgroundID:
+      normalizedInput
+        .formValues
+        .screenBackgroundID,
+
     languageCode:
       normalizedInput
         .formValues
         .languageCode,
-
-    backgroundID:
-      normalizeJCSScreenBackgroundID(
-        normalizedInput
-          .formValues
-          .backgroundID,
-      ),
 
     createdByUID:
       baseRecord.createdByUID ||
@@ -688,13 +692,13 @@ export function serializePlatformSettingsForFirestore(
       normalizedRecord
         .accentColorName,
 
+    screenBackgroundID:
+      normalizedRecord
+        .screenBackgroundID,
+
     languageCode:
       normalizedRecord
         .languageCode,
-
-    backgroundID:
-      normalizedRecord
-        .backgroundID,
 
     logoStoragePath:
       normalizedRecord
@@ -781,14 +785,14 @@ export function deserializePlatformSettingsRecord(
         data.accentColorName,
       ),
 
+    screenBackgroundID:
+      normalizeAppScreenBackgroundID(
+        data.screenBackgroundID,
+      ),
+
     languageCode:
       normalizeAppLanguageCode(
         data.languageCode,
-      ),
-
-    backgroundID:
-      normalizeJCSScreenBackgroundID(
-        data.backgroundID,
       ),
 
     logoStoragePath:
@@ -854,15 +858,15 @@ export function normalizePlatformSettingsRecord(
     settings.logoDownloadURL.trim();
 
   /*
-   * A platform logo may come from either:
+   * A platform logo may be either:
    *
-   * - the official JCS logo collection, or
-   * - a custom Platform Administrator upload.
+   * - one of the 8 official JCS logos, or
+   * - a custom PlatformAdmin upload.
    *
-   * hasCustomLogo identifies only the second case.
-   * Valid official logo metadata must still be preserved.
+   * hasCustomLogo identifies the origin of the artwork.
+   * It must not determine whether a platform logo exists.
    */
-  const hasPlatformLogo =
+  const hasLogo =
     Boolean(
       logoDownloadURL,
     );
@@ -870,7 +874,7 @@ export function normalizePlatformSettingsRecord(
   const hasCustomLogo =
     settings.hasCustomLogo ===
       true &&
-    hasPlatformLogo;
+    hasLogo;
 
   return {
     ...settings,
@@ -903,28 +907,28 @@ export function normalizePlatformSettingsRecord(
         settings.accentColorName,
       ),
 
+    screenBackgroundID:
+      normalizeAppScreenBackgroundID(
+        settings.screenBackgroundID,
+      ),
+
     languageCode:
       normalizeAppLanguageCode(
         settings.languageCode,
       ),
 
-    backgroundID:
-      normalizeJCSScreenBackgroundID(
-        settings.backgroundID,
-      ),
-
     logoStoragePath:
-      hasPlatformLogo
+      hasLogo
         ? logoStoragePath
         : "",
 
     logoDownloadURL:
-      hasPlatformLogo
+      hasLogo
         ? logoDownloadURL
         : "",
 
     logoFileName:
-      hasPlatformLogo
+      hasLogo
         ? settings
             .logoFileName
             .trim()
@@ -983,10 +987,10 @@ export function arePlatformSettingsFormValuesEqual(
       normalizedSecond.websiteURL &&
     normalizedFirst.accentColorName ===
       normalizedSecond.accentColorName &&
+    normalizedFirst.screenBackgroundID ===
+      normalizedSecond.screenBackgroundID &&
     normalizedFirst.languageCode ===
-      normalizedSecond.languageCode &&
-    normalizedFirst.backgroundID ===
-      normalizedSecond.backgroundID
+      normalizedSecond.languageCode
   );
 }
 

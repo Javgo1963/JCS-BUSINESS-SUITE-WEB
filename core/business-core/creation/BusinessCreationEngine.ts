@@ -622,14 +622,6 @@ async function prepareBusinessDocuments(
     const updatedAtISO =
         createdAtISO;
 
-    /*
-     * JCS_WEB_BUSINESS_SIGNUP_INACTIVE_BILLING_H2_C6D_J_F_R37A_1
-     *
-     * Business creation does NOT begin a subscription trial.
-     *
-     * These dates are structural sentinels only.
-     * Stripe/webhook supplies real verified trial dates later.
-     */
     const trialStartedAtISO =
         new Date(0).toISOString();
 

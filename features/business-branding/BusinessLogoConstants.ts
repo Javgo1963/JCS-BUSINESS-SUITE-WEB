@@ -303,7 +303,7 @@ export const BUSINESS_ACTIVE_LOGO_DOCUMENT_ID =
  * public/branding/jcs-business-suite-logo.svg
  */
 export const DEFAULT_BUSINESS_LOGO_ASSET_PATH =
-  "/branding/jcs-business-suite-logo.svg";
+  "/branding/jcs-business-suite-logo.png";
 
 /**
  * The default JCS asset may be designed as a template and can follow the

@@ -1474,7 +1474,7 @@ export default function PlatformAppSettingsView({
                           const isSelected =
                             platformSettings
                               .formValues
-                              .backgroundID ===
+                              .screenBackgroundID ===
                             option.id;
 
                           return (
@@ -1504,7 +1504,7 @@ export default function PlatformAppSettingsView({
                               onClick={() => {
                                 platformSettings
                                   .setFieldValue(
-                                    "backgroundID",
+                                    "screenBackgroundID",
                                     option.id,
                                   );
                               }}
@@ -1520,7 +1520,7 @@ export default function PlatformAppSettingsView({
                                   className="app-settings-background-option__preview-accent"
                                   style={{
                                     background:
-                                      option.previewAccentHex,
+                                      option.previewAccent,
                                   }}
                                   aria-hidden="true"
                                 />

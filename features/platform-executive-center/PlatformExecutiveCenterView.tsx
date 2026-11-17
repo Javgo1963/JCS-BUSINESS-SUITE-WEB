@@ -19,6 +19,7 @@
 
   import {
   useCallback,
+  useEffect,
   useMemo,
   useState,
   type ComponentType,
@@ -401,6 +402,7 @@ export default function PlatformExecutiveCenterView() {
 
     isLoading,
     isRefreshing,
+    isMutating,
     errorMessage,
     lastRefreshedAt,
 
@@ -414,6 +416,8 @@ export default function PlatformExecutiveCenterView() {
 
     requestDeletion,
     cancelDeletion,
+
+    inviteBusinessOwner,
 
     enableOwnerAccess,
     disableOwnerAccess,
@@ -472,6 +476,26 @@ export default function PlatformExecutiveCenterView() {
   ] = useState<
     ExecutiveMessage | null
   >(null);
+
+  const [
+    inviteOwnerOpen,
+    setInviteOwnerOpen,
+  ] = useState(false);
+
+  const [
+    inviteOwnerName,
+    setInviteOwnerName,
+  ] = useState("");
+
+  const [
+    inviteOwnerEmail,
+    setInviteOwnerEmail,
+  ] = useState("");
+
+  const [
+    inviteOwnerPhone,
+    setInviteOwnerPhone,
+  ] = useState("");
 
   // ==========================================================
   // MARK: - Formatters
@@ -750,6 +774,152 @@ export default function PlatformExecutiveCenterView() {
         });
       },
       []
+    );
+
+  const handleOpenInviteOwner =
+    useCallback(() => {
+      setInviteOwnerName("");
+      setInviteOwnerEmail("");
+      setInviteOwnerPhone("");
+      setActionMessage(null);
+
+      setInviteOwnerOpen(true);
+    }, []);
+
+  useEffect(
+    () => {
+      if (
+        typeof window ===
+        "undefined"
+      ) {
+        return;
+      }
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      if (
+        params.get(
+          "open"
+        ) !==
+        "invite-owner"
+      ) {
+        return;
+      }
+
+      handleOpenInviteOwner();
+
+      const cleanURL =
+        `${window.location.pathname}${window.location.hash}`;
+
+      window.history.replaceState(
+        {},
+        "",
+        cleanURL
+      );
+    },
+    [
+      handleOpenInviteOwner,
+    ]
+  );
+
+  const handleCloseInviteOwner =
+    useCallback(() => {
+      if (isMutating) {
+        return;
+      }
+
+      setInviteOwnerOpen(false);
+    }, [
+      isMutating,
+    ]);
+
+  const handleSubmitInviteOwner =
+    useCallback(
+      async (): Promise<void> => {
+        const recipientName =
+          cleanText(
+            inviteOwnerName
+          );
+
+        const recipientEmail =
+          cleanText(
+            inviteOwnerEmail
+          ).toLowerCase();
+
+        const recipientPhone =
+          cleanText(
+            inviteOwnerPhone
+          );
+
+        if (!recipientName) {
+          showError(
+            "Business Owner Name Required",
+            "Enter the full name of the Business Owner you want to invite."
+          );
+
+          return;
+        }
+
+        if (!recipientEmail) {
+          showError(
+            "Business Owner Email Required",
+            "Enter the email address where JCS Business Suite should send the invitation."
+          );
+
+          return;
+        }
+
+        setActionMessage(null);
+
+        try {
+          const invitation =
+            await inviteBusinessOwner({
+              recipientName,
+              recipientEmail,
+              recipientPhone:
+                recipientPhone ||
+                undefined,
+            });
+
+          setInviteOwnerOpen(false);
+
+          setInviteOwnerName("");
+          setInviteOwnerEmail("");
+          setInviteOwnerPhone("");
+
+          setSelectedSection(
+            "invitations"
+          );
+
+          showSuccess(
+            "Invitation Sent",
+            `The Business Owner invitation was sent successfully to ${
+              invitation.ownerEmail ||
+              recipientEmail
+            }.`
+          );
+        } catch (
+          error: unknown
+        ) {
+          showError(
+            "Unable to Send Invitation",
+            error instanceof Error
+              ? error.message
+              : "JCS Business Suite could not send the Business Owner invitation."
+          );
+        }
+      },
+      [
+        inviteBusinessOwner,
+        inviteOwnerEmail,
+        inviteOwnerName,
+        inviteOwnerPhone,
+        showError,
+        showSuccess,
+      ]
     );
 
   const executeClientAction =
@@ -1503,10 +1673,8 @@ export default function PlatformExecutiveCenterView() {
                       "clients"
                     )
                   }
-                  onOpenInvitations={() =>
-                    openSection(
-                      "invitations"
-                    )
+                  onOpenInvitations={
+                    handleOpenInviteOwner
                   }
                   onOpenReports={() =>
                     openSection(
@@ -1638,8 +1806,8 @@ export default function PlatformExecutiveCenterView() {
                 clients={
                   clients
                 }
-                onCreateBusiness={
-                  handleCreateBusiness
+                onInviteOwner={
+                  handleOpenInviteOwner
                 }
               />
             )}
@@ -1881,7 +2049,220 @@ export default function PlatformExecutiveCenterView() {
           }
         />
       )}
-    </div>
+    
+      {/* JCS Business Owner Invitation Modal */}
+
+      {inviteOwnerOpen && (
+        <div
+          className="jcs-executive-invite-modal"
+          role="presentation"
+          onMouseDown={(
+            event
+          ) => {
+            if (
+              event.target ===
+              event.currentTarget
+            ) {
+              handleCloseInviteOwner();
+            }
+          }}
+        >
+          <section
+            className="jcs-executive-invite-modal__card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="invite-owner-title"
+          >
+            <header className="jcs-executive-invite-modal__header">
+              <div className="jcs-executive-invite-modal__icon">
+                <MailPlus
+                  size={24}
+                  strokeWidth={1.8}
+                />
+              </div>
+
+              <div>
+                <p>
+                  JCS Business Suite
+                </p>
+
+                <h2 id="invite-owner-title">
+                  Invite New Business Owner
+                </h2>
+
+                <span>
+                  Send a secure invitation to begin creating a new
+                  business workspace.
+                </span>
+              </div>
+
+              <button
+                type="button"
+                className="jcs-executive-invite-modal__close"
+                aria-label="Close invitation"
+                disabled={
+                  isMutating
+                }
+                onClick={
+                  handleCloseInviteOwner
+                }
+              >
+                <X
+                  size={20}
+                  strokeWidth={1.8}
+                />
+              </button>
+            </header>
+
+            <div className="jcs-executive-invite-modal__form">
+              <label>
+                <span>
+                  Business Owner Name
+                </span>
+
+                <input
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Full name"
+                  value={
+                    inviteOwnerName
+                  }
+                  disabled={
+                    isMutating
+                  }
+                  onChange={(
+                    event
+                  ) =>
+                    setInviteOwnerName(
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label>
+                <span>
+                  Email Address
+                </span>
+
+                <input
+                  type="email"
+                  autoComplete="email"
+                  placeholder="owner@example.com"
+                  value={
+                    inviteOwnerEmail
+                  }
+                  disabled={
+                    isMutating
+                  }
+                  onChange={(
+                    event
+                  ) =>
+                    setInviteOwnerEmail(
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label>
+                <span>
+                  Phone
+                  <small>
+                    Optional
+                  </small>
+                </span>
+
+                <input
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="Phone number"
+                  value={
+                    inviteOwnerPhone
+                  }
+                  disabled={
+                    isMutating
+                  }
+                  onChange={(
+                    event
+                  ) =>
+                    setInviteOwnerPhone(
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+            </div>
+
+            <div className="jcs-executive-invite-modal__notice">
+              <ShieldCheck
+                size={19}
+                strokeWidth={1.8}
+              />
+
+              <span>
+                JCS Business Suite will create a secure invitation
+                code and email the Business Owner a protected link
+                to start their business.
+              </span>
+            </div>
+
+            <footer className="jcs-executive-invite-modal__footer">
+              <button
+                type="button"
+                className="jcs-executive-button jcs-executive-button--secondary"
+                disabled={
+                  isMutating
+                }
+                onClick={
+                  handleCloseInviteOwner
+                }
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="jcs-executive-button jcs-executive-button--primary"
+                disabled={
+                  isMutating ||
+                  !cleanText(
+                    inviteOwnerName
+                  ) ||
+                  !cleanText(
+                    inviteOwnerEmail
+                  )
+                }
+                onClick={() => {
+                  void handleSubmitInviteOwner();
+                }}
+              >
+                {isMutating ? (
+                  <>
+                    <RefreshCw
+                      size={18}
+                      strokeWidth={1.8}
+                    />
+
+                    Sending…
+                  </>
+                ) : (
+                  <>
+                    <MailPlus
+                      size={18}
+                      strokeWidth={1.8}
+                    />
+
+                    Send Invitation
+                  </>
+                )}
+              </button>
+            </footer>
+          </section>
+        </div>
+      )}
+
+</div>
   );
 }
 
@@ -2869,7 +3250,9 @@ function ExecutiveClientsSection({
                     </strong>
 
                     <small>
-                      {client.industry ||
+                      {client.industryCategoryTitle ||
+                        client.industryCategoryKey ||
+                        client.industry ||
                         client.businessCategory ||
                         "General Business"}
                     </small>
@@ -2944,7 +3327,7 @@ function ExecutiveClientsSection({
 function ExecutiveInvitationsSection({
   invitations,
   clients,
-  onCreateBusiness,
+  onInviteOwner,
 }: {
   invitations:
     ReturnType<
@@ -2954,7 +3337,7 @@ function ExecutiveInvitationsSection({
   clients:
     PlatformClientViewModel[];
 
-  onCreateBusiness:
+  onInviteOwner:
     () => void;
 }) {
   const pendingClients =
@@ -2969,12 +3352,12 @@ function ExecutiveInvitationsSection({
       eyebrow="Owner Registration"
       title="Business Owner Invitations"
       message="Invite prospective Business Owners and review registration status."
-      actionTitle="Create Business"
+      actionTitle="Invite New Owner"
       actionIcon={
-        Plus
+        MailPlus
       }
       onAction={
-        onCreateBusiness
+        onInviteOwner
       }
     >
       {invitations.length ===
@@ -3530,8 +3913,10 @@ function ExecutiveReportsSection({
               client.displayBusinessName,
               client.displayOwnerName,
               client.ownerEmail,
-              client.industry,
-              client.businessCategory,
+              client.industryCategoryTitle ||
+                client.industry,
+              client.industryCategoryKey ||
+                client.businessCategory,
               client.planName,
               client
                 .displaySubscriptionStatus,
@@ -4343,6 +4728,7 @@ function ExecutiveClientDetail({
             <ExecutiveDetailRow
               label="Industry"
               value={
+                client.industryCategoryTitle ||
                 client.industry ||
                 "Not configured"
               }
@@ -4351,7 +4737,18 @@ function ExecutiveClientDetail({
             <ExecutiveDetailRow
               label="Business Category"
               value={
+                client.industryCategoryKey ||
                 client.businessCategory ||
+                "Not configured"
+              }
+            />
+
+            <ExecutiveDetailRow
+              label="Business Mode"
+              value={
+                client.businessModeName ||
+                client.businessModeKey ||
+                client.businessModeRawValue ||
                 "Not configured"
               }
             />

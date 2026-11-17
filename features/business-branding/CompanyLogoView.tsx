@@ -29,6 +29,7 @@ import {
 
 import {
   DEFAULT_BUSINESS_LOGO_ASSET_PATH,
+  DEFAULT_BUSINESS_LOGO_RENDERING_MODE,
   DEFAULT_BUSINESS_LOGO_SUPPORTS_ACCENT_COLOR,
   DEFAULT_BUSINESS_LOGO_USES_ACCENT_COLOR,
 } from "./BusinessLogoConstants";
@@ -834,7 +835,7 @@ function createCompanyLogoDisplayModel(
 
   const renderingMode =
     isDefaultLogo
-      ? "template"
+      ? DEFAULT_BUSINESS_LOGO_RENDERING_MODE
       : (
           input.branding
             ?.logoRenderingMode ??

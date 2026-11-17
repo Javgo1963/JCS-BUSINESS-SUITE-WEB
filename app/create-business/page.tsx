@@ -1,31 +1,81 @@
-import BusinessSignUpView from
-  "@/features/business-signup/BusinessSignUpView";
+import BusinessSignUpView, {
+  type JCSIncomingBusinessInvitation,
+} from "@/features/business-signup/BusinessSignUpView";
 
-import {
-  allCategories,
-} from "@/core/business-mode/BusinessModeLibrary";
+interface CreateBusinessPageProps {
+  searchParams?: Promise<{
+    invitation?: string | string[];
+    code?: string | string[];
+    source?: string | string[];
+  }>;
+}
 
-const industryCategories = allCategories.map(
-  (category) => ({
-    key: category.id,
-    title: category.title,
-    icon: category.icon,
+function firstSearchValue(
+  value:
+    | string
+    | string[]
+    | undefined
+): string {
+  if (Array.isArray(value)) {
+    return value[0] ?? "";
+  }
 
-    modes: category.modes.map((mode) => ({
-      key: mode.id,
-      name: mode.name,
-      icon: mode.icon,
+  return value ?? "";
+}
 
-      recommendedModules:
-        mode.recommendedModules ?? [],
-    })),
-  })
-);
+function normalizeInvitationCode(
+  value: string
+): string {
+  return value
+    .trim()
+    .replace(/\s+/g, "")
+    .toUpperCase()
+    .slice(0, 128);
+}
 
-export default function CreateBusinessPage() {
+export default async function CreateBusinessPage({
+  searchParams,
+}: CreateBusinessPageProps) {
+  const params =
+    searchParams
+      ? await searchParams
+      : {};
+
+  /*
+   * Xcode contract:
+   *
+   * /create-business
+   *   ?invitation=<CODE>
+   *   &source=platform
+   *
+   * "code" is also accepted for compatibility
+   * with previously issued Web invitations.
+   */
+  const invitationCode =
+    normalizeInvitationCode(
+      firstSearchValue(
+        params.invitation ??
+        params.code
+      )
+    );
+
+  const incomingInvitation:
+    JCSIncomingBusinessInvitation | null =
+      invitationCode
+        ? {
+            invitationCode,
+            normalizedInvitationCode:
+              invitationCode,
+            status:
+              "pending",
+          }
+        : null;
+
   return (
     <BusinessSignUpView
-      industryCategories={industryCategories}
+      incomingInvitation={
+        incomingInvitation
+      }
     />
   );
 }

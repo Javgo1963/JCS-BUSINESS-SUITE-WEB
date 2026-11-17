@@ -6,7 +6,8 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useRef,
+    useState,
   type ReactNode,
 } from "react";
 
@@ -30,16 +31,81 @@ import {
 } from "@/core/services/AuthService";
 
 import {
-  deserializeAppSettingsRecord,
-} from "@/features/app-settings/AppSettingsDomain";
-
-import type {
-  JCSScreenBackgroundID,
-} from "@/components/layout/JCSScreenBackground";
+  useAuth,
+} from "@/core/hooks/useAuth";
 
 import {
   db,
 } from "@/core/firebase/firebase";
+
+import {
+  selectCanonicalRuntimeAccessSource,
+} from "@/core/permissions/JCSCanonicalRuntimeSourceSelector";
+
+// =======================================================
+// MARK: - Canonical Runtime Source Selector — T16
+// =======================================================
+//
+// T16 installs the Web selector while keeping runtime
+// cutover hard-disabled.
+//
+// No canonical provenance read occurs here.
+// Existing AppUser + businessMemberships authority remains
+// authoritative until a separately certified activation.
+// =======================================================
+
+export const
+JCS_WEB_CANONICAL_RUNTIME_CUTOVER_ENABLED =
+  false as const;
+
+
+export function
+assertWebCanonicalRuntimeLegacyGate():
+void {
+
+  const selection =
+    selectCanonicalRuntimeAccessSource({
+      runtimeCutoverEnabled:
+        JCS_WEB_CANONICAL_RUNTIME_CUTOVER_ENABLED,
+
+      canonicalReadStatus:
+        "missing",
+
+      subjectBindingValid:
+        false,
+
+      businessBindingValid:
+        false,
+
+      provenanceState:
+        null,
+
+      cutoverEligible:
+        false,
+    });
+
+
+  if (
+    selection.decision !==
+      "LEGACY" ||
+    selection.source !==
+      "legacy" ||
+    selection.reason !==
+      "cutoverDisabled" ||
+    selection.failClosed !==
+      false ||
+    selection.legacyFallbackAllowed !==
+      true ||
+    selection.canonicalResolverAllowed !==
+      false
+  ) {
+
+    throw new Error(
+      "T16 Web canonical runtime selector violated the hard-disabled legacy contract."
+    );
+  }
+}
+
 
 // =======================================================
 // MARK: - Firestore Models
@@ -104,17 +170,15 @@ export interface JCSAppSettings {
 
   accentColorName: string;
 
-  backgroundID:
-    JCSScreenBackgroundID;
-
-  backgroundStoragePath:
-    string;
-
-  backgroundDownloadURL:
-    string;
-
   logoFileName?: string;
   backgroundFileName?: string;
+
+  backgroundID?:
+    import("@/features/app-settings/AppSettingsTypes")
+      .AppScreenBackgroundID;
+
+  backgroundStoragePath?: string;
+  backgroundDownloadURL?: string;
 
   taxPercent: number;
 
@@ -202,6 +266,323 @@ function stringArray(
       item.trim().length > 0
   );
 }
+
+function resolveOperationalPermissions(
+  data: DocumentData
+): string[] {
+  const permissions =
+    new Set<string>(
+      stringArray(
+        data.permissions
+      )
+    );
+
+
+  const add =
+    (
+      condition: boolean,
+      ...values: string[]
+    ): void => {
+      if (!condition) {
+        return;
+      }
+
+
+      for (const value of values) {
+        permissions.add(value);
+      }
+    };
+
+
+  // Customer / Store
+
+
+  add(
+    data.canAccessCustomerHome === true,
+    "customer-home.view"
+  );
+
+
+  add(
+    data.canAccessCatalog === true,
+    "catalog.view"
+  );
+
+
+  add(
+    data.canAccessFavorites === true,
+    "favorites.view"
+  );
+
+
+  add(
+    data.canAccessCart === true,
+    "cart.view"
+  );
+
+
+  add(
+    data.canAccessCheckout === true,
+    "checkout.use"
+  );
+
+
+  add(
+    data.canAccessCustomerAccount === true,
+    "account.view"
+  );
+
+
+  add(
+    data.canAccessOrderHistory === true,
+    "orders.view"
+  );
+
+
+  add(
+    data.canAccessTracking === true,
+    "tracking.view",
+    "shipments.view"
+  );
+
+
+  // Projects / Events
+
+
+  add(
+    data.canAccessProjects === true,
+    "projects.view",
+    "events.view"
+  );
+
+
+  add(
+    data.canViewProjectDetails === true,
+    "projects.view"
+  );
+
+
+  add(
+    data.canViewProjectPhotos === true ||
+    data.canViewProgressPhotos === true ||
+    data.canViewProjectGallery === true,
+    "projects.photos.view"
+  );
+
+
+  add(
+    data.canCreateProjects === true,
+    "projects.create"
+  );
+
+
+  add(
+    data.canEditOwnProjects === true,
+    "projects.edit"
+  );
+
+
+  add(
+    data.canUploadProjectPhotos === true,
+    "projects.photos.upload"
+  );
+
+
+  add(
+    data.canCommentOnProjects === true,
+    "projects.comment"
+  );
+
+
+  // Business Operations
+
+
+  add(
+    data.canAccessDashboard === true,
+    "dashboard.view"
+  );
+
+
+  add(
+    data.canAccessPOS === true,
+    "pos.view",
+    "pos.use",
+    "cash-register.view",
+    "cash-register.use"
+  );
+
+
+  add(
+    data.canAccessProducts === true,
+    "products.view"
+  );
+
+
+  add(
+    data.canAccessInventory === true,
+    "inventory.view"
+  );
+
+
+  add(
+    data.canAccessOrders === true,
+    "orders.view"
+  );
+
+
+  add(
+    data.canAccessReturns === true,
+    "returns.view"
+  );
+
+
+  add(
+    data.canAccessServices === true,
+    "services.view"
+  );
+
+
+  add(
+    data.canAccessAppointments === true,
+    "appointments.view",
+    "calendar.view"
+  );
+
+
+  add(
+    data.canAccessTransportation === true,
+    "transportation.view",
+    "fleet.view"
+  );
+
+
+  add(
+    data.canAccessReceiving === true,
+    "receiving.view",
+    "inventory.receive"
+  );
+
+
+  add(
+    data.canAccessShipping === true,
+    "shipping.view",
+    "shipments.view"
+  );
+
+
+  add(
+    data.canAccessBackorders === true,
+    "backorders.view"
+  );
+
+
+  // Management
+
+
+  add(
+    data.canManageCustomers === true,
+    "customers.view",
+    "customers.manage"
+  );
+
+
+  add(
+    data.canManageEmployees === true,
+    "employees.view",
+    "employees.manage"
+  );
+
+
+  add(
+    data.canManageProviders === true,
+    "providers.view",
+    "providers.manage"
+  );
+
+
+  add(
+    data.canManageAppUsers === true,
+    "users.view",
+    "users.manage",
+    "roles.manage",
+    "permissions.manage"
+  );
+
+
+  add(
+    data.canManageSettings === true,
+    "settings.view",
+    "settings.manage",
+    "app-settings.manage"
+  );
+
+
+  // Compliance / Facilities
+
+
+  add(
+    data.canAccessCompliance === true,
+    "compliance.view"
+  );
+
+
+  add(
+    data.canManageCompliance === true,
+    "compliance.view",
+    "compliance.manage"
+  );
+
+
+  add(
+    data.canAccessFacilities === true,
+    "facilities.view"
+  );
+
+
+  add(
+    data.canManageFacilities === true,
+    "facilities.view",
+    "facilities.manage"
+  );
+
+
+  // Insights / Reports
+
+
+  add(
+    data.canAccessInsights === true,
+    "insights.view",
+    "analytics.view"
+  );
+
+
+  add(
+    data.canExportReports === true,
+    "reports.view",
+    "reports.export"
+  );
+
+
+  add(
+    data.canSeeFinancials === true,
+    "reports.view",
+    "accounting.view",
+    "sales.view"
+  );
+
+
+  add(
+    data.canSeeCostsAndProfit === true,
+    "reports.view",
+    "insights.view"
+  );
+
+
+  return Array.from(
+    permissions
+  );
+}
+
 
 function resolvePlatformAdministrator(
   data: DocumentData
@@ -299,8 +680,8 @@ function appUserFromData(
       ),
 
     permissions:
-      stringArray(
-        data.permissions
+      resolveOperationalPermissions(
+        data
       ),
 
     isBusinessOwner:
@@ -347,6 +728,26 @@ export function JCSBusinessContextProvider({
 }: {
   children: ReactNode;
 }) {
+
+  const {
+    businessID:
+      selectedBusinessID,
+  } = useAuth();
+
+
+  /*
+   * The loader is intentionally long-lived.
+   *
+   * A ref lets it read the latest selected workspace without
+   * rebuilding the entire Firebase-auth observer callback.
+   */
+  const selectedBusinessIDRef =
+    useRef<string | null>(
+      selectedBusinessID
+    );
+
+  selectedBusinessIDRef.current =
+    selectedBusinessID;
   const [
     firebaseUser,
     setFirebaseUser,
@@ -426,15 +827,6 @@ const setActiveAccentColor =
 
               accentColorName:
                 normalizedAccentColor,
-
-              backgroundID:
-                "default",
-
-              backgroundStoragePath:
-                "",
-
-              backgroundDownloadURL:
-                "",
 
               taxPercent:
                 0,
@@ -592,6 +984,10 @@ const setActiveAccentColor =
 
           const resolvedBusinessID =
             cleanText(
+              selectedBusinessIDRef
+                .current
+            ) ||
+            cleanText(
               resolvedAppUser
                 .businessID
             );
@@ -662,76 +1058,9 @@ const setActiveAccentColor =
           if (
             settingsSnapshot.exists()
           ) {
-            const normalizedSettings =
-              deserializeAppSettingsRecord(
-                resolvedBusinessID,
-                settingsSnapshot.data(),
-              );
-
-            setAppSettings({
-              businessID:
-                normalizedSettings.businessID,
-
-              companyName:
-                normalizedSettings.companyName,
-
-              accentColorName:
-                normalizedSettings.accentColorName,
-
-              backgroundID:
-                normalizedSettings.backgroundID,
-
-              backgroundStoragePath:
-                normalizedSettings
-                  .backgroundStoragePath,
-
-              backgroundDownloadURL:
-                normalizedSettings
-                  .backgroundDownloadURL,
-
-              logoFileName:
-                cleanText(
-                  settingsSnapshot.data()
-                    .logoFileName,
-                ) ||
-                undefined,
-
-              backgroundFileName:
-                cleanText(
-                  settingsSnapshot.data()
-                    .backgroundFileName,
-                ) ||
-                undefined,
-
-              taxPercent:
-                normalizedSettings.taxPercent,
-
-              languageCode:
-                normalizedSettings.languageCode,
-
-              localeIdentifier:
-                cleanText(
-                  settingsSnapshot.data()
-                    .localeIdentifier,
-                ) ||
-                "en-US",
-
-              timeZoneIdentifier:
-                cleanText(
-                  settingsSnapshot.data()
-                    .timeZoneIdentifier,
-                ) ||
-                Intl.DateTimeFormat()
-                  .resolvedOptions()
-                  .timeZone,
-
-              currencyCode:
-                cleanText(
-                  settingsSnapshot.data()
-                    .currencyCode,
-                ) ||
-                "USD",
-            });
+            setAppSettings(
+              settingsSnapshot.data() as JCSAppSettings
+            );
           } else {
             setAppSettings(null);
           }
@@ -785,19 +1114,17 @@ const setActiveAccentColor =
           } else {
             setMembership(null);
 
+
             /*
-             * The Business Owner document already contains
-             * complete owner permissions, so a temporarily
-             * missing membership must not freeze the UI.
+             * Membership is supplemental context.
+             *
+             * A valid authenticated JCS AppUser already carries
+             * its tenant identity, role, modules and permissions.
+             *
+             * Missing businessMemberships must not block an
+             * otherwise valid Business Owner or invited business
+             * user from entering the Dashboard.
              */
-            if (
-              !resolvedAppUser
-                .isBusinessOwner
-            ) {
-              setErrorMessage(
-                "No active business membership was found for this user."
-              );
-            }
           }
         } catch (
           error: unknown
@@ -853,6 +1180,29 @@ const setActiveAccentColor =
     loadBusinessContext,
   ]);
 
+
+  // =====================================================
+  // MARK: - Active Workspace Change
+  // =====================================================
+
+  useEffect(() => {
+    selectedBusinessIDRef.current =
+      selectedBusinessID;
+
+    if (!firebaseUser) {
+      return;
+    }
+
+    void loadBusinessContext(
+      firebaseUser
+    );
+  }, [
+    selectedBusinessID,
+    firebaseUser,
+    loadBusinessContext,
+  ]);
+
+
   // =====================================================
   // MARK: - Context Value
   // =====================================================
@@ -873,18 +1223,21 @@ const setActiveAccentColor =
         businessID:
           appUser
             ?.isPlatformAdministrator
-            ? ""
-            : appUser
+          ? ""
+            : business
+                ?.businessID ??
+              selectedBusinessID ??
+              appUser
                 ?.businessID ??
               "",
 
         ownerUID:
           appUser
             ?.isPlatformAdministrator
-            ? ""
-            : appUser
+          ? ""
+            : business
                 ?.ownerUID ??
-              business
+              appUser
                 ?.ownerUID ??
               "",
 
@@ -919,6 +1272,7 @@ errorMessage,
         business,
         appSettings,
         membership,
+        selectedBusinessID,
         isLoading,
         errorMessage,
         loadBusinessContext,

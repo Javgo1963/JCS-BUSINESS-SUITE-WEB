@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useState,
   type FormEvent,
 } from "react";
@@ -18,7 +19,20 @@ export default function LoginPage() {
 
   const {
     signIn,
+    signOut,
+
+    isAuthenticated,
+    isLoadingBusinessContext,
+
+    isPlatformAdministrator,
+
+    accessibleBusinesses,
+    activeBusinessID,
+
+    selectBusiness,
+
     error,
+    businessContextError,
     clearError,
   } = useAuth();
 
@@ -33,6 +47,54 @@ export default function LoginPage() {
 
   const [isSubmitting, setIsSubmitting] =
     useState(false);
+
+  const [
+    isOpeningWorkspace,
+    setIsOpeningWorkspace,
+  ] = useState(false);
+
+
+  useEffect(() => {
+    if (
+      !isAuthenticated ||
+      isLoadingBusinessContext
+    ) {
+      return;
+    }
+
+    if (
+      isPlatformAdministrator
+    ) {
+      router.replace(
+        "/platform-executive-center"
+      );
+
+      return;
+    }
+
+    if (
+      accessibleBusinesses.length === 1
+    ) {
+      const selected =
+        selectBusiness(
+          accessibleBusinesses[0]
+            .businessID
+        );
+
+      if (selected) {
+        router.replace(
+          "/dashboard"
+        );
+      }
+    }
+  }, [
+    accessibleBusinesses,
+    isAuthenticated,
+    isLoadingBusinessContext,
+    router,
+    isPlatformAdministrator,
+    selectBusiness,
+  ]);
 
   // MARK: - Submit
 
@@ -57,8 +119,12 @@ export default function LoginPage() {
         password,
         rememberSession,
       });
-
-      router.replace("/dashboard");
+      /*
+       * Routing now waits for workspace resolution.
+       *
+       * One workspace opens automatically.
+       * Multiple workspaces require explicit selection.
+       */
     } catch {
       // The AuthProvider already converts and stores
       // the Firebase authentication error message.
@@ -67,10 +133,212 @@ export default function LoginPage() {
     }
   }
 
+
+
+  if (
+    isAuthenticated &&
+    !isLoadingBusinessContext &&
+    isPlatformAdministrator
+  ) {
+    return (
+      <GuestRoute allowAuthenticated>
+        <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-slate-950 dark:bg-slate-950 dark:text-white">
+          <p className="font-medium">
+            Opening Platform Executive Center...
+          </p>
+        </main>
+      </GuestRoute>
+    );
+  }
+
+
+  // MARK: - Workspace Selection
+
+  async function openWorkspace(
+    businessID: string
+  ): Promise<void> {
+
+    setIsOpeningWorkspace(true);
+
+    try {
+      if (
+        selectBusiness(
+          businessID
+        )
+      ) {
+        router.replace(
+          "/dashboard"
+        );
+      }
+    } finally {
+      setIsOpeningWorkspace(false);
+    }
+  }
+
+
+  if (
+    isAuthenticated &&
+    !isLoadingBusinessContext &&
+    accessibleBusinesses.length > 1
+  ) {
+    return (
+      <GuestRoute allowAuthenticated>
+        <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-950 dark:bg-slate-950 dark:text-white sm:px-6">
+          <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-2xl items-center justify-center">
+            <section className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-950/10 dark:border-white/10 dark:bg-slate-900 sm:p-10">
+
+              <div className="mb-8">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400">
+                  JCS Business Suite
+                </p>
+
+                <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+                  Choose your workspace
+                </h1>
+
+                <p className="mt-3 leading-7 text-slate-600 dark:text-slate-400">
+                  Select one of the businesses associated with your account.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {accessibleBusinesses.map(
+                  (business) => {
+                    const isCurrent =
+                      activeBusinessID ===
+                      business.businessID;
+
+                    return (
+                      <button
+                        key={business.businessID}
+                        type="button"
+                        disabled={isOpeningWorkspace}
+                        onClick={() => {
+                          void openWorkspace(
+                            business.businessID
+                          );
+                        }}
+                        className="flex w-full items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left transition hover:border-sky-400 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-slate-950 dark:hover:border-sky-500/60 dark:hover:bg-sky-500/10"
+                      >
+                        <span className="min-w-0">
+                          <strong className="block truncate text-base">
+                            {business.businessName}
+                          </strong>
+
+                          <span className="mt-1 block text-sm text-slate-500 dark:text-slate-400">
+                            {business.isOwnedByAuthenticatedUser
+                              ? "Business Owner"
+                              : business.role ||
+                                "Authorized User"}
+                          </span>
+
+                          <code className="mt-2 block break-all text-xs text-slate-400">
+                            {business.businessID}
+                          </code>
+                        </span>
+
+                        <span className="shrink-0 text-right">
+                          {isCurrent ? (
+                            <span className="block text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                              Current
+                            </span>
+                          ) : null}
+
+                          <span className="mt-1 block text-xl">
+                            →
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+
+              {businessContextError ? (
+                <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-200">
+                  {businessContextError}
+                </div>
+              ) : null}
+
+              <button
+                type="button"
+                className="mt-7 text-sm font-medium text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                onClick={() => {
+                  void signOut();
+                }}
+              >
+                Sign in with another account
+              </button>
+
+            </section>
+          </div>
+        </main>
+      </GuestRoute>
+    );
+  }
+
+
+  if (
+    isAuthenticated &&
+    isLoadingBusinessContext
+  ) {
+    return (
+      <GuestRoute allowAuthenticated>
+        <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-slate-950 dark:bg-slate-950 dark:text-white">
+          <p className="font-medium">
+            Preparing your workspaces...
+          </p>
+        </main>
+      </GuestRoute>
+    );
+  }
+
+
+  if (
+    isAuthenticated &&
+    !isLoadingBusinessContext &&
+    accessibleBusinesses.length === 0
+  ) {
+    return (
+      <GuestRoute allowAuthenticated>
+        <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-slate-950 dark:bg-slate-950 dark:text-white">
+          <section className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-8 shadow-xl dark:border-white/10 dark:bg-slate-900">
+
+            <h1 className="text-2xl font-semibold">
+              No business workspace available
+            </h1>
+
+            <p className="mt-3 leading-7 text-slate-600 dark:text-slate-400">
+              Your account is authenticated, but no active business association is currently available.
+            </p>
+
+            {businessContextError ? (
+              <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-200">
+                {businessContextError}
+              </p>
+            ) : null}
+
+            <button
+              type="button"
+              className="mt-6 h-11 rounded-xl bg-slate-950 px-5 font-semibold text-white dark:bg-white dark:text-slate-950"
+              onClick={() => {
+                void signOut();
+              }}
+            >
+              Sign in with another account
+            </button>
+
+          </section>
+        </main>
+      </GuestRoute>
+    );
+  }
+
+
   // MARK: - View
 
   return (
-    <GuestRoute>
+    <GuestRoute allowAuthenticated>
       <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-950 dark:bg-slate-950 dark:text-white sm:px-6">
         <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center justify-center">
           <section className="grid w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/10 dark:border-white/10 dark:bg-slate-900 lg:grid-cols-2">

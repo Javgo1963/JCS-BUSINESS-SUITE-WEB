@@ -13,11 +13,13 @@ import { useAuth } from "@/core/hooks/useAuth";
 interface GuestRouteProps {
   children: ReactNode;
   redirectTo?: string;
+  allowAuthenticated?: boolean;
 }
 
 export function GuestRoute({
   children,
   redirectTo = "/dashboard",
+  allowAuthenticated = false,
 }: GuestRouteProps) {
   const router = useRouter();
 
@@ -27,10 +29,15 @@ export function GuestRoute({
   } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    if (
+      !allowAuthenticated &&
+      !isLoading &&
+      isAuthenticated
+    ) {
       router.replace(redirectTo);
     }
   }, [
+    allowAuthenticated,
     isAuthenticated,
     isLoading,
     redirectTo,
@@ -41,7 +48,10 @@ export function GuestRoute({
     return <LoadingScreen />;
   }
 
-  if (isAuthenticated) {
+  if (
+    isAuthenticated &&
+    !allowAuthenticated
+  ) {
     return (
       <LoadingScreen message="Opening your dashboard..." />
     );

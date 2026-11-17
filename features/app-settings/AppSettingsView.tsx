@@ -35,35 +35,29 @@ import {
 } from "react";
 
 import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
-
-import {
-  httpsCallable,
-} from "firebase/functions";
-
-import {
-  db,
-  firebaseFunctions,
-} from "@/core/firebase/firebase";
-
-import {
   APP_ACCENT_COLOR_VALUES,
   APP_LANGUAGE_OPTIONS,
 } from "./AppSettingsTypes";
+
+import {
+  APP_ACCENT_COLOR_DISPLAY_OPTIONS,
+} from "./AppAccentColors";
 
 import {
   useAppSettings,
 } from "./useAppSettings";
 
 import {
+  usePlatformSettings,
+} from "../platform-settings/usePlatformSettings";
+
+import type {
+  PlatformSettingsActor,
+} from "../platform-settings/PlatformSettingsTypes";
+
+import {
   useBusinessLogo,
 } from "../business-branding/useBusinessLogo";
-
-import BusinessLogoPicker from "../business-branding/BusinessLogoPicker";
-import CompanyLogoView from "../business-branding/CompanyLogoView";
-
 
 import {
   useOfficialJCSLogos,
@@ -71,10 +65,18 @@ import {
 
 import {
   applyOfficialJCSLogoToBusiness,
+  applyOfficialJCSLogoToPlatform,
 } from "../official-jcs-branding/OfficialJCSLogoFirestoreService";
+
+import BusinessLogoPicker from "../business-branding/BusinessLogoPicker";
+import CompanyLogoView from "../business-branding/CompanyLogoView";
 
 import {
   JCS_SCREEN_BACKGROUND_OPTIONS,
+} from "../../components/layout/JCSScreenBackground";
+
+import type {
+  JCSScreenBackgroundID,
 } from "../../components/layout/JCSScreenBackground";
 
 import "./AppSettingsView.css";
@@ -91,6 +93,14 @@ import type {
   BusinessLogoOption,
 } from "../business-branding/BusinessLogoTypes";
 
+import {
+  useAuth,
+} from "@/core/hooks/useAuth";
+
+import {
+  ownedBusinessesFromAccessibleBusinesses,
+} from "@/core/business-context/JCSAccessibleBusinessService";
+
 // MARK: - Sections
 
 const APP_SETTINGS_SECTION_VALUES = [
@@ -105,7 +115,14 @@ type AppSettingsSection =
 
 // MARK: - Props
 
+export type AppSettingsScope =
+  | "platform"
+  | "business";
+
 export interface AppSettingsViewProps {
+  scope?:
+    AppSettingsScope;
+
   businessID: string;
   ownerUID: string;
   currentUserUID: string;
@@ -150,337 +167,12 @@ export interface AppSettingsViewProps {
 
 // MARK: - Accent Options
 
-interface AccentColorDisplayOption {
-  name: AppAccentColorName;
-  title: string;
-  preview: string;
-  foreground: string;
-}
-
-const ACCENT_COLOR_DISPLAY_OPTIONS: readonly AccentColorDisplayOption[] =
-  [
-    {
-      name: "blue",
-      title: "Blue",
-      preview: "#2563eb",
-      foreground: "#ffffff",
-    },
-    {
-      name: "sky",
-      title: "Sky",
-      preview: "#0ea5e9",
-      foreground: "#ffffff",
-    },
-    {
-      name: "aqua",
-      title: "Aqua",
-      preview: "#06b6d4",
-      foreground: "#082f49",
-    },
-    {
-      name: "teal",
-      title: "Teal",
-      preview: "#0f766e",
-      foreground: "#ffffff",
-    },
-    {
-      name: "mint",
-      title: "Mint",
-      preview: "#34d399",
-      foreground: "#052e16",
-    },
-    {
-      name: "green",
-      title: "Green",
-      preview: "#16a34a",
-      foreground: "#ffffff",
-    },
-    {
-      name: "lime",
-      title: "Lime",
-      preview: "#84cc16",
-      foreground: "#1a2e05",
-    },
-    {
-      name: "olive",
-      title: "Olive",
-      preview: "#657e21",
-      foreground: "#ffffff",
-    },
-    {
-      name: "yellow",
-      title: "Yellow",
-      preview: "#facc15",
-      foreground: "#422006",
-    },
-    {
-      name: "gold",
-      title: "Gold",
-      preview:
-        "linear-gradient(135deg, #f8df82, #c99721, #7b5510)",
-      foreground: "#241500",
-    },
-    {
-      name: "sand",
-      title: "Sand",
-      preview: "#d6b98c",
-      foreground: "#3f2d18",
-    },
-    {
-      name: "orange",
-      title: "Orange",
-      preview: "#f97316",
-      foreground: "#ffffff",
-    },
-    {
-      name: "peach",
-      title: "Peach",
-      preview: "#fbad82",
-      foreground: "#4a1d0d",
-    },
-    {
-      name: "coral",
-      title: "Coral",
-      preview: "#fb7185",
-      foreground: "#4c0519",
-    },
-    {
-      name: "red",
-      title: "Red",
-      preview: "#dc2626",
-      foreground: "#ffffff",
-    },
-    {
-      name: "rose",
-      title: "Rose",
-      preview: "#e11d48",
-      foreground: "#ffffff",
-    },
-    {
-      name: "pink",
-      title: "Pink",
-      preview: "#ec4899",
-      foreground: "#ffffff",
-    },
-    {
-      name: "purple",
-      title: "Purple",
-      preview: "#9333ea",
-      foreground: "#ffffff",
-    },
-    {
-      name: "violet",
-      title: "Violet",
-      preview: "#7c3aed",
-      foreground: "#ffffff",
-    },
-    {
-      name: "indigo",
-      title: "Indigo",
-      preview: "#4f46e5",
-      foreground: "#ffffff",
-    },
-    {
-      name: "lavender",
-      title: "Lavender",
-      preview: "#c4b5fd",
-      foreground: "#2e1065",
-    },
-    {
-      name: "plum",
-      title: "Plum",
-      preview: "#7e225f",
-      foreground: "#ffffff",
-    },
-    {
-      name: "slate",
-      title: "Slate",
-      preview: "#475569",
-      foreground: "#ffffff",
-    },
-    {
-      name: "gray",
-      title: "Gray",
-      preview: "#6b7280",
-      foreground: "#ffffff",
-    },
-    {
-      name: "charcoal",
-      title: "Charcoal",
-      preview: "#27272a",
-      foreground: "#ffffff",
-    },
-    {
-      name: "black",
-      title: "Black",
-      preview: "#09090b",
-      foreground: "#ffffff",
-    },
-    {
-      name: "white",
-      title: "White",
-      preview: "#ffffff",
-      foreground: "#111827",
-    },
-    {
-      name: "silver",
-      title: "Silver",
-      preview:
-        "linear-gradient(135deg, #ffffff, #bfc5cc, #737b85)",
-      foreground: "#111827",
-    },
-    {
-      name: "chrome",
-      title: "Chrome",
-      preview:
-        "linear-gradient(135deg, #f8fafc, #89929d, #ffffff, #4b5563)",
-      foreground: "#111827",
-    },
-    {
-      name: "platinum",
-      title: "Platinum",
-      preview:
-        "linear-gradient(135deg, #f5f5f4, #c8c7c1, #868581)",
-      foreground: "#292524",
-    },
-    {
-      name: "steel",
-      title: "Steel",
-      preview:
-        "linear-gradient(135deg, #dbe4ea, #708090, #334155)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "titanium",
-      title: "Titanium",
-      preview:
-        "linear-gradient(135deg, #d6d3d1, #78716c, #292524)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "bronze",
-      title: "Bronze",
-      preview:
-        "linear-gradient(135deg, #d69b62, #8a4f22, #4c2912)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "copper",
-      title: "Copper",
-      preview:
-        "linear-gradient(135deg, #e7a06c, #b45f35, #6e2f1a)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "roseGold",
-      title: "Rose Gold",
-      preview:
-        "linear-gradient(135deg, #f4c6b9, #c78372, #865244)",
-      foreground: "#3f1e18",
-    },
-    {
-      name: "champagne",
-      title: "Champagne",
-      preview:
-        "linear-gradient(135deg, #fff0c7, #d6bd84, #9c7d3c)",
-      foreground: "#3f2c0b",
-    },
-    {
-      name: "brass",
-      title: "Brass",
-      preview:
-        "linear-gradient(135deg, #d8c078, #a58528, #66500d)",
-      foreground: "#2d2204",
-    },
-    {
-      name: "emerald",
-      title: "Emerald",
-      preview:
-        "linear-gradient(135deg, #34d399, #047857, #064e3b)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "sapphire",
-      title: "Sapphire",
-      preview:
-        "linear-gradient(135deg, #60a5fa, #1d4ed8, #172554)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "ruby",
-      title: "Ruby",
-      preview:
-        "linear-gradient(135deg, #fb7185, #be123c, #4c0519)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "amethyst",
-      title: "Amethyst",
-      preview:
-        "linear-gradient(135deg, #d8b4fe, #9333ea, #581c87)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "onyx",
-      title: "Onyx",
-      preview:
-        "linear-gradient(135deg, #52525b, #18181b, #000000)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "midnight",
-      title: "Midnight",
-      preview:
-        "linear-gradient(135deg, #334155, #172554, #020617)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "ocean",
-      title: "Ocean",
-      preview:
-        "linear-gradient(135deg, #22d3ee, #0284c7, #164e63)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "forest",
-      title: "Forest",
-      preview:
-        "linear-gradient(135deg, #4ade80, #166534, #052e16)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "sunset",
-      title: "Sunset",
-      preview:
-        "linear-gradient(135deg, #facc15, #f97316, #db2777)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "fire",
-      title: "Fire",
-      preview:
-        "linear-gradient(135deg, #facc15, #ef4444, #7f1d1d)",
-      foreground: "#ffffff",
-    },
-    {
-      name: "ice",
-      title: "Ice",
-      preview:
-        "linear-gradient(135deg, #ecfeff, #67e8f9, #38bdf8)",
-      foreground: "#082f49",
-    },
-    {
-      name: "liquidGlass",
-      title: "Liquid Glass",
-      preview:
-        "linear-gradient(135deg, rgba(255,255,255,.95), rgba(125,211,252,.72), rgba(196,181,253,.78))",
-      foreground: "#1e293b",
-    },
-  ] as const;
+// Shared official registry:
+// APP_ACCENT_COLOR_DISPLAY_OPTIONS
 
 // MARK: - Component
 
-export default function AppSettingsView({
+function BusinessAppSettingsView({
   businessID,
   ownerUID,
   currentUserUID,
@@ -508,6 +200,63 @@ export default function AppSettingsView({
   ] =
     useState<AppSettingsSection>(
       "company",
+    );
+
+  const {
+    accessibleBusinesses,
+    activeBusinessID,
+    selectBusiness,
+  } = useAuth();
+
+
+  const ownedBusinesses =
+    useMemo(
+      () =>
+        ownedBusinessesFromAccessibleBusinesses(
+          accessibleBusinesses
+        ),
+      [
+        accessibleBusinesses,
+      ]
+    );
+
+
+  const handleBusinessSwitch =
+    useCallback(
+      (
+        nextBusinessID: string
+      ): void => {
+
+        if (
+          nextBusinessID ===
+          activeBusinessID
+        ) {
+          return;
+        }
+
+        const selected =
+          selectBusiness(
+            nextBusinessID
+          );
+
+        if (!selected) {
+          return;
+        }
+
+        /*
+         * Close Settings after switching.
+         *
+         * Dashboard + JCSBusinessContext will reload the
+         * newly selected tenant and reopen Settings with
+         * that business's own data if requested.
+         */
+        onClose?.();
+      },
+      [
+        activeBusinessID,
+        onClose,
+        selectBusiness,
+      ]
     );
 
   /*
@@ -597,26 +346,6 @@ export default function AppSettingsView({
       autoLoad:
         true,
     });
-
-  // =====================================================
-  // MARK: - Premium Billing State
-  // H2-C6D-J-F-LOGO-R37B-R12-R4
-  // =====================================================
-
-  const [
-    isStartingPremiumBilling,
-    setIsStartingPremiumBilling,
-  ] = useState(false);
-
-  const [
-    premiumBillingMessage,
-    setPremiumBillingMessage,
-  ] = useState("");
-
-  const [
-    premiumBillingError,
-    setPremiumBillingError,
-  ] = useState("");
 
   const canGeneratePremiumLogo =
     appSettings.permissions
@@ -718,243 +447,6 @@ export default function AppSettingsView({
     }, [
       businessLogo,
       canGeneratePremiumLogo,
-    ]);
-
-
-  // =====================================================
-  // MARK: - Shared Premium Billing
-  // H2-C6D-J-F-LOGO-R37B-R12-R4
-  // =====================================================
-
-  const handleUpgradeToPremium =
-    useCallback(async (): Promise<void> => {
-      const cleanBillingText =
-        (value: unknown): string =>
-          typeof value === "string"
-            ? value.trim()
-            : "";
-
-      const normalizedBusinessID =
-        cleanBillingText(
-          businessID
-        );
-
-      if (!normalizedBusinessID) {
-        setPremiumBillingMessage("");
-        setPremiumBillingError(
-          "Premium billing cannot begin because the Business ID is missing."
-        );
-        return;
-      }
-
-      if (!appSettings.canManageSettings) {
-        setPremiumBillingMessage("");
-        setPremiumBillingError(
-          "You do not have permission to manage this business subscription."
-        );
-        return;
-      }
-
-      setIsStartingPremiumBilling(true);
-      setPremiumBillingMessage(
-        "JCS is preparing secure Premium billing..."
-      );
-      setPremiumBillingError("");
-
-      try {
-        /*
-         * PlatformClient is read only to select the correct
-         * shared server billing path.
-         *
-         * Browser state is never Premium entitlement authority.
-         */
-        const platformClientReference =
-          doc(
-            db,
-            "platformClients",
-            normalizedBusinessID
-          );
-
-        const platformClientSnapshot =
-          await getDoc(
-            platformClientReference
-          );
-
-        if (!platformClientSnapshot.exists()) {
-          throw new Error(
-            "The canonical JCS subscription record could not be found."
-          );
-        }
-
-        const platformClientData =
-          platformClientSnapshot.data();
-
-        const existingSubscriptionID =
-          cleanBillingText(
-            platformClientData
-              .stripeSubscriptionID
-          );
-
-        // ==================================================
-        // Existing Stripe subscription
-        // SAME subscription → Starter/Base to Premium
-        // ==================================================
-
-        if (existingSubscriptionID) {
-          setPremiumBillingMessage(
-            "JCS is securely upgrading your existing subscription to Premium..."
-          );
-
-          const upgradeCallable =
-            httpsCallable<
-              {
-                businessID: string;
-              },
-              {
-                success?: boolean;
-                businessID?: string;
-                stripeSubscriptionID?: string;
-                stripeStatus?: string;
-                premiumEntitlementVerified?: boolean;
-              }
-            >(
-              firebaseFunctions,
-              "upgradeBaseSubscriptionToPremium"
-            );
-
-          const response =
-            await upgradeCallable({
-              businessID:
-                normalizedBusinessID,
-            });
-
-          const returnedBusinessID =
-            cleanBillingText(
-              response.data
-                ?.businessID
-            );
-
-          if (
-            returnedBusinessID !==
-            normalizedBusinessID
-          ) {
-            throw new Error(
-              "Premium upgrade returned a Business ID mismatch."
-            );
-          }
-
-          const returnedSubscriptionID =
-            cleanBillingText(
-              response.data
-                ?.stripeSubscriptionID
-            );
-
-          if (
-            returnedSubscriptionID !==
-            existingSubscriptionID
-          ) {
-            throw new Error(
-              "Premium upgrade returned a Stripe subscription mismatch."
-            );
-          }
-
-          /*
-           * Callable success is deliberately NOT entitlement proof.
-           *
-           * stripePremiumWebhook remains the authority that may set:
-           *
-           * planName = Premium
-           * subscriptionStatus = Active
-           * canUseAutomaticLogo = true
-           */
-          if (
-            response.data
-              ?.premiumEntitlementVerified !==
-            false
-          ) {
-            throw new Error(
-              "Premium upgrade returned an unexpected entitlement state."
-            );
-          }
-
-          setPremiumBillingMessage(
-            "Premium upgrade submitted. JCS is waiting for verified payment activation."
-          );
-
-          return;
-        }
-
-        // ==================================================
-        // No Stripe subscription
-        // JCS Embedded Premium Checkout
-        // ==================================================
-
-        setPremiumBillingMessage(
-          "JCS is opening secure Premium billing..."
-        );
-
-        /*
-         * Checkout creation now belongs to the dedicated
-         * JCS Embedded Billing workspace.
-         *
-         * Browser navigation is context only.
-         * Stripe webhook + canonical PlatformClient remain
-         * Premium entitlement authority.
-         */
-        const billingURL =
-          new URL(
-            "/billing/checkout",
-            window.location.origin
-          );
-
-        billingURL.searchParams.set(
-          "businessID",
-          normalizedBusinessID
-        );
-
-        billingURL.searchParams.set(
-          "plan",
-          "premium"
-        );
-
-        if (
-          billingURL.origin !==
-          window.location.origin
-        ) {
-          throw new Error(
-            "Premium billing navigation must remain inside JCS Business Suite."
-          );
-        }
-
-        setPremiumBillingMessage(
-          "Secure JCS Premium billing is opening. Premium remains locked until Stripe confirms the subscription."
-        );
-
-        window.location.assign(
-          billingURL.toString()
-        );
-      } catch (error: unknown) {
-        console.error(
-          "❌ JCS Web Premium billing failed:",
-          error
-        );
-
-        setPremiumBillingMessage("");
-
-        setPremiumBillingError(
-          error instanceof Error &&
-          error.message.trim()
-            ? error.message
-            : "JCS could not start Premium billing."
-        );
-      } finally {
-        setIsStartingPremiumBilling(
-          false
-        );
-      }
-    }, [
-      appSettings.canManageSettings,
-      businessID,
     ]);
 
   if (
@@ -1104,6 +596,209 @@ export default function AppSettingsView({
             }
           />
 
+          <AppSettingsPanel
+            eyebrow="Business Management"
+            title="My Businesses"
+            description="Manage the businesses owned by this account, switch the active workspace, or create another independent business."
+          >
+            <div
+              style={{
+                display: "grid",
+                gap: 12,
+              }}
+            >
+              {ownedBusinesses.length > 0 ? (
+                ownedBusinesses.map(
+                  (ownedBusiness) => {
+
+                    const isCurrent =
+                      ownedBusiness.businessID ===
+                        activeBusinessID ||
+                      ownedBusiness.businessID ===
+                        businessID;
+
+                    return (
+                      <div
+                        key={
+                          ownedBusiness.businessID
+                        }
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 16,
+                          padding: 16,
+                          borderRadius: 16,
+                          border:
+                            isCurrent
+                              ? "1px solid var(--app-settings-accent)"
+                              : "1px solid rgba(148,163,184,0.20)",
+                          background:
+                            isCurrent
+                              ? "color-mix(in srgb, var(--app-settings-accent) 10%, transparent)"
+                              : "rgba(148,163,184,0.08)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            minWidth: 0,
+                            display: "grid",
+                            gap: 4,
+                          }}
+                        >
+                          <strong>
+                            {
+                              isCurrent
+                                ? effectiveBusinessName
+                                : ownedBusiness.businessName
+                            }
+                          </strong>
+
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 800,
+                              color:
+                                isCurrent
+                                  ? "var(--app-settings-accent)"
+                                  : "inherit",
+                              opacity:
+                                isCurrent
+                                  ? 1
+                                  : 0.72,
+                            }}
+                          >
+                            {
+                              isCurrent
+                                ? "Current Workspace"
+                                : "Business Owner"
+                            }
+                          </span>
+
+                          <code
+                            style={{
+                              fontSize: 12,
+                              overflowWrap:
+                                "anywhere",
+                              opacity: 0.72,
+                            }}
+                          >
+                            {
+                              ownedBusiness.businessID
+                            }
+                          </code>
+                        </div>
+
+                        {isCurrent ? (
+                          <span
+                            aria-label="Current workspace"
+                            title="Current workspace"
+                            style={{
+                              fontSize: 22,
+                              color:
+                                "var(--app-settings-accent)",
+                            }}
+                          >
+                            ✓
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="app-settings-secondary-button"
+                            onClick={() => {
+                              handleBusinessSwitch(
+                                ownedBusiness.businessID
+                              );
+                            }}
+                            style={{
+                              flexShrink: 0,
+                            }}
+                          >
+                            Switch to Business
+                          </button>
+                        )}
+                      </div>
+                    );
+                  }
+                )
+              ) : (
+                <div
+                  style={{
+                    padding: 16,
+                    borderRadius: 16,
+                    border:
+                      "1px solid rgba(148,163,184,0.20)",
+                    background:
+                      "rgba(148,163,184,0.08)",
+                  }}
+                >
+                  <strong>
+                    {effectiveBusinessName}
+                  </strong>
+
+                  <div
+                    style={{
+                      marginTop: 4,
+                      fontSize: 12,
+                      opacity: 0.72,
+                    }}
+                  >
+                    Current business
+                  </div>
+
+                  <code
+                    style={{
+                      display: "block",
+                      marginTop: 4,
+                      fontSize: 12,
+                      overflowWrap:
+                        "anywhere",
+                      opacity: 0.72,
+                    }}
+                  >
+                    {businessID}
+                  </code>
+                </div>
+              )}
+
+              <a
+                href="/add-business"
+                className="app-settings-primary-button"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  minHeight: 52,
+                  textDecoration: "none",
+                }}
+              >
+                <span>
+                  Add Business
+                </span>
+
+                <span
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              </a>
+
+              <small
+                style={{
+                  lineHeight: 1.5,
+                  opacity: 0.72,
+                }}
+              >
+                Each business keeps its own Business ID,
+                settings, data and billing. Switching
+                workspaces does not merge tenant data.
+                Opening Add Business does not change the
+                active workspace.
+              </small>
+            </div>
+          </AppSettingsPanel>
+
           {appSettings.isLoading &&
           !appSettings.hasLoaded ? (
             <AppSettingsLoadingState />
@@ -1136,9 +831,9 @@ export default function AppSettingsView({
               {selectedSection ===
               "branding" ? (
                 <BrandingSection
-                  businessID={
-                    businessID
-                  }
+              businessID={
+                businessID
+              }
                   businessName={
                     effectiveBusinessName
                   }
@@ -1160,18 +855,6 @@ export default function AppSettingsView({
                   }
                   onGeneratePremiumLogos={
                     handleGeneratePremiumLogos
-                  }
-                  onUpgradeToPremium={
-                    handleUpgradeToPremium
-                  }
-                  isStartingPremiumBilling={
-                    isStartingPremiumBilling
-                  }
-                  premiumBillingMessage={
-                    premiumBillingMessage
-                  }
-                  premiumBillingError={
-                    premiumBillingError
                   }
                 />
               ) : null}
@@ -1293,6 +976,688 @@ export default function AppSettingsView({
   );
 }
 
+// =======================================================
+// MARK: - Platform App Settings
+// =======================================================
+
+function PlatformAppSettingsView({
+  currentUserUID,
+  actor,
+  onAccentColorChange,
+  onLanguageChange,
+  onClose,
+}: AppSettingsViewProps) {
+  const [
+    selectedSection,
+    setSelectedSection,
+  ] =
+    useState<AppSettingsSection>(
+      "appearance",
+    );
+
+  const platformActor =
+    useMemo<PlatformSettingsActor>(
+      () => ({
+        firebaseUID:
+          currentUserUID,
+
+        role:
+          "platform-admin",
+
+        isPlatformAdministrator:
+          actor.isPlatformAdministrator,
+
+        canManagePlatformSettings:
+          actor.isPlatformAdministrator,
+      }),
+      [
+        actor.isPlatformAdministrator,
+        currentUserUID,
+      ],
+    );
+
+  const platformSettings =
+    usePlatformSettings({
+      actor:
+        platformActor,
+
+      currentUserUID,
+
+      autoLoad:
+        true,
+
+      onAccentColorChange:
+        onAccentColorChange
+          ? (accentColorName: string) => {
+              onAccentColorChange(
+                accentColorName as AppAccentColorName,
+              );
+            }
+          : undefined,
+
+      onLanguageChange:
+        onLanguageChange
+          ? (languageCode: string) => {
+              onLanguageChange(
+                languageCode as AppLanguageCode,
+              );
+            }
+          : undefined,
+    });
+
+  const effectivePlatformName =
+    platformSettings.formValues
+      .platformName ||
+    "JCS Business Suite";
+
+  const effectiveAccentColorName =
+    platformSettings.formValues
+      .accentColorName;
+
+  const effectiveAccentColor =
+    useMemo(
+      () =>
+        getAccentColorCSSValue(
+          effectiveAccentColorName,
+        ),
+      [
+        effectiveAccentColorName,
+      ],
+    );
+
+  const isBusy =
+    platformSettings.isLoading ||
+    platformSettings.isSaving ||
+    platformSettings.isUploadingLogo ||
+    platformSettings.isRestoringLogo;
+
+  const officialLogos =
+    useOfficialJCSLogos();
+
+  const [
+    isApplyingOfficialLogo,
+    setIsApplyingOfficialLogo,
+  ] = useState(false);
+
+  const [
+    officialLogoMessage,
+    setOfficialLogoMessage,
+  ] = useState("");
+
+  const [
+    officialLogoError,
+    setOfficialLogoError,
+  ] = useState("");
+
+  const handleApplyOfficialLogo =
+    useCallback(
+      async () => {
+        const selectedLogo =
+          officialLogos.selectedLogo;
+
+        if (
+          !selectedLogo ||
+          !selectedLogo.isAvailable
+        ) {
+          setOfficialLogoError(
+            "Select an available official JCS logo first.",
+          );
+
+          return;
+        }
+
+        if (
+          !platformSettings.permissions
+            .canManageSettings
+        ) {
+          setOfficialLogoError(
+            "You do not have permission to change the platform logo.",
+          );
+
+          return;
+        }
+
+        setIsApplyingOfficialLogo(
+          true,
+        );
+
+        setOfficialLogoMessage(
+          "",
+        );
+
+        setOfficialLogoError(
+          "",
+        );
+
+        try {
+          await applyOfficialJCSLogoToPlatform({
+            logo:
+              selectedLogo,
+          });
+
+          await platformSettings
+            .reload();
+
+          setOfficialLogoMessage(
+            "Official JCS platform logo applied successfully.",
+          );
+        } catch (
+          error: unknown
+        ) {
+          console.error(
+            "Official JCS platform logo apply failed:",
+            error,
+          );
+
+          setOfficialLogoError(
+            error instanceof Error &&
+            error.message.trim()
+              ? error.message
+              : "The official JCS platform logo could not be applied.",
+          );
+        } finally {
+          setIsApplyingOfficialLogo(
+            false,
+          );
+        }
+      },
+      [
+        officialLogos.selectedLogo,
+        platformSettings,
+      ],
+    );
+
+  const handleSubmit =
+    useCallback(
+      async (
+        event:
+          FormEvent<HTMLFormElement>,
+      ) => {
+        event.preventDefault();
+
+        await platformSettings
+          .saveSettings();
+      },
+      [
+        platformSettings,
+      ],
+    );
+
+  const handleAccentColorSelection =
+    useCallback(
+      (
+        accentColorName:
+          AppAccentColorName,
+      ) => {
+        platformSettings.setFieldValue(
+          "accentColorName",
+          accentColorName,
+        );
+
+        onAccentColorChange?.(
+          accentColorName,
+        );
+      },
+      [
+        onAccentColorChange,
+        platformSettings,
+      ],
+    );
+
+  const handleLanguageChange =
+    useCallback(
+      (
+        event:
+          ChangeEvent<HTMLSelectElement>,
+      ) => {
+        const languageCode =
+          event.target
+            .value as AppLanguageCode;
+
+        platformSettings.setFieldValue(
+          "languageCode",
+          languageCode,
+        );
+
+        onLanguageChange?.(
+          languageCode,
+        );
+      },
+      [
+        onLanguageChange,
+        platformSettings,
+      ],
+    );
+
+  if (
+    !platformSettings.permissions
+      .canViewSettings
+  ) {
+    return (
+      <AppSettingsAccessDenied
+        onClose={
+          onClose
+        }
+      />
+    );
+  }
+
+  return (
+    <main
+      className="app-settings-view"
+      style={{
+        "--app-settings-accent":
+          effectiveAccentColor,
+      } as React.CSSProperties}
+    >
+      <header className="app-settings-header">
+        <div className="app-settings-header__identity">
+          <div className="app-settings-header__copy">
+            <span className="app-settings-eyebrow">
+              JCS Business Suite
+            </span>
+
+            <h1>
+              App Settings
+            </h1>
+
+            <p>
+              Manage global platform information,
+              branding and appearance.
+            </p>
+          </div>
+        </div>
+
+        <div className="app-settings-header__actions">
+          {platformSettings.isDirty ? (
+            <span className="app-settings-unsaved-badge">
+              Unsaved changes
+            </span>
+          ) : null}
+
+          <button
+            type="button"
+            className="app-settings-secondary-button"
+            onClick={
+              platformSettings.resetForm
+            }
+            disabled={
+              !platformSettings.isDirty ||
+              isBusy
+            }
+          >
+            Reset
+          </button>
+
+          <button
+            type="submit"
+            form="platform-app-settings-form"
+            className="app-settings-primary-button"
+            disabled={
+              !platformSettings.permissions
+                .canManageSettings ||
+              !platformSettings.isDirty ||
+              isBusy
+            }
+          >
+            {platformSettings.isSaving
+              ? "Saving..."
+              : "Save Settings"}
+          </button>
+
+          {onClose ? (
+            <button
+              type="button"
+              className="app-settings-close-button"
+              aria-label="Close App Settings"
+              onClick={
+                onClose
+              }
+            >
+              ×
+            </button>
+          ) : null}
+        </div>
+      </header>
+
+      <div className="app-settings-layout">
+        <AppSettingsNavigation
+          selectedSection={
+            selectedSection
+          }
+          onSelectSection={
+            setSelectedSection
+          }
+          showFinancial={
+            false
+          }
+        />
+
+        <form
+          id="platform-app-settings-form"
+          className="app-settings-content"
+          onSubmit={
+            handleSubmit
+          }
+          noValidate
+        >
+          <AppSettingsStatusMessages
+            errorMessage={
+              platformSettings.errorMessage
+            }
+            successMessage={
+              platformSettings.successMessage
+            }
+            onDismissError={
+              platformSettings.clearMessages
+            }
+            onDismissSuccess={
+              platformSettings.clearMessages
+            }
+          />
+
+          {platformSettings.isLoading ? (
+            <AppSettingsLoadingState />
+          ) : null}
+
+          {!platformSettings.isLoading ? (
+            <>
+              {selectedSection ===
+              "appearance" ? (
+                <AppearanceSection
+                  scope="platform"
+                  disabled={
+                    !platformSettings
+                      .permissions
+                      .canEditAppearance ||
+                    isBusy
+                  }
+                  accentColorName={
+                    platformSettings.formValues
+                      .accentColorName
+                  }
+                  backgroundID={
+                    platformSettings.formValues
+                      .screenBackgroundID
+                  }
+                  languageCode={
+                    platformSettings.formValues
+                      .languageCode
+                  }
+                  errors={{
+                    accentColorName:
+                      platformSettings
+                        .formErrors
+                        .accentColorName,
+
+                    languageCode:
+                      platformSettings
+                        .formErrors
+                        .languageCode,
+                  }}
+                  onAccentColorSelection={
+                    handleAccentColorSelection
+                  }
+                  onBackgroundSelection={(
+                    backgroundID,
+                  ) => {
+                    platformSettings.setFieldValue(
+                      "screenBackgroundID",
+                      backgroundID,
+                    );
+                  }}
+                  onLanguageChange={
+                    handleLanguageChange
+                  }
+                  previewLogoURL={
+                    platformSettings.settings
+                      ?.logoDownloadURL ??
+                    ""
+                  }
+                  businessName={
+                    effectivePlatformName
+                  }
+                  accentColor={
+                    effectiveAccentColor
+                  }
+                />
+              ) : selectedSection ===
+                "branding" ? (
+                <div className="app-settings-section-stack">
+                  <AppSettingsPanel
+                    eyebrow="JCS Business Suite"
+                    title="Official JCS Logo Collection"
+                    description="Choose the official JCS Business Suite logo used by the Platform Administrator experience."
+                  >
+                    <div className="app-settings-official-logo-library">
+                      <div className="app-settings-official-logo-library__header">
+                        <div>
+                          <h3>
+                            8 Official Logos
+                          </h3>
+
+                          <p>
+                            Select the platform logo that best matches the current Dashboard background and Accent Color.
+                          </p>
+                        </div>
+
+                        <div className="app-settings-official-logo-library__header-actions">
+                          <span className="app-settings-official-logo-library__badge">
+                            Platform
+                          </span>
+
+                          <button
+                            type="button"
+                            className="app-settings-button app-settings-button--primary app-settings-official-logo-library__apply-button"
+                            disabled={
+                              !platformSettings
+                                .permissions
+                                .canManageSettings ||
+                              isApplyingOfficialLogo ||
+                              !officialLogos
+                                .selectedLogo ||
+                              !officialLogos
+                                .selectedLogo
+                                .isAvailable
+                            }
+                            onClick={() => {
+                              void handleApplyOfficialLogo();
+                            }}
+                          >
+                            {isApplyingOfficialLogo
+                              ? "Applying..."
+                              : "Apply Official Logo"}
+                          </button>
+                        </div>
+                      </div>
+
+                      {officialLogos.errorMessage ? (
+                        <div className="app-settings-official-logo-library__message">
+                          {officialLogos.errorMessage}
+                        </div>
+                      ) : null}
+
+                      <div className="app-settings-official-logo-grid">
+                        {officialLogos.logos.map(
+                          (logo) => {
+                            const isSelected =
+                              officialLogos
+                                .selectedLogoID ===
+                              logo.id;
+
+                            return (
+                              <button
+                                key={logo.id}
+                                type="button"
+                                className={[
+                                  "app-settings-official-logo-card",
+                                  isSelected
+                                    ? "app-settings-official-logo-card--selected"
+                                    : "",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                                disabled={
+                                  officialLogos.isLoading ||
+                                  !logo.isAvailable
+                                }
+                                onClick={() => {
+                                  officialLogos
+                                    .setSelectedLogoID(
+                                      logo.id,
+                                    );
+                                }}
+                                aria-pressed={
+                                  isSelected
+                                }
+                              >
+                                <span className="app-settings-official-logo-card__preview">
+                                  {logo.downloadURL ? (
+                                    <img
+                                      src={
+                                        logo.downloadURL
+                                      }
+                                      alt={
+                                        logo.title
+                                      }
+                                      className="app-settings-official-logo-card__image"
+                                    />
+                                  ) : (
+                                    <span className="app-settings-official-logo-card__empty">
+                                      <strong>
+                                        Slot {logo.slot}
+                                      </strong>
+
+                                      <small>
+                                        Logo not mounted yet
+                                      </small>
+                                    </span>
+                                  )}
+
+                                  {isSelected ? (
+                                    <span
+                                      className="app-settings-official-logo-card__check"
+                                      aria-hidden="true"
+                                    >
+                                      ✓
+                                    </span>
+                                  ) : null}
+                                </span>
+
+                                <span className="app-settings-official-logo-card__copy">
+                                  <strong>
+                                    {logo.title}
+                                  </strong>
+
+                                  <span>
+                                    Official JCS Logo
+                                  </span>
+                                </span>
+                              </button>
+                            );
+                          },
+                        )}
+                      </div>
+
+                      <div className="app-settings-official-logo-library__actions">
+                        {officialLogoMessage ? (
+                          <span className="app-settings-official-logo-library__success">
+                            {officialLogoMessage}
+                          </span>
+                        ) : null}
+
+                        {officialLogoError ? (
+                          <span className="app-settings-official-logo-library__error">
+                            {officialLogoError}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </AppSettingsPanel>
+                </div>
+              ) : (
+                <AppSettingsPanel
+                  eyebrow="Platform Administrator"
+                  title="Platform Information"
+                  description="Global platform information will use this same App Settings experience."
+                >
+                  <p>
+                    This section is now part of the unified
+                    App Settings experience.
+                  </p>
+                </AppSettingsPanel>
+              )}
+            </>
+          ) : null}
+
+          <div className="app-settings-mobile-save-bar">
+            <button
+              type="button"
+              className="app-settings-secondary-button"
+              onClick={
+                platformSettings.resetForm
+              }
+              disabled={
+                !platformSettings.isDirty ||
+                isBusy
+              }
+            >
+              Reset
+            </button>
+
+            <button
+              type="submit"
+              className="app-settings-primary-button"
+              disabled={
+                !platformSettings.permissions
+                  .canManageSettings ||
+                !platformSettings.isDirty ||
+                isBusy
+              }
+            >
+              {platformSettings.isSaving
+                ? "Saving..."
+                : "Save Settings"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  );
+}
+
+// =======================================================
+// MARK: - App Settings Scope Router
+// =======================================================
+
+export default function AppSettingsView(
+  props: AppSettingsViewProps,
+) {
+  const scope =
+    props.scope ??
+    "business";
+
+  /*
+   * Business remains the current proven implementation.
+   *
+   * The platform branch will be connected next to
+   * usePlatformSettings() and platformSettings/global.
+   */
+  if (scope === "platform") {
+    return (
+      <PlatformAppSettingsView
+        {...props}
+      />
+    );
+  }
+
+  return (
+    <BusinessAppSettingsView
+      {...props}
+    />
+  );
+}
+
 // MARK: - Navigation
 
 interface AppSettingsNavigationProps {
@@ -1302,11 +1667,15 @@ interface AppSettingsNavigationProps {
   onSelectSection: (
     section: AppSettingsSection,
   ) => void;
+
+  showFinancial?:
+    boolean;
 }
 
 function AppSettingsNavigation({
   selectedSection,
   onSelectSection,
+  showFinancial = true,
 }: AppSettingsNavigationProps) {
   const items: Array<{
     id: AppSettingsSection;
@@ -1332,12 +1701,16 @@ function AppSettingsNavigation({
       title: "Appearance",
       subtitle: "Color and language",
     },
-    {
-      id: "financial",
-      icon: "%",
-      title: "Financial",
-      subtitle: "Tax configuration",
-    },
+    ...(showFinancial
+      ? [
+          {
+            id: "financial" as AppSettingsSection,
+            icon: "%",
+            title: "Financial",
+            subtitle: "Tax configuration",
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -1575,6 +1948,7 @@ function CompanyInformationSection({
 
 interface BrandingSectionProps {
   businessID: string;
+
   businessName: string;
   accentColor: string;
 
@@ -1589,22 +1963,11 @@ interface BrandingSectionProps {
 
   onGeneratePremiumLogos:
     () => Promise<void>;
-
-  onUpgradeToPremium:
-    () => Promise<void>;
-
-  isStartingPremiumBilling:
-    boolean;
-
-  premiumBillingMessage:
-    string;
-
-  premiumBillingError:
-    string;
 }
 
 function BrandingSection({
   businessID,
+
   businessName,
   accentColor,
 
@@ -1615,14 +1978,6 @@ function BrandingSection({
   businessLogo,
 
   onGeneratePremiumLogos,
-
-  onUpgradeToPremium,
-
-  isStartingPremiumBilling,
-
-  premiumBillingMessage,
-
-  premiumBillingError,
 }: BrandingSectionProps) {
   const officialLogos =
     useOfficialJCSLogos();
@@ -1666,28 +2021,46 @@ function BrandingSection({
         return;
       }
 
-      setIsApplyingOfficialLogo(true);
-      setOfficialLogoMessage("");
-      setOfficialLogoError("");
+      setIsApplyingOfficialLogo(
+        true,
+      );
+
+      setOfficialLogoMessage(
+        "",
+      );
+
+      setOfficialLogoError(
+        "",
+      );
 
       try {
         await applyOfficialJCSLogoToBusiness({
           businessID,
+
           companyName:
             businessName,
+
           accentColorName:
             accentColor,
+
           logo:
             selectedLogo,
         });
 
+        /*
+         * Reload the canonical business branding so the
+         * Dashboard and CompanyLogoView receive the new
+         * global official logo immediately.
+         */
         await businessLogo
           .reloadActiveLogo();
 
         setOfficialLogoMessage(
           "Official JCS logo applied successfully.",
         );
-      } catch (error: unknown) {
+      } catch (
+        error: unknown
+      ) {
         console.error(
           "Official JCS logo apply failed:",
           error,
@@ -1700,7 +2073,9 @@ function BrandingSection({
             : "The official JCS logo could not be applied.",
         );
       } finally {
-        setIsApplyingOfficialLogo(false);
+        setIsApplyingOfficialLogo(
+          false,
+        );
       }
     };
 
@@ -1709,7 +2084,7 @@ function BrandingSection({
       <AppSettingsPanel
         eyebrow="JCS Business Suite"
         title="Official JCS Logo Collection"
-        description="Choose from the eight official JCS Business Suite logos. These logos are included and managed by JCS."
+        description="Choose from the eight official JCS Business Suite logo styles. These platform logos are always available and are managed by JCS."
       >
         <div className="app-settings-official-logo-library">
           <div className="app-settings-official-logo-library__header">
@@ -1720,7 +2095,7 @@ function BrandingSection({
 
               <p>
                 Select the logo that best matches your
-                business branding.
+                Dashboard background and Accent Color.
               </p>
             </div>
 
@@ -1731,7 +2106,7 @@ function BrandingSection({
 
               <button
                 type="button"
-                className="app-settings-primary-button app-settings-official-logo-library__apply-button"
+                className="app-settings-button app-settings-button--primary app-settings-official-logo-library__apply-button"
                 disabled={
                   !canManage ||
                   isApplyingOfficialLogo ||
@@ -1750,7 +2125,7 @@ function BrandingSection({
           </div>
 
           {officialLogos.errorMessage ? (
-            <div className="app-settings-official-logo-library__error">
+            <div className="app-settings-official-logo-library__message">
               {officialLogos.errorMessage}
             </div>
           ) : null}
@@ -1805,13 +2180,16 @@ function BrandingSection({
                           </strong>
 
                           <small>
-                            Logo unavailable
+                            Logo not mounted yet
                           </small>
                         </span>
                       )}
 
                       {isSelected ? (
-                        <span className="app-settings-official-logo-card__check">
+                        <span
+                          className="app-settings-official-logo-card__check"
+                          aria-hidden="true"
+                        >
                           ✓
                         </span>
                       ) : null}
@@ -1823,7 +2201,7 @@ function BrandingSection({
                       </strong>
 
                       <span>
-                        Official JCS Business Suite
+                        Official JCS Logo
                       </span>
                     </span>
                   </button>
@@ -1832,17 +2210,19 @@ function BrandingSection({
             )}
           </div>
 
-          {officialLogoMessage ? (
-            <div className="app-settings-official-logo-library__success">
-              {officialLogoMessage}
-            </div>
-          ) : null}
+          <div className="app-settings-official-logo-library__actions">
+            {officialLogoMessage ? (
+              <span className="app-settings-official-logo-library__success">
+                {officialLogoMessage}
+              </span>
+            ) : null}
 
-          {officialLogoError ? (
-            <div className="app-settings-official-logo-library__error">
-              {officialLogoError}
-            </div>
-          ) : null}
+            {officialLogoError ? (
+              <span className="app-settings-official-logo-library__error">
+                {officialLogoError}
+              </span>
+            ) : null}
+          </div>
         </div>
       </AppSettingsPanel>
 
@@ -1894,30 +2274,10 @@ function BrandingSection({
               <button
                 type="button"
                 className="app-settings-primary-button"
-                disabled={
-                  !canManage ||
-                  isStartingPremiumBilling
-                }
-                onClick={() => {
-                  void onUpgradeToPremium();
-                }}
+                disabled
               >
-                {isStartingPremiumBilling
-                  ? "Preparing Premium..."
-                  : "Upgrade to Premium"}
+                Premium Required
               </button>
-
-              {premiumBillingMessage ? (
-                <div className="app-settings-official-logo-library__success">
-                  {premiumBillingMessage}
-                </div>
-              ) : null}
-
-              {premiumBillingError ? (
-                <div className="app-settings-official-logo-library__error">
-                  {premiumBillingError}
-                </div>
-              ) : null}
             </div>
           ) : (
             <button
@@ -2293,27 +2653,29 @@ function SofiaGenerationProgress({
 interface AppearanceSectionProps {
   disabled: boolean;
 
+  scope?:
+    AppSettingsScope;
+
   accentColorName:
     AppAccentColorName;
 
   backgroundID:
-    import("../../components/layout/JCSScreenBackground")
-      .JCSScreenBackgroundID;
+    JCSScreenBackgroundID;
 
   languageCode:
     AppLanguageCode;
 
-  errors:
-    AppSettingsFormErrors;
+  errors: {
+    accentColorName: string;
+    languageCode: string;
+  };
 
   onAccentColorSelection: (
     name: AppAccentColorName,
   ) => void;
 
   onBackgroundSelection: (
-    backgroundID:
-      import("../../components/layout/JCSScreenBackground")
-        .JCSScreenBackgroundID,
+    backgroundID: JCSScreenBackgroundID,
   ) => void;
 
   onLanguageChange: (
@@ -2321,15 +2683,18 @@ interface AppearanceSectionProps {
       ChangeEvent<HTMLSelectElement>,
   ) => void;
 
-  branding:
+  branding?:
     ReturnType<
       typeof useBusinessLogo
     >["activeBranding"];
 
-  logo:
+  logo?:
     ReturnType<
       typeof useBusinessLogo
     >["activeLogo"];
+
+  previewLogoURL?:
+    string;
 
   businessName: string;
   accentColor: string;
@@ -2337,6 +2702,8 @@ interface AppearanceSectionProps {
 
 function AppearanceSection({
   disabled,
+
+  scope = "business",
 
   accentColorName,
   backgroundID,
@@ -2351,22 +2718,33 @@ function AppearanceSection({
   branding,
   logo,
 
+  previewLogoURL = "",
+
   businessName,
   accentColor,
 }: AppearanceSectionProps) {
+  const isPlatformScope =
+    scope === "platform";
+
+  const normalizedPreviewLogoURL =
+    previewLogoURL.trim();
   return (
     <div className="app-settings-section-stack">
       <AppSettingsPanel
         eyebrow="Dashboard theme"
         title="Accent Color"
-        description="Choose the primary color used throughout your business Dashboard, controls and highlighted information."
+        description={
+          isPlatformScope
+            ? "Choose the primary color used throughout the JCS Business Suite platform Dashboard, controls and highlighted information."
+            : "Choose the primary color used throughout your business Dashboard, controls and highlighted information."
+        }
       >
         <div
           className="app-settings-accent-grid"
           role="radiogroup"
           aria-label="Dashboard Accent Color"
         >
-          {ACCENT_COLOR_DISPLAY_OPTIONS
+          {APP_ACCENT_COLOR_DISPLAY_OPTIONS
             .filter(
               (option) =>
                 APP_ACCENT_COLOR_VALUES.includes(
@@ -2439,24 +2817,57 @@ function AppearanceSection({
         ) : null}
 
         <div className="app-settings-theme-preview">
-          <CompanyLogoView
-            branding={
-              branding
-            }
-            logo={
-              logo
-            }
-            businessName={
-              businessName
-            }
-            accentColor={
-              accentColor
-            }
-            size="standard"
-            showBackground
-            showBorder
-            enableShadow
-          />
+          {normalizedPreviewLogoURL ? (
+            <div
+              style={{
+                width: 164,
+                height: 92,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+                borderRadius: 18,
+                border:
+                  "1px solid rgba(148, 163, 184, 0.24)",
+                background:
+                  "rgba(255, 255, 255, 0.72)",
+                boxShadow:
+                  "0 18px 42px rgba(15, 23, 42, 0.12)",
+              }}
+            >
+              <img
+                src={
+                  normalizedPreviewLogoURL
+                }
+                alt={`${businessName} logo`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  padding: 10,
+                }}
+              />
+            </div>
+          ) : (
+            <CompanyLogoView
+              branding={
+                branding
+              }
+              logo={
+                logo
+              }
+              businessName={
+                businessName
+              }
+              accentColor={
+                accentColor
+              }
+              size="standard"
+              showBackground
+              showBorder
+              enableShadow
+            />
+          )}
 
           <div className="app-settings-theme-preview__content">
             <span className="app-settings-eyebrow">
@@ -2485,111 +2896,102 @@ function AppearanceSection({
       </AppSettingsPanel>
 
       <AppSettingsPanel
-        eyebrow="Dashboard background"
-        title="Official Background Collection"
-        description="Choose from the 32 official JCS backgrounds available for your business workspace."
+        eyebrow="Premium appearance"
+        title="Premium Backgrounds"
+        description={
+          isPlatformScope
+            ? "Choose a sophisticated background for the global JCS Business Suite workspace."
+            : "Choose a sophisticated background for your business workspace. Your selection is saved specifically to this business."
+        }
       >
-        <div className="app-settings-background-library">
-          <div className="app-settings-background-library__header">
-            <div>
-              <h3>
-                32 Official Backgrounds
-              </h3>
+        <div
+          className="app-settings-background-grid"
+          role="radiogroup"
+          aria-label={
+            isPlatformScope
+              ? "Platform Dashboard Background"
+              : "Business Dashboard Background"
+          }
+        >
+          {JCS_SCREEN_BACKGROUND_OPTIONS.map(
+            (option) => {
+              const isSelected =
+                backgroundID === option.id;
 
-              <p>
-                Select a background and save App Settings to make it the preferred background for this business.
-              </p>
-            </div>
-
-            <span className="app-settings-background-library__badge">
-              Business
-            </span>
-          </div>
-
-          <div
-            className="app-settings-background-grid"
-            role="radiogroup"
-            aria-label="Business Official Background Collection"
-          >
-            {JCS_SCREEN_BACKGROUND_OPTIONS.map(
-              (
-                option,
-              ) => {
-                const isSelected =
-                  backgroundID ===
-                  option.id;
-
-                return (
-                  <button
-                    key={
-                      option.id
-                    }
-                    type="button"
-                    role="radio"
-                    aria-checked={
-                      isSelected
-                    }
-                    className={[
-                      "app-settings-background-option",
-                      isSelected
-                        ? "app-settings-background-option--selected"
-                        : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    disabled={
-                      disabled
-                    }
-                    onClick={() => {
-                      onBackgroundSelection(
-                        option.id,
-                      );
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  disabled={disabled}
+                  className={[
+                    "app-settings-background-option",
+                    isSelected
+                      ? "app-settings-background-option--selected"
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => {
+                    onBackgroundSelection(
+                      option.id,
+                    );
+                  }}
+                >
+                  <span
+                    className="app-settings-background-option__preview"
+                    style={{
+                      background:
+                        option.background,
                     }}
+                    aria-hidden="true"
                   >
-                    <span
-                      className="app-settings-background-option__preview"
-                      style={{
-                        background:
-                          option.background,
-                      }}
-                    >
-                      <span
-                        className="app-settings-background-option__preview-accent"
-                        style={{
-                          background:
-                            option.previewAccentHex,
-                        }}
-                        aria-hidden="true"
-                      />
-
-                      {isSelected ? (
-                        <span className="app-settings-background-option__check">
-                          ✓
-                        </span>
-                      ) : null}
-                    </span>
-
-                    <span className="app-settings-background-option__copy">
-                      <strong>
-                        {option.title}
-                      </strong>
-
-                      <span>
-                        {option.subtitle}
+                    {isSelected ? (
+                      <span className="app-settings-background-option__check">
+                        ✓
                       </span>
-                    </span>
-                  </button>
-                );
-              },
-            )}
-          </div>
+                    ) : null}
+                  </span>
+
+                  <span className="app-settings-background-option__copy">
+                    <strong>
+                      {option.title}
+                    </strong>
+
+                    <small>
+                      {option.subtitle}
+                    </small>
+                  </span>
+                </button>
+              );
+            },
+          )}
+        </div>
+
+        <div className="app-settings-background-note">
+          <strong>
+            {isPlatformScope
+              ? "Platform-wide appearance"
+              : "Business-specific appearance"}
+          </strong>
+
+          <span>
+            {isPlatformScope
+              ? "This background is saved globally for the Platform Administrator experience."
+              : "This background will follow this Business ID and can be changed at any time from App Settings."}
+          </span>
         </div>
       </AppSettingsPanel>
 
       <AppSettingsPanel
         eyebrow="Localization"
         title="Application Language"
-        description="Select the preferred language for this business experience."
+        description={
+          isPlatformScope
+            ? "Select the preferred language for the global platform experience."
+            : "Select the preferred language for this business experience."
+        }
       >
         <div className="app-settings-select-field">
           <label htmlFor="app-language">
@@ -3046,7 +3448,7 @@ function getAccentColorCSSValue(
     AppAccentColorName,
 ): string {
   return (
-    ACCENT_COLOR_DISPLAY_OPTIONS.find(
+    APP_ACCENT_COLOR_DISPLAY_OPTIONS.find(
       (option) =>
         option.name ===
         accentColorName,

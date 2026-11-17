@@ -15,6 +15,12 @@ import { AuthContext } from "@/core/contexts/AuthContext";
 import { AppUserService } from "@/core/services/AppUserService";
 import { AuthService } from "@/core/services/AuthService";
 
+import {
+  canAccessBusiness,
+  resolveAccessibleBusinessesForFirebaseUser,
+  type JCSAccessibleBusiness,
+} from "@/core/business-context/JCSAccessibleBusinessService";
+
 import type {
   AppUserRecord,
   UserRole,
@@ -64,6 +70,16 @@ export function AuthProvider({
   const [appUser, setAppUser] =
     useState<AppUserRecord | null>(null);
 
+  const [
+    accessibleBusinesses,
+    setAccessibleBusinesses,
+  ] = useState<JCSAccessibleBusiness[]>([]);
+
+  const [
+    activeBusinessID,
+    setActiveBusinessID,
+  ] = useState<string | null>(null);
+
   // MARK: - Loading State
 
   const [isLoading, setIsLoading] =
@@ -93,6 +109,8 @@ export function AuthProvider({
       ): Promise<void> => {
         if (!firebaseUser) {
           setAppUser(null);
+          setAccessibleBusinesses([]);
+          setActiveBusinessID(null);
           setBusinessContextError(null);
           setIsLoadingBusinessContext(false);
 
@@ -110,6 +128,64 @@ export function AuthProvider({
 
           setAppUser(loadedAppUser);
 
+          const accessibleResolution =
+            await resolveAccessibleBusinessesForFirebaseUser(
+              firebaseUser.uid
+            );
+
+          const resolvedAccessibleBusinesses =
+            accessibleResolution.businesses;
+
+          setAccessibleBusinesses(
+            resolvedAccessibleBusinesses
+          );
+
+          const storageKey =
+            `jcsActiveBusinessID:${firebaseUser.uid}`;
+
+          const persistedBusinessID =
+            typeof window !== "undefined"
+              ? window.localStorage
+                  .getItem(storageKey)
+                  ?.trim() ?? ""
+              : "";
+
+          const appUserBusinessID =
+            loadedAppUser
+              ?.businessID
+              ?.trim() ?? "";
+
+          if (
+            persistedBusinessID &&
+            canAccessBusiness(
+              resolvedAccessibleBusinesses,
+              persistedBusinessID
+            )
+          ) {
+            setActiveBusinessID(
+              persistedBusinessID
+            );
+          } else if (
+            appUserBusinessID &&
+            canAccessBusiness(
+              resolvedAccessibleBusinesses,
+              appUserBusinessID
+            )
+          ) {
+            setActiveBusinessID(
+              appUserBusinessID
+            );
+          } else if (
+            resolvedAccessibleBusinesses.length === 1
+          ) {
+            setActiveBusinessID(
+              resolvedAccessibleBusinesses[0]
+                .businessID
+            );
+          } else {
+            setActiveBusinessID(null);
+          }
+
           if (!loadedAppUser) {
             setBusinessContextError(
               "The authenticated user does not yet have a JCS Business Suite user profile."
@@ -123,7 +199,11 @@ export function AuthProvider({
 
           setAppUser(null);
 
-          setBusinessContextError(
+          
+          setAccessibleBusinesses([]);
+          setActiveBusinessID(null);
+
+setBusinessContextError(
             getErrorMessage(
               businessError,
               "Unable to load the JCS Business Suite business context."
@@ -135,6 +215,69 @@ export function AuthProvider({
       },
       []
     );
+
+
+  // MARK: - Active Workspace Selection
+
+  const selectBusiness =
+    useCallback(
+      (
+        requestedBusinessID: string
+      ): boolean => {
+
+        const normalizedBusinessID =
+          requestedBusinessID.trim();
+
+        if (
+          !normalizedBusinessID ||
+          !canAccessBusiness(
+            accessibleBusinesses,
+            normalizedBusinessID
+          )
+        ) {
+          return false;
+        }
+
+        setActiveBusinessID(
+          normalizedBusinessID
+        );
+
+        if (
+          typeof window !== "undefined" &&
+          user?.uid
+        ) {
+          window.localStorage.setItem(
+            `jcsActiveBusinessID:${user.uid}`,
+            normalizedBusinessID
+          );
+        }
+
+        return true;
+      },
+      [
+        accessibleBusinesses,
+        user?.uid,
+      ]
+    );
+
+
+  const clearActiveBusinessSelection =
+    useCallback((): void => {
+
+      setActiveBusinessID(null);
+
+      if (
+        typeof window !== "undefined" &&
+        user?.uid
+      ) {
+        window.localStorage.removeItem(
+          `jcsActiveBusinessID:${user.uid}`
+        );
+      }
+    }, [
+      user?.uid,
+    ]);
+
 
   // MARK: - Observe Firebase Authentication
 
@@ -264,6 +407,9 @@ export function AuthProvider({
 
           setUser(null);
           setAppUser(null);
+          setAccessibleBusinesses([]);
+          setActiveBusinessID(null);
+
           setIsLoadingBusinessContext(false);
         } catch (signOutError) {
           console.error(
@@ -408,17 +554,50 @@ export function AuthProvider({
 
   // MARK: - Business Identity
 
+  const activeBusiness =
+    activeBusinessID
+      ? accessibleBusinesses.find(
+          (business) =>
+            business.businessID ===
+            activeBusinessID
+        ) ?? null
+      : null;
+
+
   const businessID =
-    appUser?.businessID || null;
+    activeBusiness?.businessID ??
+    appUser?.businessID ??
+    null;
+
 
   const ownerUID =
-    appUser?.ownerUID || null;
+    activeBusiness?.ownerUID ??
+    appUser?.ownerUID ??
+    null;
+
 
   const businessName =
-    appUser?.businessName || null;
+    activeBusiness?.businessName ??
+    appUser?.businessName ??
+    null;
+
+
+  const activeMembershipRole =
+    activeBusiness
+      ?.role
+      ?.trim()
+      ?.toLowerCase() ?? "";
+
 
   const role: UserRole | null =
-    appUser?.role ?? null;
+    activeMembershipRole === "admin" ||
+    activeMembershipRole === "manager" ||
+    activeMembershipRole === "employee" ||
+    activeMembershipRole === "customer" ||
+    activeMembershipRole === "provider"
+      ? activeMembershipRole
+      : appUser?.role ?? null;
+
 
   // MARK: - Platform Role
 
@@ -430,7 +609,13 @@ export function AuthProvider({
 
   const isBusinessOwner =
     !isPlatformAdministrator &&
-    (appUser?.isBusinessOwner ?? false);
+    (
+      activeBusiness
+        ?.isOwnedByAuthenticatedUser ??
+      appUser
+        ?.isBusinessOwner ??
+      false
+    );
 
   /*
    The standard "admin" role represents a business administrator.
@@ -524,6 +709,9 @@ export function AuthProvider({
         ownerUID,
         businessName,
 
+        accessibleBusinesses,
+        activeBusinessID,
+
         // Role
 
         role,
@@ -558,6 +746,8 @@ export function AuthProvider({
         // Business Context Actions
 
         refreshBusinessContext,
+        selectBusiness,
+        clearActiveBusinessSelection,
 
         // Error Actions
 
@@ -582,6 +772,9 @@ export function AuthProvider({
         ownerUID,
         businessName,
 
+        accessibleBusinesses,
+        activeBusinessID,
+
         role,
 
         isPlatformAdministrator,
@@ -604,6 +797,8 @@ export function AuthProvider({
         refreshUser,
 
         refreshBusinessContext,
+        selectBusiness,
+        clearActiveBusinessSelection,
 
         clearError,
         clearBusinessContextError,

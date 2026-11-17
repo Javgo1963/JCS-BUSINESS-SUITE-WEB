@@ -24,10 +24,6 @@ import type {
   BusinessLogoSource,
 } from "../business-branding/BusinessLogoTypes";
 
-import type {
-  JCSScreenBackgroundID,
-} from "../../components/layout/JCSScreenBackground";
-
 // MARK: - Languages
 
 export const APP_LANGUAGE_VALUES = [
@@ -64,6 +60,36 @@ export const APP_LANGUAGE_OPTIONS: readonly AppLanguageOption[] = [
 ] as const;
 
 // MARK: - Accent Colors
+
+// MARK: - Screen Backgrounds
+
+export const APP_SCREEN_BACKGROUND_VALUES = [
+  "default",
+  "executiveGlass",
+  "midnightLuxe",
+  "oceanExecutive",
+  "sapphireMist",
+  "emeraldGlass",
+  "copperStudio",
+  "champagnePearl",
+  "platinumFrost",
+  "titaniumDark",
+  "softIvory",
+  "whiteStudio",
+  "softWhite",
+  "lightPurple",
+  "lavenderMist",
+  "pearlWhite",
+  "softBlue",
+  "mintMist",
+  "roseMist",
+  "champagneLight",
+  "liquidGlass",
+  "custom",
+] as const;
+
+export type AppScreenBackgroundID =
+  (typeof APP_SCREEN_BACKGROUND_VALUES)[number];
 
 export const APP_ACCENT_COLOR_VALUES = [
   "blue",
@@ -304,9 +330,6 @@ export interface AppSettingsLocalization {
 
 export interface AppSettingsAppearance {
   accentColorName: AppAccentColorName;
-
-  backgroundID:
-    JCSScreenBackgroundID;
 }
 
 // MARK: - Branding
@@ -370,6 +393,7 @@ export interface AppSettingsRecord
   businessID: string;
   ownerUID: string;
 
+  backgroundID: AppScreenBackgroundID;
   backgroundStoragePath: string;
   backgroundDownloadURL: string;
 }
@@ -404,9 +428,6 @@ export interface AppSettingsFirestoreDocument {
   languageCode: AppLanguageCode;
   accentColorName: AppAccentColorName;
 
-  backgroundID:
-    JCSScreenBackgroundID;
-
   activeLogoID: string;
   activeLogoSource: BusinessLogoSource;
 
@@ -417,6 +438,7 @@ export interface AppSettingsFirestoreDocument {
   logoSupportsAccentColor: boolean;
   useAccentColorForLogo: boolean;
 
+  backgroundID: AppScreenBackgroundID;
   backgroundStoragePath: string;
   backgroundDownloadURL: string;
 
@@ -457,9 +479,7 @@ export interface AppSettingsFormValues {
 
   languageCode: AppLanguageCode;
   accentColorName: AppAccentColorName;
-
-  backgroundID:
-    JCSScreenBackgroundID;
+  backgroundID: AppScreenBackgroundID;
 }
 
 // MARK: - Form Errors
@@ -767,9 +787,6 @@ export function createDefaultAppSettingsRecord(
     accentColorName:
       "blue",
 
-    backgroundID:
-      "default",
-
     activeLogoID:
       "",
 
@@ -790,6 +807,9 @@ export function createDefaultAppSettingsRecord(
 
     useAccentColorForLogo:
       true,
+
+    backgroundID:
+      "default",
 
     backgroundStoragePath:
       "",
@@ -826,6 +846,22 @@ export function normalizeAppLanguageCode(
   }
 
   return "system";
+}
+
+export function normalizeAppScreenBackgroundID(
+  value: unknown,
+): AppScreenBackgroundID {
+
+  if (
+    typeof value === "string" &&
+    APP_SCREEN_BACKGROUND_VALUES.includes(
+      value as AppScreenBackgroundID,
+    )
+  ) {
+    return value as AppScreenBackgroundID;
+  }
+
+  return "default";
 }
 
 export function normalizeAppAccentColorName(

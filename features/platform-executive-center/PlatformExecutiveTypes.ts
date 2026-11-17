@@ -495,6 +495,13 @@ export interface PlatformClientFirestoreData {
   // Business
 
   businessName?: unknown;
+  // Canonical business identity
+  industryCategoryKey?: unknown;
+  industryCategoryTitle?: unknown;
+  businessModeKey?: unknown;
+  businessModeName?: unknown;
+
+  // Legacy compatibility
   industry?: unknown;
   businessCategory?: unknown;
   businessModeRawValue?: unknown;
@@ -719,6 +726,13 @@ export interface PlatformClientRecord {
   // Business information
 
   businessName: string;
+  // Canonical business identity
+  industryCategoryKey: string;
+  industryCategoryTitle: string;
+  businessModeKey: string;
+  businessModeName: string;
+
+  // Legacy compatibility
   industry: string;
   businessCategory: string;
   businessModeRawValue: string;
@@ -1285,6 +1299,13 @@ export interface PlatformExecutiveMessage {
 
 export interface PlatformClientBusinessProfileInput {
   businessName: string;
+  // Canonical business identity
+  industryCategoryKey: string;
+  industryCategoryTitle: string;
+  businessModeKey: string;
+  businessModeName: string;
+
+  // Legacy compatibility
   industry: string;
   businessCategory: string;
   businessModeRawValue: string;
@@ -1409,6 +1430,13 @@ export interface CreatePlatformClientInput {
   ownerFirebaseUID?: string;
 
   businessName: string;
+  // Canonical business identity
+  industryCategoryKey?: string;
+  industryCategoryTitle?: string;
+  businessModeKey?: string;
+  businessModeName?: string;
+
+  // Legacy compatibility
   industry?: string;
   businessCategory?: string;
   businessModeRawValue?: string;
@@ -1473,6 +1501,13 @@ export interface PlatformClientFirestorePayload {
   ownerFirebaseUID: string;
 
   businessName: string;
+  // Canonical business identity
+  industryCategoryKey: string;
+  industryCategoryTitle: string;
+  businessModeKey: string;
+  businessModeName: string;
+
+  // Legacy compatibility
   industry: string;
   businessCategory: string;
   businessModeRawValue: string;
@@ -1665,7 +1700,7 @@ export const PLATFORM_EXECUTIVE_COLLECTIONS = {
     "platformClients",
 
   ownerInvitations:
-    "platformBusinessOwnerInvitations",
+    "PlatformBusinessOwnerInvitations",
 
   auditEvents:
     "platformAuditEvents",

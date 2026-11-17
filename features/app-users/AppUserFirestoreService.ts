@@ -531,6 +531,70 @@ export async function fetchBusinessAppUsers(
 }
 
 // ============================================================
+// MARK: - Read Own Business App User
+// ============================================================
+
+export async function fetchOwnBusinessAppUserByFirebaseUID(
+  businessID: string,
+  firebaseUID: string
+): Promise<AppUserRecord | null> {
+  const normalizedBusinessID =
+    requireText(
+      businessID,
+      "Business ID"
+    );
+
+  const normalizedFirebaseUID =
+    requireText(
+      firebaseUID,
+      "Firebase UID"
+    );
+
+  const ownUserQuery =
+    query(
+      businessAppUsersCollection(
+        normalizedBusinessID
+      ),
+      where(
+        "firebaseUID",
+        "==",
+        normalizedFirebaseUID
+      ),
+      limit(
+        2
+      )
+    );
+
+  const snapshot =
+    await getDocs(
+      ownUserQuery
+    );
+
+  if (
+    snapshot.empty
+  ) {
+    return null;
+  }
+
+  if (
+    snapshot.size > 1
+  ) {
+    throw new Error(
+      "Multiple AppUser records were found for this Firebase identity in the same business."
+    );
+  }
+
+  const document =
+    snapshot.docs[0];
+
+  return normalizeAppUserRecord(
+    document.id,
+    document.data()
+  );
+}
+
+
+// ============================================================
 // MARK: - Live App User Subscription
 // ============================================================
 

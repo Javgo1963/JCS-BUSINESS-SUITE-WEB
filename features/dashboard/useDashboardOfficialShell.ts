@@ -24,6 +24,10 @@ import type {
 } from "./DashboardAccess";
 
 import type {
+  JCSScreenBackgroundID,
+} from "@/components/layout/JCSScreenBackground";
+
+import type {
   DashboardModuleDefinition,
 } from "./DashboardModuleRegistry";
 
@@ -109,11 +113,9 @@ export interface UseDashboardOfficialShellInput {
     JCSShellAppearance;
 
   backgroundID:
-    JCSOfficialShellProps[
-      "backgroundID"
-    ];
+    JCSScreenBackgroundID;
 
-  backgroundDownloadURL?:
+  customBackgroundURL?:
     string;
 
   access:
@@ -222,7 +224,7 @@ export function useDashboardOfficialShell({
   appearance,
 
   backgroundID,
-  backgroundDownloadURL,
+  customBackgroundURL,
 
   access,
   identity,
@@ -272,79 +274,83 @@ export function useDashboardOfficialShell({
               .onOpenDashboard,
         },
 
-        {
-          id:
-            "customers",
+        ...(!access.isCustomer
+          ? [
+              {
+                id:
+                  "customers",
 
-          title:
-            "Customers",
+                title:
+                  "Customers",
 
-          path:
-            "/customers",
+                path:
+                  "/customers",
 
-          icon:
-            CircleUserRound,
+                icon:
+                  CircleUserRound,
 
-          isActive:
-            pathIsActive(
-              pathname,
-              "/customers"
-            ),
+                isActive:
+                  pathIsActive(
+                    pathname,
+                    "/customers"
+                  ),
 
-          onSelect: () =>
-            actions.onOpenRoute(
-              "Customers" as DashboardRoute
-            ),
-        },
+                onSelect: () =>
+                  actions.onOpenRoute(
+                    "Customers" as DashboardRoute
+                  ),
+              },
 
-        {
-          id:
-            "appointments",
+              {
+                id:
+                  "appointments",
 
-          title:
-            "Appointments",
+                title:
+                  "Appointments",
 
-          path:
-            "/appointments",
+                path:
+                  "/appointments",
 
-          icon:
-            CalendarDays,
+                icon:
+                  CalendarDays,
 
-          isActive:
-            pathIsActive(
-              pathname,
-              "/appointments"
-            ),
+                isActive:
+                  pathIsActive(
+                    pathname,
+                    "/appointments"
+                  ),
 
-          onSelect: () =>
-            actions.onOpenRoute(
-              "Calendar" as DashboardRoute
-            ),
-        },
+                onSelect: () =>
+                  actions.onOpenRoute(
+                    "Calendar" as DashboardRoute
+                  ),
+              },
 
-        {
-          id:
-            "app-settings",
+              {
+                id:
+                  "app-settings",
 
-          title:
-            "App Settings",
+                title:
+                  "App Settings",
 
-          path:
-            "/settings",
+                path:
+                  "/settings",
 
-          icon:
-            Settings,
+                icon:
+                  Settings,
 
-          isActive:
-            pathIsActive(
-              pathname,
-              "/settings"
-            ),
+                isActive:
+                  pathIsActive(
+                    pathname,
+                    "/settings"
+                  ),
 
-          onSelect:
-            actions
-              .onOpenSettings,
-        },
+                onSelect:
+                  actions
+                    .onOpenSettings,
+              },
+            ]
+          : []),
 
         ...(access
           .isPlatformAdmin
@@ -407,6 +413,8 @@ export function useDashboardOfficialShell({
           : []),
       ],
       [
+        access.isCustomer,
+
         access
           .isPlatformAdmin,
 
@@ -504,7 +512,7 @@ export function useDashboardOfficialShell({
       appearance,
 
       backgroundID,
-      backgroundDownloadURL,
+      customBackgroundURL,
 
       identity,
       user,
@@ -583,8 +591,8 @@ export function useDashboardOfficialShell({
       accentName,
       actions,
       appearance,
-      backgroundDownloadURL,
       backgroundID,
+      customBackgroundURL,
       commandItems,
       identity,
       isSigningOut,

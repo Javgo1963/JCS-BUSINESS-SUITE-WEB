@@ -130,6 +130,14 @@ const BUSINESS_ADMINISTRATION_ROLES: readonly DashboardRole[] = [
   "admin",
 ];
 
+const CUSTOMER_DASHBOARD_MODULE_IDS = new Set<string>([
+  "customer-home",
+  "restaurant-store",
+  "catalog",
+  "favorites",
+  "account",
+]);
+
 // MARK: - Registry
 
 export const DASHBOARD_MODULE_REGISTRY:
@@ -147,6 +155,11 @@ export const DASHBOARD_MODULE_REGISTRY:
       route: DashboardRoute.CustomerHome,
       capability: "customerPortal",
       moduleKey: "customerPortal",
+      roleControlled: true,
+      allowedRoles: [
+        ...BUSINESS_TEAM_ROLES,
+        "customer",
+      ],
       sortOrder: 10,
     },
 
@@ -171,6 +184,11 @@ export const DASHBOARD_MODULE_REGISTRY:
       route: DashboardRoute.Catalog,
       capability: "catalog",
       moduleKey: "catalog",
+      roleControlled: true,
+      allowedRoles: [
+        ...BUSINESS_TEAM_ROLES,
+        "customer",
+      ],
       sortOrder: 30,
     },
 
@@ -183,6 +201,11 @@ export const DASHBOARD_MODULE_REGISTRY:
       route: DashboardRoute.Favorites,
       capability: "favorites",
       moduleKey: "favorites",
+      roleControlled: true,
+      allowedRoles: [
+        ...BUSINESS_TEAM_ROLES,
+        "customer",
+      ],
       sortOrder: 40,
     },
 
@@ -196,6 +219,10 @@ export const DASHBOARD_MODULE_REGISTRY:
       capability: "account",
       moduleKey: "account",
       roleControlled: true,
+      allowedRoles: [
+        ...BUSINESS_TEAM_ROLES,
+        "customer",
+      ],
       sortOrder: 50,
     },
 
@@ -745,6 +772,14 @@ export function resolveDashboardRoles(
     roles.add("employee");
   }
 
+  if (access.isCustomer) {
+    roles.add("customer");
+  }
+
+  if (access.isProvider) {
+    roles.add("provider");
+  }
+
   return roles;
 }
 
@@ -844,6 +879,23 @@ export function canDisplayDashboardModule(
     return false;
   }
 
+  /*
+   * Customer is a customer-facing identity, not a business
+   * operations identity.
+   *
+   * Even if an old/stale AppUser document contains operational
+   * enabledModules, Customer must never receive administrative
+   * or staff modules through that assignment.
+   */
+  if (
+    access.isCustomer &&
+    !CUSTOMER_DASHBOARD_MODULE_IDS.has(
+      module.id
+    )
+  ) {
+    return false;
+  }
+
   const supported =
     capabilityIsSupported(
       module,
@@ -858,6 +910,29 @@ export function canDisplayDashboardModule(
     moduleIsEnabled(
       module,
       configuration
+    );
+
+  /*
+   * Per-user explicit module authority.
+   *
+   * Business configuration still determines whether the module
+   * exists for the tenant. Once provisioned for the business,
+   * an explicit AppUser enabledModules assignment is a valid
+   * access grant.
+   *
+   * disabledModules is an explicit per-user denial and therefore
+   * wins over role defaults and permissions.
+   */
+  const explicitlyEnabledForUser =
+    Boolean(module.moduleKey) &&
+    access.enabledModules.has(
+      module.moduleKey as string
+    );
+
+  const explicitlyDisabledForUser =
+    Boolean(module.moduleKey) &&
+    access.disabledModules.has(
+      module.moduleKey as string
     );
 
   const userRoles =
@@ -903,6 +978,23 @@ export function canDisplayDashboardModule(
    */
   if (!enabled) {
     return false;
+  }
+
+  /*
+   * Explicit per-user denial wins after tenant provisioning
+   * and before role/default access.
+   */
+  if (explicitlyDisabledForUser) {
+    return false;
+  }
+
+  /*
+   * Explicit per-user module assignment is a direct access grant.
+   * This allows Business Owners to add a module beyond the
+   * selected role defaults, matching the intended Apple behavior.
+   */
+  if (explicitlyEnabledForUser) {
+    return true;
   }
 
   const hasAccessRestrictions =

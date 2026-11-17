@@ -1,0 +1,9 @@
+runConfig:
+  minInstances: 0
+
+env:
+  - variable: NEXT_PUBLIC_JCS_INVITATION_RESOLVER_URL
+    value: https://us-central1-jcs-business-suite.cloudfunctions.net/resolveJCSInvitation
+    availability:
+      - BUILD
+      - RUNTIME

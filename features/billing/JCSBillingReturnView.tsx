@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react";
 
@@ -23,6 +22,10 @@ import {
 import {
   useAuth,
 } from "@/core/hooks/useAuth";
+
+import {
+  canAccessBusiness,
+} from "@/core/business-context/JCSAccessibleBusinessService";
 
 import {
   normalizePlatformClientRecord,
@@ -46,11 +49,12 @@ type VerificationState =
   | "error";
 
 
-const AUTOMATIC_VERIFICATION_MAX_ATTEMPTS =
-  8;
-
-const AUTOMATIC_VERIFICATION_DELAY_MS =
-  1500;
+const WORKSPACE_PROGRESS_STAGES = [
+  "Preparing your workspace",
+  "Setting up your workspace",
+  "Almost ready",
+  "Finalizing access",
+] as const;
 
 
 function clean(
@@ -76,6 +80,7 @@ export default function JCSBillingReturnView() {
     isLoadingBusinessContext,
 
     businessID,
+    accessibleBusinesses,
   } =
     useAuth();
 
@@ -83,6 +88,13 @@ export default function JCSBillingReturnView() {
   const [
     sessionID,
     setSessionID,
+  ] =
+    useState("");
+
+
+  const [
+    storedBillingBusinessID,
+    setStoredBillingBusinessID,
   ] =
     useState("");
 
@@ -99,6 +111,13 @@ export default function JCSBillingReturnView() {
     setStoredBillingFlow,
   ] =
     useState("");
+
+
+  const [
+    billingReturnStateReady,
+    setBillingReturnStateReady,
+  ] =
+    useState(false);
 
 
   const [
@@ -131,21 +150,6 @@ export default function JCSBillingReturnView() {
     useState("");
 
 
-  const automaticVerificationAttemptRef =
-    useRef(0);
-
-  const automaticVerificationTimerRef =
-    useRef<number | null>(
-      null
-    );
-
-  const [
-    automaticVerificationComplete,
-    setAutomaticVerificationComplete,
-  ] =
-    useState(false);
-
-
   useEffect(() => {
 
     const params =
@@ -157,6 +161,15 @@ export default function JCSBillingReturnView() {
       clean(
         params.get(
           "session_id"
+        )
+      )
+    );
+
+
+    setStoredBillingBusinessID(
+      clean(
+        window.sessionStorage.getItem(
+          "jcsBillingBusinessID"
         )
       )
     );
@@ -175,6 +188,11 @@ export default function JCSBillingReturnView() {
           "jcsBillingFlow"
         )
       )
+    );
+
+
+    setBillingReturnStateReady(
+      true
     );
 
   }, []);
@@ -201,16 +219,16 @@ export default function JCSBillingReturnView() {
 
   const verifyCanonicalSubscription =
     useCallback(
-      async (): Promise<VerificationState> => {
+      async (): Promise<void> => {
 
-        const normalizedBusinessID =
+        const normalizedBillingBusinessID =
           clean(
-            businessID
+            storedBillingBusinessID
           );
 
 
         if (
-          !normalizedBusinessID
+          !normalizedBillingBusinessID
         ) {
 
           setVerificationState(
@@ -218,10 +236,29 @@ export default function JCSBillingReturnView() {
           );
 
           setVerificationError(
-            "JCS could not resolve the authenticated business identity."
+            "JCS could not recover the exact business associated with this billing return."
           );
 
-          return "error";
+          return;
+        }
+
+
+        if (
+          !canAccessBusiness(
+            accessibleBusinesses,
+            normalizedBillingBusinessID
+          )
+        ) {
+
+          setVerificationState(
+            "error"
+          );
+
+          setVerificationError(
+            "The authenticated JCS user is not authorized for the business associated with this billing return."
+          );
+
+          return;
         }
 
 
@@ -240,7 +277,7 @@ export default function JCSBillingReturnView() {
             doc(
               db,
               "platformClients",
-              normalizedBusinessID
+              normalizedBillingBusinessID
             );
 
 
@@ -266,7 +303,7 @@ export default function JCSBillingReturnView() {
               "blocked"
             );
 
-            return "blocked";
+            return;
           }
 
 
@@ -300,15 +337,13 @@ export default function JCSBillingReturnView() {
               "allowed"
             );
 
-            return "allowed";
+            return;
           }
 
 
           setVerificationState(
             "blocked"
           );
-
-          return "blocked";
 
         } catch (error: unknown) {
 
@@ -327,12 +362,11 @@ export default function JCSBillingReturnView() {
               ? error.message
               : "JCS could not verify the subscription."
           );
-
-          return "error";
         }
       },
       [
-        businessID,
+        accessibleBusinesses,
+        storedBillingBusinessID,
       ]
     );
 
@@ -340,6 +374,7 @@ export default function JCSBillingReturnView() {
   useEffect(() => {
 
     if (
+      !billingReturnStateReady ||
       isLoading ||
       !isAuthenticated ||
       isLoadingBusinessContext ||
@@ -350,137 +385,66 @@ export default function JCSBillingReturnView() {
     }
 
 
-    let isCancelled =
-      false;
+    void verifyCanonicalSubscription();
 
+  }, [    billingReturnStateReady,
 
-    const runAutomaticVerification =
-      async (): Promise<void> => {
-
-        if (isCancelled) {
-          return;
-        }
-
-
-        automaticVerificationAttemptRef.current +=
-          1;
-
-
-        const result =
-          await verifyCanonicalSubscription();
-
-
-        if (isCancelled) {
-          return;
-        }
-
-
-        if (
-          result ===
-          "allowed"
-        ) {
-
-          router.replace(
-            "/dashboard"
-          );
-
-          return;
-        }
-
-
-        if (
-          result ===
-          "error"
-        ) {
-
-          setAutomaticVerificationComplete(
-            true
-          );
-
-          return;
-        }
-
-
-        if (
-          result ===
-            "blocked" &&
-          automaticVerificationAttemptRef.current >=
-            AUTOMATIC_VERIFICATION_MAX_ATTEMPTS
-        ) {
-
-          setAutomaticVerificationComplete(
-            true
-          );
-
-          return;
-        }
-
-
-        if (
-          result !==
-          "blocked"
-        ) {
-
-          return;
-        }
-
-
-        automaticVerificationTimerRef.current =
-          window.setTimeout(
-            () => {
-
-              void runAutomaticVerification();
-            },
-            AUTOMATIC_VERIFICATION_DELAY_MS
-          );
-      };
-
-
-    automaticVerificationAttemptRef.current =
-      0;
-
-    setAutomaticVerificationComplete(
-      false
-    );
-
-
-    void runAutomaticVerification();
-
-
-    return () => {
-
-      isCancelled =
-        true;
-
-
-      if (
-        automaticVerificationTimerRef.current !==
-        null
-      ) {
-
-        window.clearTimeout(
-          automaticVerificationTimerRef.current
-        );
-
-        automaticVerificationTimerRef.current =
-          null;
-      }
-    };
-
-  }, [
     isAuthenticated,
     isBusinessContextReady,
     isLoading,
     isLoadingBusinessContext,
-    router,
     verifyCanonicalSubscription,
   ]);
 
 
-  const normalizedBusinessID =
+  const normalizedBillingBusinessID =
     clean(
-      businessID
+      storedBillingBusinessID
     );
+
+
+  useEffect(() => {
+
+    if (
+      verificationState !==
+      "allowed"
+    ) {
+      return;
+    }
+
+    const redirectTimer =
+      window.setTimeout(
+        () => {
+          router.replace(
+            "/dashboard"
+          );
+        },
+        1400
+      );
+
+    return () => {
+      window.clearTimeout(
+        redirectTimer
+      );
+    };
+
+  }, [
+    router,
+    verificationState,
+  ]);
+
+
+  const progressStageIndex =
+    verificationState ===
+      "allowed"
+      ? 3
+      : verificationState ===
+          "blocked"
+        ? 2
+        : verificationState ===
+            "checking"
+          ? 1
+          : 0;
 
 
   const retryPlan =
@@ -492,12 +456,12 @@ export default function JCSBillingReturnView() {
 
 
   const retryURL =
-    normalizedBusinessID
+    normalizedBillingBusinessID
       ? (
           "/billing/checkout" +
           "?businessID=" +
           encodeURIComponent(
-            normalizedBusinessID
+            normalizedBillingBusinessID
           ) +
           "&plan=" +
           retryPlan +
@@ -513,24 +477,89 @@ export default function JCSBillingReturnView() {
 
 
   if (
+    !billingReturnStateReady ||
     isLoading ||
     isLoadingBusinessContext
   ) {
 
-    return null;
+    return (
+      <main
+        className={
+          styles.billingPage
+        }
+      >
+        <div
+          className={
+            styles.shell
+          }
+        >
+          <section
+            className={
+              styles.card
+            }
+          >
+            <div
+              className={
+                styles.statusPanel
+              }
+            >
+              <img
+                src="/branding/jcs-business-suite-logo.png"
+                alt="JCS Business Suite"
+                width={320}
+                height={160}
+                style={{
+                  display: "block",
+                  width: "min(320px, 78vw)",
+                  height: "auto",
+                  margin: "0 auto 18px",
+                  objectFit: "contain",
+                }}
+              />
+
+              <p
+                style={{
+                  margin: "0 0 18px",
+                  textAlign: "center",
+                  fontSize: "0.78rem",
+                  fontWeight: 800,
+                  letterSpacing: "0.12em",
+                }}
+              >
+                ONE PLATFORM
+                {" | "}
+                EVERY BUSINESS
+                {" | "}
+                ENDLESS POSSIBILITIES
+              </p>
+
+              <h1
+                className={
+                  styles.statusTitle
+                }
+              >
+                Preparing your workspace
+              </h1>
+
+              <p
+                className={
+                  styles.statusText
+                }
+              >
+                JCS Business Suite is
+                loading your secure business
+                context.
+              </p>
+            </div>
+          </section>
+        </div>
+      </main>
+    );
   }
 
 
   if (
     !isAuthenticated
-  ) {
-
-    return null;
-  }
-
-
-  if (
-    !automaticVerificationComplete
   ) {
 
     return null;
@@ -553,12 +582,34 @@ export default function JCSBillingReturnView() {
             styles.header
           }
         >
+          <img
+            src="/branding/jcs-business-suite-logo.png"
+            alt="JCS Business Suite"
+            width={420}
+            height={210}
+            style={{
+              display: "block",
+              width: "min(420px, 82vw)",
+              height: "auto",
+              margin: "0 auto 14px",
+              objectFit: "contain",
+            }}
+          />
+
           <p
-            className={
-              styles.eyebrow
-            }
+            style={{
+              margin: "0 auto 24px",
+              textAlign: "center",
+              fontSize: "0.8rem",
+              fontWeight: 800,
+              letterSpacing: "0.12em",
+            }}
           >
-            JCS Business Suite
+            ONE PLATFORM
+            {" | "}
+            EVERY BUSINESS
+            {" | "}
+            ENDLESS POSSIBILITIES
           </p>
 
           <h1
@@ -566,7 +617,7 @@ export default function JCSBillingReturnView() {
               styles.title
             }
           >
-            Subscription Verification
+            Preparing your workspace
           </h1>
 
           <p
@@ -574,11 +625,85 @@ export default function JCSBillingReturnView() {
               styles.subtitle
             }
           >
-            Returning from Stripe does not
-            grant access by itself.
-            JCS verifies the canonical
-            Platform Client record.
+            Your secure JCS subscription
+            is being confirmed and your
+            business workspace is being
+            prepared.
           </p>
+
+          <div
+            aria-label="Workspace setup progress"
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(4, minmax(0, 1fr))",
+              gap: "10px",
+              width: "min(760px, 100%)",
+              margin: "28px auto 0",
+            }}
+          >
+            {WORKSPACE_PROGRESS_STAGES.map(
+              (
+                stage,
+                index
+              ) => {
+
+                const reached =
+                  index <=
+                  progressStageIndex;
+
+                return (
+                  <div
+                    key={stage}
+                    style={{
+                      display: "grid",
+                      justifyItems: "center",
+                      gap: "8px",
+                      minWidth: 0,
+                      textAlign: "center",
+                      opacity:
+                        reached
+                          ? 1
+                          : 0.48,
+                    }}
+                  >
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        display: "grid",
+                        placeItems: "center",
+                        width: "34px",
+                        height: "34px",
+                        borderRadius: "999px",
+                        border:
+                          reached
+                            ? "2px solid currentColor"
+                            : "1px solid currentColor",
+                        fontWeight: 800,
+                      }}
+                    >
+                      {reached
+                        ? "✓"
+                        : index + 1}
+                    </span>
+
+                    <span
+                      style={{
+                        fontSize: "0.78rem",
+                        lineHeight: 1.35,
+                        fontWeight:
+                          reached
+                            ? 700
+                            : 500,
+                      }}
+                    >
+                      {stage}
+                    </span>
+                  </div>
+                );
+              }
+            )}
+          </div>
         </header>
 
 
@@ -601,7 +726,7 @@ export default function JCSBillingReturnView() {
                     styles.statusTitle
                   }
                 >
-                  Checking Stripe confirmation
+                  Setting up your workspace
                 </h2>
 
                 <p
@@ -609,9 +734,7 @@ export default function JCSBillingReturnView() {
                     styles.statusText
                   }
                 >
-                  The secure billing backend
-                  may take a moment to process
-                  the verified Stripe event.
+                  JCS is confirming your secure subscription state and preparing workspace access.
                 </p>
               </>
             ) : null}
@@ -625,7 +748,7 @@ export default function JCSBillingReturnView() {
                     styles.statusTitle
                   }
                 >
-                  Subscription verified
+                  Almost ready
                 </h2>
 
                 <div
@@ -633,9 +756,7 @@ export default function JCSBillingReturnView() {
                     styles.successBox
                   }
                 >
-                  Your JCS subscription is
-                  active and the business
-                  workspace is available.
+                  Finalizing access. Your JCS subscription is active and your dashboard will open automatically.
                 </div>
               </>
             ) : null}
@@ -649,7 +770,7 @@ export default function JCSBillingReturnView() {
                     styles.statusTitle
                   }
                 >
-                  Verification pending
+                  Almost ready
                 </h2>
 
                 <p
@@ -657,11 +778,7 @@ export default function JCSBillingReturnView() {
                     styles.statusText
                   }
                 >
-                  Stripe has returned you to
-                  JCS, but the canonical
-                  subscription record does
-                  not yet grant workspace
-                  access.
+                  JCS is waiting for the verified subscription record to finish updating before workspace access can be finalized.
                 </p>
               </>
             ) : null}
@@ -777,7 +894,7 @@ export default function JCSBillingReturnView() {
                     );
                   }}
                 >
-                  Continue to Dashboard
+                  Open Dashboard Now
                 </button>
               ) : (
                 <>
@@ -819,11 +936,7 @@ export default function JCSBillingReturnView() {
             styles.footerNote
           }
         >
-          Checkout Session IDs and browser
-          return state never grant JCS
-          entitlement. Stripe webhooks and
-          the canonical Platform Client
-          remain authoritative.
+          Access opens only after the secure JCS subscription state has been confirmed.
         </p>
       </div>
     </main>

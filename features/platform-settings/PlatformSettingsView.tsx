@@ -59,6 +59,15 @@ import type {
   AppLanguageCode,
 } from "../app-settings/AppSettingsTypes";
 
+import {
+  APP_ACCENT_COLOR_DISPLAY_OPTIONS,
+  resolveAppAccentColorCSS,
+} from "../app-settings/AppAccentColors";
+
+import {
+  JCS_SCREEN_BACKGROUND_OPTIONS,
+} from "../../components/layout/JCSScreenBackground";
+
 import type {
   PlatformSettingsActor,
   PlatformSettingsRecord,
@@ -105,264 +114,15 @@ export interface PlatformSettingsViewProps {
     ) => void;
 }
 
-interface AccentColorOption {
-  name:
-    AppAccentColorName;
-
-  title:
-    string;
-
-  cssValue:
-    string;
-}
-
 // =======================================================
-// MARK: - Accent Colors
+// MARK: - Shared Appearance
 // =======================================================
-
-const PLATFORM_ACCENT_COLOR_OPTIONS:
-  readonly AccentColorOption[] = [
-    {
-      name:
-        "blue",
-
-      title:
-        "Blue",
-
-      cssValue:
-        "#2563eb",
-    },
-
-    {
-      name:
-        "sky",
-
-      title:
-        "Sky",
-
-      cssValue:
-        "#0ea5e9",
-    },
-
-    {
-      name:
-        "aqua",
-
-      title:
-        "Aqua",
-
-      cssValue:
-        "#06b6d4",
-    },
-
-    {
-      name:
-        "teal",
-
-      title:
-        "Teal",
-
-      cssValue:
-        "#0f766e",
-    },
-
-    {
-      name:
-        "green",
-
-      title:
-        "Green",
-
-      cssValue:
-        "#16a34a",
-    },
-
-    {
-      name:
-        "emerald",
-
-      title:
-        "Emerald",
-
-      cssValue:
-        "linear-gradient(135deg, #34d399, #047857, #064e3b)",
-    },
-
-    {
-      name:
-        "gold",
-
-      title:
-        "Gold",
-
-      cssValue:
-        "linear-gradient(135deg, #f8df82, #c99721, #7b5510)",
-    },
-
-    {
-      name:
-        "copper",
-
-      title:
-        "Copper",
-
-      cssValue:
-        "linear-gradient(135deg, #e7a06c, #b45f35, #6e2f1a)",
-    },
-
-    {
-      name:
-        "bronze",
-
-      title:
-        "Bronze",
-
-      cssValue:
-        "linear-gradient(135deg, #d69b62, #8a4f22, #4c2912)",
-    },
-
-    {
-      name:
-        "roseGold",
-
-      title:
-        "Rose Gold",
-
-      cssValue:
-        "linear-gradient(135deg, #f4c6b9, #c78372, #865244)",
-    },
-
-    {
-      name:
-        "silver",
-
-      title:
-        "Silver",
-
-      cssValue:
-        "linear-gradient(135deg, #ffffff, #bfc5cc, #737b85)",
-    },
-
-    {
-      name:
-        "platinum",
-
-      title:
-        "Platinum",
-
-      cssValue:
-        "linear-gradient(135deg, #f5f5f4, #c8c7c1, #868581)",
-    },
-
-    {
-      name:
-        "sapphire",
-
-      title:
-        "Sapphire",
-
-      cssValue:
-        "linear-gradient(135deg, #60a5fa, #1d4ed8, #172554)",
-    },
-
-    {
-      name:
-        "ocean",
-
-      title:
-        "Ocean",
-
-      cssValue:
-        "linear-gradient(135deg, #22d3ee, #0284c7, #164e63)",
-    },
-
-    {
-      name:
-        "purple",
-
-      title:
-        "Purple",
-
-      cssValue:
-        "#9333ea",
-    },
-
-    {
-      name:
-        "amethyst",
-
-      title:
-        "Amethyst",
-
-      cssValue:
-        "linear-gradient(135deg, #d8b4fe, #9333ea, #581c87)",
-    },
-
-    {
-      name:
-        "pink",
-
-      title:
-        "Pink",
-
-      cssValue:
-        "#ec4899",
-    },
-
-    {
-      name:
-        "ruby",
-
-      title:
-        "Ruby",
-
-      cssValue:
-        "linear-gradient(135deg, #fb7185, #be123c, #4c0519)",
-    },
-
-    {
-      name:
-        "midnight",
-
-      title:
-        "Midnight",
-
-      cssValue:
-        "linear-gradient(135deg, #334155, #172554, #020617)",
-    },
-
-    {
-      name:
-        "onyx",
-
-      title:
-        "Onyx",
-
-      cssValue:
-        "linear-gradient(135deg, #52525b, #18181b, #000000)",
-    },
-  ];
-
-// =======================================================
-// MARK: - Helpers
-// =======================================================
-
-function resolvePlatformAccentCSS(
-  accentColorName:
-    AppAccentColorName,
-): string {
-  return (
-    PLATFORM_ACCENT_COLOR_OPTIONS.find(
-      (
-        option
-      ) =>
-        option.name ===
-        accentColorName,
-    )
-      ?.cssValue ??
-    "#b87333"
-  );
-}
+//
+// Accent Colors use AppAccentColors.ts.
+// Screen backgrounds use JCSScreenBackground.tsx.
+// PlatformAdmin and Business Owner therefore share the
+// same official appearance catalogs.
+//
 
 function platformLanguageTitle(
   languageCode:
@@ -449,7 +209,7 @@ const handleLanguageChange =
   const accentColorCSS =
     useMemo(
       () =>
-        resolvePlatformAccentCSS(
+        resolveAppAccentColorCSS(
           platformSettings
             .formValues
             .accentColorName,
@@ -1286,7 +1046,7 @@ const handleLanguageChange =
               role="radiogroup"
               aria-label="Platform Accent Color"
             >
-              {PLATFORM_ACCENT_COLOR_OPTIONS.map(
+              {APP_ACCENT_COLOR_DISPLAY_OPTIONS.map(
                 (
                   option
                 ) => {
@@ -1333,7 +1093,7 @@ const handleLanguageChange =
                         className="jcs-platform-accent-option__swatch"
                         style={{
                           background:
-                            option.cssValue,
+                            option.preview,
                         }}
                         aria-hidden="true"
                       />
@@ -1367,6 +1127,129 @@ const handleLanguageChange =
                 }
               </small>
             ) : null}
+
+            <div
+              style={{
+                marginTop: "28px",
+                paddingTop: "24px",
+                borderTop: "1px solid rgba(148, 163, 184, .22)",
+              }}
+            >
+              <div
+                style={{
+                  marginBottom: "16px",
+                }}
+              >
+                <p className="jcs-platform-settings-eyebrow">
+                  Dashboard Surface
+                </p>
+
+                <h3
+                  style={{
+                    margin: "4px 0 6px",
+                    fontSize: "18px",
+                  }}
+                >
+                  Screen Background
+                </h3>
+
+                <p
+                  style={{
+                    margin: 0,
+                    opacity: .72,
+                  }}
+                >
+                  Choose the global Platform Dashboard background.
+                  These backgrounds are shared with the modern
+                  App Settings experience.
+                </p>
+              </div>
+
+              <div
+                className="jcs-platform-accent-grid"
+                role="radiogroup"
+                aria-label="Platform Screen Background"
+              >
+                {JCS_SCREEN_BACKGROUND_OPTIONS.map(
+                  (option) => {
+                    const isSelected =
+                      platformSettings
+                        .formValues
+                        .screenBackgroundID ===
+                      option.id;
+
+                    return (
+                      <button
+                        key={
+                          option.id
+                        }
+                        type="button"
+                        role="radio"
+                        aria-checked={
+                          isSelected
+                        }
+                        className={[
+                          "jcs-platform-accent-option",
+
+                          isSelected
+                            ? "jcs-platform-accent-option--selected"
+                            : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        disabled={
+                          !platformSettings
+                            .permissions
+                            .canEditAppearance ||
+                          isBusy
+                        }
+                        onClick={() =>
+                          platformSettings
+                            .setFieldValue(
+                              "screenBackgroundID",
+                              option.id,
+                            )
+                        }
+                      >
+                        <span
+                          className="jcs-platform-accent-option__swatch"
+                          style={{
+                            background:
+                              option.background,
+                          }}
+                          aria-hidden="true"
+                        />
+
+                        <span>
+                          {
+                            option.title
+                          }
+                        </span>
+
+                        {isSelected ? (
+                          <Check
+                            size={16}
+                            strokeWidth={2.1}
+                          />
+                        ) : null}
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+
+              {platformSettings
+                .formErrors
+                .screenBackgroundID ? (
+                <small className="jcs-platform-settings-field__error">
+                  {
+                    platformSettings
+                      .formErrors
+                      .screenBackgroundID
+                  }
+                </small>
+              ) : null}
+            </div>
 
             <div className="jcs-platform-accent-preview">
               <div>

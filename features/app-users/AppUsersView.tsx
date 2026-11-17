@@ -75,6 +75,10 @@ import {
 } from "@/core/business-context/JCSBusinessContext";
 
 import {
+  JCSRoleAccessPolicyEngine,
+} from "@/core/permissions/JCSRoleAccessPolicyEngine";
+
+import {
   APP_USER_PERMISSION_KEYS,
   APP_USER_ROLES,
   appUserDisplayName,
@@ -993,6 +997,44 @@ export default function AppUsersView() {
         ?.canManageAppUsers
     );
 
+
+  const contextualPermissionsForRole =
+    useCallback(
+      (
+        role:
+          AppUserRole
+      ): AppUserPermissions => {
+        if (!business) {
+          return defaultPermissionsForRole(
+            role
+          );
+        }
+
+        return JCSRoleAccessPolicyEngine.policy({
+          role,
+
+          industry:
+            business.industryCategoryTitle,
+
+          businessCategory:
+            business.industryCategoryTitle,
+
+          businessModeRawValue:
+            business.businessModeKey ||
+            business.businessModeName,
+
+          isBusinessOwner:
+            false,
+
+          isPlatformAdministrator:
+            false,
+        });
+      },
+      [
+        business,
+      ]
+    );
+
   const actor =
     useMemo(
       () => ({
@@ -1322,30 +1364,32 @@ export default function AppUsersView() {
     );
 
   const changeDraftRole =
-    useCallback(
-      (
-        role:
-          AppUserRole
-      ) => {
-        setDraft(
-          (
-            current
-          ) => ({
-            ...current,
+useCallback(
+(
+role:
+AppUserRole
+) => {
+setDraft(
+(
+current
+) => ({
+...current,
 
-            role,
+        role,
 
-            permissions:
-              defaultPermissionsForRole(
-                role
-              ),
-          })
-        );
-      },
-      []
+        permissions:
+          contextualPermissionsForRole(
+            role
+          ),
+      })
     );
+  },
+  [
+    contextualPermissionsForRole,
+  ]
+);
 
-  const togglePermission =
+const togglePermission =
     useCallback(
       (
         permission:
@@ -1373,22 +1417,24 @@ export default function AppUsersView() {
     );
 
   const resetPermissionsForRole =
-    useCallback(() => {
-      setDraft(
-        (
-          current
-        ) => ({
-          ...current,
+useCallback(() => {
+setDraft(
+(
+current
+) => ({
+...current,
 
-          permissions:
-            defaultPermissionsForRole(
-              current.role
-            ),
-        })
-      );
-    }, []);
+      permissions:
+        contextualPermissionsForRole(
+          current.role
+        ),
+    })
+  );
+}, [
+  contextualPermissionsForRole,
+]);
 
-  const toggleModule =
+const toggleModule =
     useCallback(
       (
         moduleID:

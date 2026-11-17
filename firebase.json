@@ -1,5 +1,18 @@
 {
   "storage": {
-    "rules": "storage.rules"
+    "rules": "storage.rules",
+    "bucket": "jcs-business-suite.firebasestorage.app"
+  },
+  "apphosting": {
+    "backendId": "jcs-business-suite-web",
+    "rootDir": "/",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "functions"
+    ],
+    "alwaysDeployFromSource": true
   }
 }

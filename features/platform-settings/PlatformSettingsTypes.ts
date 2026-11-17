@@ -20,11 +20,8 @@
 import type {
   AppAccentColorName,
   AppLanguageCode,
+  AppScreenBackgroundID,
 } from "../app-settings/AppSettingsTypes";
-
-import type {
-  JCSScreenBackgroundID,
-} from "../../components/layout/JCSScreenBackground";
 
 // =======================================================
 // MARK: - Firestore
@@ -115,11 +112,11 @@ export interface PlatformAppearance {
   accentColorName:
     AppAccentColorName;
 
+  screenBackgroundID:
+    AppScreenBackgroundID;
+
   languageCode:
     AppLanguageCode;
-
-  backgroundID:
-    JCSScreenBackgroundID;
 
   logoStoragePath:
     string;
@@ -169,11 +166,11 @@ export interface PlatformSettingsFirestoreDocument {
   accentColorName:
     AppAccentColorName;
 
+  screenBackgroundID:
+    AppScreenBackgroundID;
+
   languageCode:
     AppLanguageCode;
-
-  backgroundID:
-    JCSScreenBackgroundID;
 
   logoStoragePath: string;
   logoDownloadURL: string;
@@ -204,11 +201,11 @@ export interface PlatformSettingsFormValues {
   accentColorName:
     AppAccentColorName;
 
+  screenBackgroundID:
+    AppScreenBackgroundID;
+
   languageCode:
     AppLanguageCode;
-
-  backgroundID:
-    JCSScreenBackgroundID;
 }
 
 export interface PlatformSettingsFormErrors {
@@ -222,9 +219,9 @@ export interface PlatformSettingsFormErrors {
 
   accentColorName: string;
 
-  languageCode: string;
+  screenBackgroundID: string;
 
-  backgroundID: string;
+  languageCode: string;
 }
 
 export interface PlatformSettingsValidationSuccess {
@@ -331,11 +328,11 @@ export const DEFAULT_PLATFORM_SETTINGS_FORM_VALUES:
     accentColorName:
       "copper",
 
+    screenBackgroundID:
+      "default",
+
     languageCode:
       "en",
-
-    backgroundID:
-      "default",
   };
 
 export const EMPTY_PLATFORM_SETTINGS_FORM_ERRORS:
@@ -355,10 +352,10 @@ export const EMPTY_PLATFORM_SETTINGS_FORM_ERRORS:
     accentColorName:
       "",
 
-    languageCode:
+    screenBackgroundID:
       "",
 
-    backgroundID:
+    languageCode:
       "",
   };
 

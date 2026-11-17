@@ -83,29 +83,10 @@ import {
   signOut,
 } from "@/core/services/AuthService";
 
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
-
-import {
-  db,
-} from "@/core/firebase/firebase";
-
-import {
-  normalizePlatformClientRecord,
-} from "@/features/platform-executive-center/PlatformClientDomain";
-
-import {
-  PLATFORM_SUBSCRIPTION_STATUSES,
-  type PlatformClientFirestoreData,
-} from "@/features/platform-executive-center/PlatformExecutiveTypes";
-
 import "./DashboardView.css";
 
 import {
   useCallback,
-  useEffect,
   useMemo,
   useState,
   type ComponentType,
@@ -684,7 +665,7 @@ function routeToPath(
 PlatformExecutiveCenter:
   "/platform/executive-center",
 
-BusinessInvitations:
+"business-invitations":
   "/invitations",
 
       Payroll:
@@ -747,8 +728,8 @@ const {
   platformTagline,
   platformLogoDownloadURL,
   platformAccentColorName,
+  platformScreenBackgroundID,
   platformLanguageCode,
-  platformBackgroundID,
 
   hasCustomPlatformLogo,
 
@@ -910,24 +891,6 @@ const accentName =
       ? platformAccentColorName
       : activeAccentColorName
   );
-
-const activeBackgroundID =
-  access.isPlatformAdmin
-    ? platformBackgroundID
-    : (
-        appSettings
-          ?.backgroundID ??
-        "default"
-      );
-
-const activeBackgroundDownloadURL =
-  access.isPlatformAdmin
-    ? ""
-    : (
-        appSettings
-          ?.backgroundDownloadURL ??
-        ""
-      );
 
 const companyName =
   activeIdentityName;
@@ -1092,144 +1055,8 @@ const appSettingsActor =
     ],
   );
 
-// =====================================================
-// MARK: - Canonical Premium Branding Entitlement
-// H2-C6D-J-F-LOGO-R37B-R3
-// =====================================================
-
-const [
-  hasVerifiedPremiumBrandingAccess,
-  setHasVerifiedPremiumBrandingAccess,
-] = useState(false);
-
-useEffect(() => {
-  let isCurrent = true;
-
-  const verifyPremiumBrandingAccess =
-    async (): Promise<void> => {
-
-      /*
-       * PlatformAdmin is a global platform identity.
-       *
-       * It does not depend on a business subscription and
-       * therefore keeps the existing platform bypass.
-       */
-      if (access.isPlatformAdmin) {
-        if (isCurrent) {
-          setHasVerifiedPremiumBrandingAccess(
-            true
-          );
-        }
-
-        return;
-      }
-
-      const normalizedBusinessID =
-        cleanText(
-          businessID
-        );
-
-      /*
-       * Fail closed.
-       *
-       * A business tenant without a canonical Business ID
-       * cannot receive Premium branding entitlement.
-       */
-      if (!normalizedBusinessID) {
-        if (isCurrent) {
-          setHasVerifiedPremiumBrandingAccess(
-            false
-          );
-        }
-
-        return;
-      }
-
-      try {
-        const reference =
-          doc(
-            db,
-            "platformClients",
-            normalizedBusinessID
-          );
-
-        const snapshot =
-          await getDoc(
-            reference
-          );
-
-        if (!snapshot.exists()) {
-          if (isCurrent) {
-            setHasVerifiedPremiumBrandingAccess(
-              false
-            );
-          }
-
-          return;
-        }
-
-        const rawPlatformClient =
-          snapshot.data() as
-            PlatformClientFirestoreData;
-
-        const platformClient =
-          normalizePlatformClientRecord(
-            snapshot.id,
-            rawPlatformClient
-          );
-
-        /*
-         * Premium branding must be explicitly verified by
-         * canonical Stripe/webhook-backed PlatformClient state.
-         *
-         * We intentionally verify the RAW
-         * canUseAutomaticLogo field as literal true so an old
-         * document cannot inherit a permissive normalization
-         * fallback.
-         */
-        const isVerifiedPremium =
-          cleanText(
-            platformClient.planName
-          ).toLowerCase() ===
-            "premium" &&
-          platformClient.subscriptionStatus ===
-            PLATFORM_SUBSCRIPTION_STATUSES
-              .active &&
-          rawPlatformClient
-            .canUseAutomaticLogo === true;
-
-        if (isCurrent) {
-          setHasVerifiedPremiumBrandingAccess(
-            isVerifiedPremium
-          );
-        }
-      } catch (error: unknown) {
-        console.error(
-          "❌ JCS Web Premium branding verification failed:",
-          error
-        );
-
-        if (isCurrent) {
-          setHasVerifiedPremiumBrandingAccess(
-            false
-          );
-        }
-      }
-    };
-
-  void verifyPremiumBrandingAccess();
-
-  return () => {
-    isCurrent = false;
-  };
-}, [
-  access.isPlatformAdmin,
-  businessID,
-]);
-
 const hasPremiumBrandingAccess =
-  access.isPlatformAdmin ||
-  hasVerifiedPremiumBrandingAccess;
+  true;
 
   const languageCode =
   normalizedLanguageCode(
@@ -1462,7 +1289,10 @@ const visibleModuleCount =
     useMemo<
       DashboardMetric[]
     >(
-      () => [
+      () =>
+        access.isCustomer
+          ? []
+          : [
         {
           id:
             "revenue",
@@ -1605,6 +1435,7 @@ const visibleModuleCount =
         },
       ],
       [
+        access.isCustomer,
         currencyFormatter,
         numberFormatter,
         snapshot,
@@ -1621,6 +1452,10 @@ const visibleModuleCount =
       DashboardActivity[]
     >(
       () => {
+        if (access.isCustomer) {
+          return [];
+        }
+
         if (
           recentActivity.length >
           0
@@ -1687,6 +1522,7 @@ const visibleModuleCount =
         ];
       },
       [
+        access.isCustomer,
         companyName,
         localeIdentifier,
         recentActivity,
@@ -1713,49 +1549,69 @@ const visibleModuleCount =
           Command,
       },
 
-      {
-        id:
-          "customers",
+      ...(!access.isCustomer
+        ? [
+            {
+              id:
+                "customers",
 
-        title:
-          "Customers",
+              title:
+                "Customers",
 
-        icon:
-          CircleUserRound,
+              icon:
+                CircleUserRound,
 
-        route:
-          "Customers" as DashboardRoute,
-      },
+              route:
+                "Customers" as DashboardRoute,
+            },
 
-      {
-        id:
-          "appointments",
+            {
+              id:
+                "appointments",
 
-        title:
-          "Appointments",
+              title:
+                "Appointments",
 
-        icon:
-          CalendarDays,
+              icon:
+                CalendarDays,
 
-        route:
-          "Calendar" as DashboardRoute,
-      },
+              route:
+                "Calendar" as DashboardRoute,
+            },
 
-      {
-        id:
-          "settings",
+            {
+              id:
+                "settings",
 
-        title:
-          "App Settings",
+              title:
+                "App Settings",
 
-        icon:
-          Settings,
+              icon:
+                Settings,
 
-        route:
-          "AppSettings" as DashboardRoute,
-      },
+              route:
+                "AppSettings" as DashboardRoute,
+            },
+          ]
+        : []),
+
+      ...(access.isPlatformAdmin
+        ? [
+            {
+              id:
+                "platform-settings",
+
+              title:
+                "Platform Settings",
+
+              icon:
+                Sparkles,
+            },
+          ]
+        : []),
     ],
     [
+      access.isCustomer,
       access.isPlatformAdmin,
     ]
   );
@@ -1784,13 +1640,7 @@ const visibleModuleCount =
         routeName ===
         "AppSettings"
       ) {
-        if (
-          access.isPlatformAdmin
-        ) {
-          router.push(
-            "/platform-settings"
-          );
-
+        if (access.isCustomer) {
           return;
         }
 
@@ -1801,11 +1651,24 @@ const visibleModuleCount =
         return;
       }
 
+      if (
+        access.isPlatformAdmin &&
+        routeName ===
+          "business-invitations"
+      ) {
+        router.push(
+          "/platform-executive-center?open=invite-owner"
+        );
+
+        return;
+      }
+
       router.push(
         routeToPath(route)
       );
     },
     [
+      access.isCustomer,
       access.isPlatformAdmin,
       router,
     ]
@@ -1848,16 +1711,6 @@ const openModule =
 ) {
   setSidebarOpen(false);
   setProfileMenuOpen(false);
-
-  if (
-    access.isPlatformAdmin
-  ) {
-    router.push(
-      "/platform-settings"
-    );
-
-    return;
-  }
 
   setAppSettingsOpen(
     true
@@ -1947,15 +1800,17 @@ const openModule =
   // =====================================================
 
   const executiveSummary =
-    snapshot.lowStockProducts > 0
-      ? `${numberFormatter.format(
-          snapshot.lowStockProducts
-        )} products need inventory attention.`
-      : snapshot.openOrders > 0
+    access.isCustomer
+      ? "Your customer workspace is ready for shopping and account access."
+      : snapshot.lowStockProducts > 0
         ? `${numberFormatter.format(
-            snapshot.openOrders
-          )} open orders are ready for review.`
-        : "Your workspace is configured and operating normally.";
+            snapshot.lowStockProducts
+          )} products need inventory attention.`
+        : snapshot.openOrders > 0
+          ? `${numberFormatter.format(
+              snapshot.openOrders
+            )} open orders are ready for review.`
+          : "Your workspace is configured and operating normally.";
 
 // =====================================================
 // MARK: - Official Shell Configuration
@@ -1976,10 +1831,25 @@ const officialShellConfiguration =
         : "light",
 
     backgroundID:
-      activeBackgroundID,
+      access.isPlatformAdmin
+        ? (
+            platformScreenBackgroundID ??
+            "default"
+          )
+        : (
+            appSettings
+              ?.backgroundID ??
+            "default"
+          ),
 
-    backgroundDownloadURL:
-      activeBackgroundDownloadURL,
+    customBackgroundURL:
+      access.isPlatformAdmin
+        ? ""
+        : (
+            appSettings
+              ?.backgroundDownloadURL ??
+            ""
+          ),
 
     access,
 
@@ -2096,16 +1966,6 @@ const officialShellConfiguration =
         openModule,
 
       onOpenSettings: () => {
-        if (
-          access.isPlatformAdmin
-        ) {
-          router.push(
-            "/platform-settings"
-          );
-
-          return;
-        }
-
         setAppSettingsOpen(
           true
         );
@@ -2397,7 +2257,7 @@ if (
     </strong>
 
     <span>
-      for your business
+      for {companyName}
     </span>
   </div>
 
@@ -3146,7 +3006,7 @@ if (
       ===================================================== */}
 
       {appSettingsOpen &&
-      !access.isPlatformAdmin ? (
+      !access.isCustomer ? (
         <div
           className="jcs-app-settings-overlay"
           role="dialog"
@@ -3165,6 +3025,11 @@ if (
 
           <div className="jcs-app-settings-overlay__content">
             <AppSettingsView
+              scope={
+                access.isPlatformAdmin
+                  ? "platform"
+                  : "business"
+              }
               businessID={
                 businessID
               }
@@ -3224,6 +3089,27 @@ if (
                   false
                 );
 
+                if (
+                  access.isPlatformAdmin
+                ) {
+                  /*
+                   * PlatformAdmin uses the global
+                   * platformSettings/global identity.
+                   *
+                   * Refresh the Platform Settings Context so
+                   * the Dashboard immediately receives the
+                   * newly selected official platform logo,
+                   * background, Accent Color and language.
+                   */
+                  void refreshPlatformSettings();
+
+                  return;
+                }
+
+                /*
+                 * Business users continue using the canonical
+                 * tenant Business Context and Business Logo.
+                 */
                 void refresh();
 
                 void businessLogo

@@ -736,6 +736,42 @@ export function normalizePlatformClientRecord(
         source.businessName
       ),
 
+    // Canonical business identity
+    industryCategoryKey:
+      cleanPlatformText(
+        source.industryCategoryKey
+      ) ||
+      cleanPlatformText(
+        source.businessCategory
+      ),
+
+    industryCategoryTitle:
+      cleanPlatformText(
+        source.industryCategoryTitle
+      ) ||
+      cleanPlatformText(
+        source.industry
+      ),
+
+    businessModeKey:
+      cleanPlatformText(
+        source.businessModeKey
+      ) ||
+      cleanPlatformText(
+        source.businessModeRawValue
+      ) ||
+      "Retail",
+
+    businessModeName:
+      cleanPlatformText(
+        source.businessModeName
+      ) ||
+      cleanPlatformText(
+        source.businessModeRawValue
+      ) ||
+      "Retail",
+
+    // Legacy compatibility
     industry:
       cleanPlatformText(
         source.industry
@@ -3011,6 +3047,28 @@ export function createPlatformClientFirestorePayload(
         client.businessName
       ),
 
+    // Canonical business identity
+    industryCategoryKey:
+      cleanPlatformText(
+        client.industryCategoryKey
+      ),
+
+    industryCategoryTitle:
+      cleanPlatformText(
+        client.industryCategoryTitle
+      ),
+
+    businessModeKey:
+      cleanPlatformText(
+        client.businessModeKey
+      ),
+
+    businessModeName:
+      cleanPlatformText(
+        client.businessModeName
+      ),
+
+    // Legacy compatibility
     industry:
       cleanPlatformText(
         client.industry

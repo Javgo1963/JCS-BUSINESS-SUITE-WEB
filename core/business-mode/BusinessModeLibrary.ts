@@ -43,11 +43,238 @@ export interface BusinessModeCategory {
 
 const DEFAULT_RECOMMENDED_MODULES: readonly string[] = [
     "dashboard",
+    "insights",
+    "appointments",
+    "events",
+    "accounting",
+    "compliance",
+    "facilities",
+    "services",
     "customers",
-    "orders",
+    "employees",
     "reports",
+    "notifications",
+    "users",
     "app-settings",
 ];
+
+function withUniversalModules(
+    specializedModules: readonly string[]
+): readonly string[] {
+    return [
+        ...DEFAULT_RECOMMENDED_MODULES,
+        ...specializedModules.filter(
+            module => !DEFAULT_RECOMMENDED_MODULES.includes(module)
+        ),
+    ];
+}
+
+const BUSINESS_MODULE_PROFILES = {
+    commerce: withUniversalModules([
+        "pos",
+        "cash-register",
+        "catalog",
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "receiving-history",
+        "returns",
+        "providers",
+    ]),
+
+    restaurant: withUniversalModules([
+        "pos",
+        "cash-register",
+        "restaurant-store",
+        "catalog",
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "receiving-history",
+        "providers",
+    ]),
+
+    rental: withUniversalModules([
+        "pos",
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "receiving-history",
+        "returns",
+        "providers",
+    ]),
+
+    construction: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "providers",
+        "transportation",
+    ]),
+
+    logistics: withUniversalModules([
+        "transportation",
+        "orders",
+        "shipping",
+        "shipments",
+        "receiving",
+        "receiving-history",
+        "providers",
+        "backorders",
+    ]),
+
+    automotive: withUniversalModules([
+        "pos",
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "returns",
+        "providers",
+        "transportation",
+    ]),
+
+    healthcare: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "providers",
+    ]),
+
+    professional: withUniversalModules([
+        "appointments",
+        "accounting",
+        "services",
+    ]),
+
+    scientific: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "providers",
+    ]),
+
+    agriculture: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "providers",
+        "transportation",
+    ]),
+
+    aviation: withUniversalModules([
+        "transportation",
+        "orders",
+        "appointments",
+        "services",
+        "products",
+        "inventory",
+        "providers",
+    ]),
+
+    utilities: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "providers",
+        "transportation",
+    ]),
+
+    industrial: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "shipping",
+        "providers",
+        "transportation",
+        "backorders",
+    ]),
+
+    media: withUniversalModules([
+        "services",
+        "events",
+        "products",
+        "orders",
+    ]),
+
+    online: withUniversalModules([
+        "catalog",
+        "products",
+        "orders",
+        "services",
+    ]),
+
+    manufacturing: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "shipping",
+        "providers",
+        "backorders",
+    ]),
+
+    wholesale: withUniversalModules([
+        "products",
+        "inventory",
+        "orders",
+        "receiving",
+        "shipping",
+        "shipments",
+        "providers",
+        "backorders",
+    ]),
+
+    hospitality: withUniversalModules([
+        "pos",
+        "products",
+        "inventory",
+        "orders",
+        "appointments",
+        "events",
+        "providers",
+    ]),
+
+    education: withUniversalModules([
+        "appointments",
+        "events",
+        "services",
+    ]),
+
+    financial: withUniversalModules([
+        "appointments",
+        "accounting",
+        "services",
+        "compliance",
+    ]),
+
+    technology: withUniversalModules([
+        "services",
+    ]),
+
+    events: withUniversalModules([
+        "events",
+        "appointments",
+        "services",
+        "products",
+        "inventory",
+        "orders",
+    ]),
+
+    nonprofit: withUniversalModules([
+        "events",
+        "services",
+        "customers",
+    ]),
+} as const;
 
 function createMode(
     name: string,
@@ -105,223 +332,267 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Retail Store",
-                    "bag.fill"
-                ),
+                    "bag.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Online Store",
-                    "storefront.fill"
-                ),
+                    "storefront.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "E-Commerce Store",
-                    "cart.fill"
-                ),
+                    "cart.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Marketplace App",
-                    "square.grid.2x2.fill"
-                ),
+                    "square.grid.2x2.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Boutique",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Clothing Store",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Shoe Store",
-                    "shoeprints.fill"
-                ),
+                    "shoeprints.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Jewelry Store",
-                    "diamond.fill"
-                ),
+                    "diamond.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Watch Store",
-                    "clock.fill"
-                ),
+                    "clock.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Electronics Store",
-                    "desktopcomputer"
-                ),
+                    "desktopcomputer",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Cell Phone Store",
-                    "iphone"
-                ),
+                    "iphone",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Computer Store",
-                    "display"
-                ),
+                    "display",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Gaming Store",
-                    "gamecontroller.fill"
-                ),
+                    "gamecontroller.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Furniture Store",
-                    "chair.lounge.fill"
-                ),
+                    "chair.lounge.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Mattress Store",
-                    "bed.double.fill"
-                ),
+                    "bed.double.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Home Decor Store",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Appliance Store",
-                    "washer.fill"
-                ),
+                    "washer.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Hardware Store",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Grocery Store",
-                    "basket.fill"
-                ),
+                    "basket.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Supermarket",
-                    "cart.fill"
-                ),
+                    "cart.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Convenience Store",
-                    "cart.fill"
-                ),
+                    "cart.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Dollar Store",
-                    "dollarsign.circle.fill"
-                ),
+                    "dollarsign.circle.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Discount Store",
-                    "tag.fill"
-                ),
+                    "tag.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Wholesale",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.wholesale
+),
 
                 createMode(
                     "Warehouse Retail",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Office Supply Store",
-                    "doc.text.fill"
-                ),
+                    "doc.text.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Book Store",
-                    "book.fill"
-                ),
+                    "book.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Toy Store",
-                    "teddybear.fill"
-                ),
+                    "teddybear.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Baby Store",
-                    "figure.2.and.child.holdinghands"
-                ),
+                    "figure.2.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Gift Shop",
-                    "gift.fill"
-                ),
+                    "gift.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Florist",
-                    "camera.macro"
-                ),
+                    "camera.macro",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Pet Store",
-                    "pawprint.fill"
-                ),
+                    "pawprint.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Sporting Goods",
-                    "figure.run"
-                ),
+                    "figure.run",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Outdoor Store",
-                    "tent.fill"
-                ),
+                    "tent.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Hunting & Fishing Store",
-                    "scope"
-                ),
+                    "scope",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Music Store",
-                    "music.note"
-                ),
+                    "music.note",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Art Supply Store",
-                    "paintpalette.fill"
-                ),
+                    "paintpalette.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Beauty Supply",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Cosmetics Store",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Thrift Store",
-                    "tag.fill"
-                ),
+                    "tag.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Pawn Shop",
-                    "tag.fill"
-                ),
+                    "tag.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Auction House",
-                    "hammer.circle.fill"
-                ),
+                    "hammer.circle.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Specialty Shop",
-                    "star.fill"
-                ),
+                    "star.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Custom Retail Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.commerce
+)
 
             ]
 
@@ -336,158 +607,189 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Restaurant",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Fine Dining",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Casual Dining",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Fast Food",
-                    "takeoutbag.and.cup.and.straw.fill"
-                ),
+                    "takeoutbag.and.cup.and.straw.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Food Truck",
-                    "truck.box.fill"
-                ),
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Coffee Shop",
-                    "cup.and.saucer.fill"
-                ),
+                    "cup.and.saucer.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Bakery",
-                    "birthday.cake.fill"
-                ),
+                    "birthday.cake.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Pizza Shop",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Burger Restaurant",
-                    "takeoutbag.and.cup.and.straw.fill"
-                ),
+                    "takeoutbag.and.cup.and.straw.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Mexican Restaurant",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Italian Restaurant",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Seafood Restaurant",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Steakhouse",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Sushi Restaurant",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Chinese Restaurant",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "BBQ Restaurant",
-                    "flame.fill"
-                ),
+                    "flame.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Breakfast Cafe",
-                    "cup.and.saucer.fill"
-                ),
+                    "cup.and.saucer.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Deli",
-                    "takeoutbag.and.cup.and.straw.fill"
-                ),
+                    "takeoutbag.and.cup.and.straw.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Sandwich Shop",
-                    "takeoutbag.and.cup.and.straw.fill"
-                ),
+                    "takeoutbag.and.cup.and.straw.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Dessert Shop",
-                    "birthday.cake.fill"
-                ),
+                    "birthday.cake.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Ice Cream Shop",
-                    "snowflake"
-                ),
+                    "snowflake",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Juice Bar",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Smoothie Bar",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Tea Shop",
-                    "cup.and.saucer.fill"
-                ),
+                    "cup.and.saucer.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Bar & Grill",
-                    "wineglass.fill"
-                ),
+                    "wineglass.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Catering",
-                    "fork.knife.circle.fill"
-                ),
+                    "fork.knife.circle.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Meal Prep Business",
-                    "takeoutbag.and.cup.and.straw.fill"
-                ),
+                    "takeoutbag.and.cup.and.straw.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Cloud Kitchen",
-                    "cloud.fill"
-                ),
+                    "cloud.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Ghost Kitchen",
-                    "cloud.fill"
-                ),
+                    "cloud.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Food Production",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.restaurant
+),
 
                 createMode(
                     "Custom Food Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.restaurant
+)
 
             ]
 
@@ -503,103 +805,123 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Beauty Salon",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Hair Salon",
-                    "scissors"
-                ),
+                    "scissors",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Barbershop",
-                    "scissors"
-                ),
+                    "scissors",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Nail Salon",
-                    "paintbrush.pointed.fill"
-                ),
+                    "paintbrush.pointed.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Spa",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Medical Spa",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Massage Therapy",
-                    "hands.sparkles.fill"
-                ),
+                    "hands.sparkles.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Skincare Clinic",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Esthetician Studio",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Makeup Artist",
-                    "paintbrush.fill"
-                ),
+                    "paintbrush.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Lash Studio",
-                    "eye.fill"
-                ),
+                    "eye.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Brow Studio",
-                    "eye.fill"
-                ),
+                    "eye.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Hair Extensions",
-                    "scissors"
-                ),
+                    "scissors",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Tanning Salon",
-                    "sun.max.fill"
-                ),
+                    "sun.max.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Tattoo Studio",
-                    "pencil.tip.crop.circle.fill"
-                ),
+                    "pencil.tip.crop.circle.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Piercing Studio",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Wellness Center",
-                    "heart.fill"
-                ),
+                    "heart.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Personal Styling",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Beauty Academy",
-                    "graduationcap.fill"
-                ),
+                    "graduationcap.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Custom Beauty Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -615,138 +937,165 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Medical Office",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Medical Clinic",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Primary Care",
-                    "stethoscope"
-                ),
+                    "stethoscope",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Urgent Care",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Pediatric Clinic",
-                    "figure.2.and.child.holdinghands"
-                ),
+                    "figure.2.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Dental Clinic",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Orthodontic Office",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Pharmacy",
-                    "pills.fill"
-                ),
+                    "pills.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Veterinary Clinic",
-                    "pawprint.fill"
-                ),
+                    "pawprint.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Optometry",
-                    "eyeglasses"
-                ),
+                    "eyeglasses",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Chiropractic Clinic",
-                    "figure.stand"
-                ),
+                    "figure.stand",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Physical Therapy",
-                    "figure.walk.motion"
-                ),
+                    "figure.walk.motion",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Occupational Therapy",
-                    "figure.walk.motion"
-                ),
+                    "figure.walk.motion",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Speech Therapy",
-                    "waveform"
-                ),
+                    "waveform",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Mental Health Practice",
-                    "brain.head.profile"
-                ),
+                    "brain.head.profile",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Counseling Center",
-                    "person.2.fill"
-                ),
+                    "person.2.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Home Healthcare",
-                    "heart.text.square.fill"
-                ),
+                    "heart.text.square.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Hospice",
-                    "heart.text.square.fill"
-                ),
+                    "heart.text.square.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Senior Care",
-                    "person.fill"
-                ),
+                    "person.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Assisted Living",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Medical Laboratory",
-                    "testtube.2"
-                ),
+                    "testtube.2",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Medical Billing",
-                    "doc.text.fill"
-                ),
+                    "doc.text.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Medical Equipment Supplier",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Ambulance Service",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Rehabilitation Center",
-                    "figure.walk"
-                ),
+                    "figure.walk",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Specialist Office",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Custom Healthcare Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.healthcare
+)
 
             ]
 
@@ -761,288 +1110,549 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Construction Company",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "General Contractor",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Home Builder",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Commercial Contractor",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Remodeling",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Kitchen Remodeling",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Bathroom Remodeling",
-                    "bathtub.fill"
-                ),
+                    "bathtub.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Roofing",
-                    "house.lodge.fill"
-                ),
+                    "house.lodge.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Siding",
-                    "rectangle.grid.2x2.fill"
-                ),
+                    "rectangle.grid.2x2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Gutters",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Windows & Doors",
-                    "door.left.hand.open"
-                ),
+                    "door.left.hand.open",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Plumbing",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Electrical",
-                    "bolt.fill"
-                ),
+                    "bolt.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "HVAC",
-                    "snowflake"
-                ),
+                    "snowflake",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Painting",
-                    "paintbrush.fill"
-                ),
+                    "paintbrush.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Flooring",
-                    "rectangle.grid.2x2.fill"
-                ),
+                    "rectangle.grid.2x2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Carpeting",
-                    "rectangle.fill.on.rectangle.fill"
-                ),
+                    "rectangle.fill.on.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Tile Installation",
-                    "square.grid.3x3.fill"
-                ),
+                    "square.grid.3x3.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Concrete",
-                    "square.grid.3x3.fill"
-                ),
+                    "square.grid.3x3.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Asphalt",
-                    "road.lanes"
-                ),
+                    "road.lanes",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Paving",
-                    "road.lanes"
-                ),
+                    "road.lanes",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Welding",
-                    "flame.fill"
-                ),
+                    "flame.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Carpentry",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Masonry",
-                    "bricks.fill"
-                ),
+                    "bricks.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Drywall",
-                    "square.split.2x2.fill"
-                ),
+                    "square.split.2x2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Excavation",
-                    "mountain.2.fill"
-                ),
+                    "mountain.2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Demolition",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Landscaping",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Lawn Care",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Tree Service",
-                    "tree.fill"
-                ),
+                    "tree.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Irrigation",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Snow Removal",
-                    "snowflake"
-                ),
+                    "snowflake",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Cleaning Service",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Residential Cleaning",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Commercial Cleaning",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "House Maid",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Janitorial Services",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Window Cleaning",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Pressure Washing",
-                    "water.waves"
-                ),
+                    "water.waves",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Handyman",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Pest Control",
-                    "ant.fill"
-                ),
+                    "ant.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Pool Service",
-                    "water.waves"
-                ),
+                    "water.waves",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Solar Installation",
-                    "sun.max.fill"
-                ),
+                    "sun.max.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Generator Service",
-                    "bolt.batteryblock.fill"
-                ),
+                    "bolt.batteryblock.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Glass Shop",
-                    "rectangle.on.rectangle.angled"
-                ),
+                    "rectangle.on.rectangle.angled",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Fence Installation",
-                    "rectangle.grid.1x2.fill"
-                ),
+                    "rectangle.grid.1x2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Deck Builder",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Garage Door Service",
-                    "door.garage.closed"
-                ),
+                    "door.garage.closed",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Insulation",
-                    "snowflake"
-                ),
+                    "snowflake",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Septic Service",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Well Drilling",
-                    "drop.circle.fill"
-                ),
+                    "drop.circle.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Property Maintenance",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Restoration Services",
-                    "arrow.triangle.2.circlepath"
-                ),
+                    "arrow.triangle.2.circlepath",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Water Damage Restoration",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Fire Damage Restoration",
-                    "flame.fill"
-                ),
+                    "flame.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Mold Remediation",
-                    "exclamationmark.triangle.fill"
-                ),
+                    "exclamationmark.triangle.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Custom Trade Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.construction
+)
+
+            ]
+
+        ),
+
+        createCategory(
+
+            "Rental & Equipment",
+
+            "wrench.and.screwdriver.fill",
+
+            [
+
+                createMode(
+                    "Rental Tools",
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Tool Rental",
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Equipment Rental",
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Construction Equipment Rental",
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Power Tool Rental",
+                    "bolt.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Lawn Equipment Rental",
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Generator Rental",
+                    "bolt.circle.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Trailer Rental",
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Dumpster Rental",
+                    "trash.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Scaffolding Rental",
+                    "square.stack.3d.up.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Forklift Rental",
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Excavator Rental",
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Skid Steer Rental",
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Mini Excavator Rental",
+                    "gearshape.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Concrete Equipment Rental",
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Floor Equipment Rental",
+                    "square.grid.3x3.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Moving Equipment Rental",
+                    "dolly.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Storage Container Rental",
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Portable Toilet Rental",
+                    "door.left.hand.open",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Furniture Rental",
+                    "chair.lounge.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Appliance Rental",
+                    "washer.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Audio Visual Equipment Rental",
+                    "tv.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Medical Equipment Rental",
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Sports Equipment Rental",
+                    "figure.run",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Outdoor Equipment Rental",
+                    "tent.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Event Equipment Rental",
+                    "party.popper.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Office Equipment Rental",
+                    "printer.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Computer Equipment Rental",
+                    "desktopcomputer",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Camera Equipment Rental",
+                    "camera.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Cleaning Equipment Rental",
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Pressure Washer Rental",
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
+
+                createMode(
+                    "Custom Rental Business",
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.rental
+)
 
             ]
 
@@ -1058,168 +1668,201 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Trucking Company",
-                    "truck.box.fill"
-                ),
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Freight Broker",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Freight Forwarding",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Delivery Service",
-                    "box.truck.fill"
-                ),
+                    "box.truck.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Courier Service",
-                    "paperplane.fill"
-                ),
+                    "paperplane.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Last-Mile Delivery",
-                    "box.truck.fill"
-                ),
+                    "box.truck.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Route Delivery",
-                    "point.topleft.down.curvedto.point.bottomright.up"
-                ),
+                    "point.topleft.down.curvedto.point.bottomright.up",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Moving Company",
-                    "shippingbox.and.arrow.backward.fill"
-                ),
+                    "shippingbox.and.arrow.backward.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Warehouse",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Shipping Company",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Dispatch Company",
-                    "location.fill"
-                ),
+                    "location.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Towing Company",
-                    "truck.pickup.side.fill"
-                ),
+                    "truck.pickup.side.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Fleet Management",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Distribution Company",
-                    "building.2.crop.circle.fill"
-                ),
+                    "building.2.crop.circle.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Storage Facility",
-                    "archivebox.fill"
-                ),
+                    "archivebox.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Cold Chain Logistics",
-                    "snowflake"
-                ),
+                    "snowflake",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Refrigerated Transport",
-                    "snowflake"
-                ),
+                    "snowflake",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Medical Transport",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Non-Emergency Medical Transport",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Bus Company",
-                    "bus.fill"
-                ),
+                    "bus.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Charter Bus",
-                    "bus.fill"
-                ),
+                    "bus.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "School Bus Service",
-                    "bus.fill"
-                ),
+                    "bus.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Taxi Service",
-                    "car.fill"
-                ),
+                    "car.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Limousine Service",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Ride Share Fleet",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Car Hauling",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Auto Transport",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Heavy Haul",
-                    "truck.box.fill"
-                ),
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Dump Truck Service",
-                    "truck.box.fill"
-                ),
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Hazmat Transport",
-                    "exclamationmark.triangle.fill"
-                ),
+                    "exclamationmark.triangle.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Import / Export",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Logistics Company",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Custom Logistics Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.logistics
+)
 
             ]
 
@@ -1235,168 +1878,201 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Auto Repair Shop",
-                    "car.fill"
-                ),
+                    "car.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Auto Body Shop",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Collision Center",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Tire Shop",
-                    "circle.hexagongrid.fill"
-                ),
+                    "circle.hexagongrid.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Car Wash",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Auto Detailing",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Car Dealership",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Used Car Dealership",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "New Car Dealership",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Auto Parts Store",
-                    "gearshape.2.fill"
-                ),
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Oil Change Center",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Mobile Mechanic",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Car Rental",
-                    "key.fill"
-                ),
+                    "key.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
 
                 createMode(
                     "Diesel Repair",
-                    "fuelpump.fill"
-                ),
+                    "fuelpump.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Transmission Shop",
-                    "gearshape.fill"
-                ),
+                    "gearshape.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Brake Shop",
-                    "exclamationmark.octagon.fill"
-                ),
+                    "exclamationmark.octagon.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Muffler Shop",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Alignment Shop",
-                    "steeringwheel"
-                ),
+                    "steeringwheel",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Fleet Repair",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Motorcycle Shop",
-                    "motorcycle.fill"
-                ),
+                    "motorcycle.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Powersports Dealer",
-                    "motorcycle.fill"
-                ),
+                    "motorcycle.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Boat Repair",
-                    "ferry.fill"
-                ),
+                    "ferry.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Marine Services",
-                    "sailboat.fill"
-                ),
+                    "sailboat.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "RV Dealer",
-                    "bus.fill"
-                ),
+                    "bus.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "RV Repair",
-                    "bus.fill"
-                ),
+                    "bus.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Window Tint",
-                    "sun.max.fill"
-                ),
+                    "sun.max.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Car Audio Installation",
-                    "speaker.wave.3.fill"
-                ),
+                    "speaker.wave.3.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Vehicle Wraps",
-                    "paintbrush.fill"
-                ),
+                    "paintbrush.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Paint Protection Film",
-                    "shield.fill"
-                ),
+                    "shield.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Windshield Repair",
-                    "rectangle.on.rectangle.angled"
-                ),
+                    "rectangle.on.rectangle.angled",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Towing Service",
-                    "truck.pickup.side.fill"
-                ),
+                    "truck.pickup.side.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Roadside Assistance",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.automotive
+),
 
                 createMode(
                     "Custom Automotive Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.automotive
+)
 
             ]
 
@@ -1412,148 +2088,177 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Accounting Firm",
-                    "chart.bar.doc.horizontal.fill"
-                ),
+                    "chart.bar.doc.horizontal.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "CPA Firm",
-                    "chart.bar.doc.horizontal.fill"
-                ),
+                    "chart.bar.doc.horizontal.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Bookkeeping",
-                    "book.closed.fill"
-                ),
+                    "book.closed.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Tax Preparation",
-                    "doc.text.fill"
-                ),
+                    "doc.text.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Payroll Services",
-                    "creditcard.fill"
-                ),
+                    "creditcard.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Law Office",
-                    "scale.3d"
-                ),
+                    "scale.3d",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Immigration Services",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Insurance Agency",
-                    "shield.fill"
-                ),
+                    "shield.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Financial Advisor",
-                    "dollarsign.circle.fill"
-                ),
+                    "dollarsign.circle.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Investment Firm",
-                    "chart.line.uptrend.xyaxis"
-                ),
+                    "chart.line.uptrend.xyaxis",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Business Consulting",
-                    "person.2.fill"
-                ),
+                    "person.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Management Consulting",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Marketing Agency",
-                    "megaphone.fill"
-                ),
+                    "megaphone.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Advertising Agency",
-                    "megaphone.fill"
-                ),
+                    "megaphone.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Branding Agency",
-                    "paintpalette.fill"
-                ),
+                    "paintpalette.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Recruiting Agency",
-                    "person.badge.plus.fill"
-                ),
+                    "person.badge.plus.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Staffing Agency",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "HR Services",
-                    "person.2.fill"
-                ),
+                    "person.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Translation Services",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Interpreter Services",
-                    "character.bubble.fill"
-                ),
+                    "character.bubble.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Notary Public",
-                    "signature"
-                ),
+                    "signature",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Document Preparation",
-                    "doc.fill"
-                ),
+                    "doc.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Private Investigator",
-                    "magnifyingglass"
-                ),
+                    "magnifyingglass",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Security Company",
-                    "shield.fill"
-                ),
+                    "shield.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Call Center",
-                    "phone.connection.fill"
-                ),
+                    "phone.connection.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Virtual Assistant",
-                    "desktopcomputer"
-                ),
+                    "desktopcomputer",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Business Broker",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Franchise Consulting",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Professional Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -1569,73 +2274,87 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Engineering Firm",
-                    "gearshape.2.fill"
-                ),
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Civil Engineering",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Mechanical Engineering",
-                    "gearshape.fill"
-                ),
+                    "gearshape.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Electrical Engineering",
-                    "bolt.fill"
-                ),
+                    "bolt.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Structural Engineering",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Architecture Firm",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Interior Design",
-                    "sofa.fill"
-                ),
+                    "sofa.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Landscape Architecture",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "CAD Design",
-                    "pencil.and.ruler.fill"
-                ),
+                    "pencil.and.ruler.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "3D Modeling",
-                    "cube.fill"
-                ),
+                    "cube.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Industrial Design",
-                    "cube.box.fill"
-                ),
+                    "cube.box.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Surveying",
-                    "map.fill"
-                ),
+                    "map.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Blueprint Services",
-                    "doc.richtext.fill"
-                ),
+                    "doc.richtext.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Engineering Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -1651,88 +2370,105 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Real Estate Agency",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Commercial Real Estate",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Luxury Real Estate",
-                    "house.lodge.fill"
-                ),
+                    "house.lodge.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Property Management",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Apartment Management",
-                    "building.fill"
-                ),
+                    "building.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "HOA Management",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Vacation Rentals",
-                    "bed.double.fill"
-                ),
+                    "bed.double.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Airbnb Management",
-                    "house.lodge.fill"
-                ),
+                    "house.lodge.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Storage Facility",
-                    "archivebox.fill"
+                    "archivebox.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
                 ),
 
                 createMode(
                     "Home Inspection",
-                    "checkmark.shield.fill"
-                ),
+                    "checkmark.shield.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Home Appraisal",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Mortgage Brokerage",
-                    "dollarsign.circle.fill"
-                ),
+                    "dollarsign.circle.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Title Company",
-                    "doc.text.fill"
-                ),
+                    "doc.text.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Escrow Services",
-                    "lock.doc.fill"
-                ),
+                    "lock.doc.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Real Estate Investor",
-                    "chart.line.uptrend.xyaxis"
-                ),
+                    "chart.line.uptrend.xyaxis",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "House Flipping",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Real Estate Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -1748,163 +2484,195 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Software Company",
-                    "curlybraces"
-                ),
+                    "curlybraces",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "SaaS Company",
-                    "cloud.fill"
-                ),
+                    "cloud.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "AI Company",
-                    "brain.head.profile"
-                ),
+                    "brain.head.profile",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "AI Consulting",
-                    "brain.head.profile"
-                ),
+                    "brain.head.profile",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "IT Services",
-                    "network"
-                ),
+                    "network",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Managed IT",
-                    "server.rack"
-                ),
+                    "server.rack",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Cybersecurity",
-                    "lock.shield.fill"
-                ),
+                    "lock.shield.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Cloud Services",
-                    "icloud.fill"
-                ),
+                    "icloud.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Data Center",
-                    "server.rack"
-                ),
+                    "server.rack",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Hosting Company",
-                    "server.rack"
-                ),
+                    "server.rack",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Computer Repair",
-                    "desktopcomputer"
-                ),
+                    "desktopcomputer",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Networking",
-                    "network"
-                ),
+                    "network",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Fiber Optic Installation",
-                    "cable.connector"
-                ),
+                    "cable.connector",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Telecommunications",
-                    "antenna.radiowaves.left.and.right"
-                ),
+                    "antenna.radiowaves.left.and.right",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "CCTV Installation",
-                    "video.fill"
-                ),
+                    "video.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Access Control Systems",
-                    "lock.rectangle.fill"
-                ),
+                    "lock.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "POS Systems",
-                    "creditcard.fill"
-                ),
+                    "creditcard.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "ERP Solutions",
-                    "square.grid.2x2.fill"
-                ),
+                    "square.grid.2x2.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "CRM Solutions",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Web Design",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Web Development",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Mobile App Development",
-                    "iphone"
-                ),
+                    "iphone",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Automation Services",
-                    "gearshape.2.fill"
-                ),
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Robotics",
-                    "cpu.fill"
-                ),
+                    "cpu.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Drone Services",
-                    "airplane"
-                ),
+                    "airplane",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Blockchain",
-                    "link"
-                ),
+                    "link",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Game Development",
-                    "gamecontroller.fill"
-                ),
+                    "gamecontroller.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Digital Marketing",
-                    "megaphone.fill"
-                ),
+                    "megaphone.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "SEO Agency",
-                    "magnifyingglass"
-                ),
+                    "magnifyingglass",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "UI / UX Design",
-                    "paintbrush.fill"
-                ),
+                    "paintbrush.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Graphic Design Studio",
-                    "paintpalette.fill"
-                ),
+                    "paintpalette.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Custom Technology Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.technology
+)
 
             ]
 
@@ -1920,98 +2688,117 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "University",
-                    "graduationcap.fill"
-                ),
+                    "graduationcap.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "College",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "School",
-                    "graduationcap.fill"
-                ),
+                    "graduationcap.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Elementary School",
-                    "book.fill"
-                ),
+                    "book.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "High School",
-                    "book.fill"
-                ),
+                    "book.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Daycare",
-                    "figure.2.and.child.holdinghands"
-                ),
+                    "figure.2.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Preschool",
-                    "figure.2.and.child.holdinghands"
-                ),
+                    "figure.2.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Tutoring Center",
-                    "book.fill"
-                ),
+                    "book.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Driving School",
-                    "car.fill"
-                ),
+                    "car.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "CDL School",
-                    "truck.box.fill"
-                ),
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Trade School",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Coding Bootcamp",
-                    "curlybraces"
-                ),
+                    "curlybraces",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Online Academy",
-                    "play.rectangle.fill"
-                ),
+                    "play.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Language Academy",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Music School",
-                    "music.note"
-                ),
+                    "music.note",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Dance Academy",
-                    "figure.dance"
-                ),
+                    "figure.dance",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Martial Arts Academy",
-                    "figure.martial.arts"
-                ),
+                    "figure.martial.arts",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Corporate Training",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Custom Education Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.education
+)
 
             ]
 
@@ -2027,78 +2814,93 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Fitness Center",
-                    "figure.run"
-                ),
+                    "figure.run",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Gym",
-                    "dumbbell.fill"
-                ),
+                    "dumbbell.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Personal Training",
-                    "figure.strengthtraining.traditional"
-                ),
+                    "figure.strengthtraining.traditional",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "CrossFit Gym",
-                    "figure.strengthtraining.traditional"
-                ),
+                    "figure.strengthtraining.traditional",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Yoga Studio",
-                    "figure.yoga"
-                ),
+                    "figure.yoga",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Pilates Studio",
-                    "figure.flexibility"
-                ),
+                    "figure.flexibility",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Martial Arts School",
-                    "figure.martial.arts"
-                ),
+                    "figure.martial.arts",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Boxing Gym",
-                    "figure.boxing"
-                ),
+                    "figure.boxing",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Dance Studio",
-                    "figure.dance"
-                ),
+                    "figure.dance",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Swimming School",
-                    "figure.pool.swim"
-                ),
+                    "figure.pool.swim",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Sports Academy",
-                    "sportscourt.fill"
-                ),
+                    "sportscourt.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Sports Club",
-                    "sportscourt.fill"
-                ),
+                    "sportscourt.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Sports Performance Center",
-                    "figure.run.circle.fill"
-                ),
+                    "figure.run.circle.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Recreation Center",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Fitness Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -2114,88 +2916,105 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Photography Studio",
-                    "camera.fill"
-                ),
+                    "camera.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Videography",
-                    "video.fill"
-                ),
+                    "video.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Film Production",
-                    "film.fill"
-                ),
+                    "film.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Podcast Studio",
-                    "mic.fill"
-                ),
+                    "mic.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Recording Studio",
-                    "music.mic"
-                ),
+                    "music.mic",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Music Production",
-                    "music.note.house.fill"
-                ),
+                    "music.note.house.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Graphic Design",
-                    "paintpalette.fill"
-                ),
+                    "paintpalette.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Branding Studio",
-                    "paintbrush.fill"
-                ),
+                    "paintbrush.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Advertising Agency",
-                    "megaphone.fill"
-                ),
+                    "megaphone.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Animation Studio",
-                    "sparkles.tv.fill"
-                ),
+                    "sparkles.tv.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "3D Animation",
-                    "cube.fill"
-                ),
+                    "cube.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Printing Company",
-                    "printer.fill"
-                ),
+                    "printer.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Sign Company",
-                    "signpost.right.fill"
-                ),
+                    "signpost.right.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Digital Content Creator",
-                    "play.rectangle.fill"
-                ),
+                    "play.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Influencer Agency",
-                    "person.crop.circle.badge.star"
-                ),
+                    "person.crop.circle.badge.star",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Marketing Studio",
-                    "megaphone.fill"
-                ),
+                    "megaphone.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Custom Creative Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.media
+)
 
             ]
 
@@ -2211,78 +3030,93 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Event Planner",
-                    "calendar"
-                ),
+                    "calendar",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Wedding Planner",
-                    "heart.fill"
-                ),
+                    "heart.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Party Rentals",
-                    "party.popper.fill"
-                ),
+                    "party.popper.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
 
                 createMode(
                     "Bounce House Rentals",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
 
                 createMode(
                     "DJ Services",
-                    "music.note.list"
-                ),
+                    "music.note.list",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Live Entertainment",
-                    "music.mic"
-                ),
+                    "music.mic",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Concert Promoter",
-                    "music.note"
-                ),
+                    "music.note",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Event Venue",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Banquet Hall",
-                    "building.fill"
-                ),
+                    "building.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Convention Center",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Casino",
-                    "suit.club.fill"
-                ),
+                    "suit.club.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Movie Theater",
-                    "film.fill"
-                ),
+                    "film.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Arcade",
-                    "gamecontroller.fill"
-                ),
+                    "gamecontroller.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Escape Room",
-                    "lock.fill"
-                ),
+                    "lock.fill",
+                    BUSINESS_MODULE_PROFILES.events
+),
 
                 createMode(
                     "Custom Event Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.events
+)
 
             ]
 
@@ -2298,73 +3132,87 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Hotel",
-                    "bed.double.fill"
-                ),
+                    "bed.double.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Motel",
-                    "bed.double.fill"
-                ),
+                    "bed.double.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Resort",
-                    "beach.umbrella.fill"
-                ),
+                    "beach.umbrella.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Bed & Breakfast",
-                    "house.lodge.fill"
-                ),
+                    "house.lodge.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Vacation Rental",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Travel Agency",
-                    "airplane"
-                ),
+                    "airplane",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Tour Operator",
-                    "map.fill"
-                ),
+                    "map.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Cruise Agency",
-                    "ferry.fill"
-                ),
+                    "ferry.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Campground",
-                    "tent.fill"
-                ),
+                    "tent.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "RV Park",
-                    "bus.fill"
-                ),
+                    "bus.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Hostel",
-                    "building.fill"
-                ),
+                    "building.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Luxury Concierge",
-                    "star.fill"
-                ),
+                    "star.fill",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Vacation Planning",
-                    "calendar.badge.clock"
-                ),
+                    "calendar.badge.clock",
+                    BUSINESS_MODULE_PROFILES.hospitality
+),
 
                 createMode(
                     "Custom Hospitality Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.hospitality
+)
 
             ]
 
@@ -2380,98 +3228,117 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Manufacturing Company",
-                    "gearshape.2.fill"
-                ),
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Industrial Plant",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Factory",
-                    "building.2.crop.circle.fill"
-                ),
+                    "building.2.crop.circle.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Machine Shop",
-                    "gearshape.fill"
-                ),
+                    "gearshape.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Metal Fabrication",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Steel Fabrication",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Wood Manufacturing",
-                    "tree.fill"
-                ),
+                    "tree.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Furniture Manufacturing",
-                    "chair.lounge.fill"
-                ),
+                    "chair.lounge.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Cabinet Manufacturing",
-                    "cabinet.fill"
-                ),
+                    "cabinet.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Packaging Company",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Printing Manufacturing",
-                    "printer.fill"
-                ),
+                    "printer.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Plastic Manufacturing",
-                    "cube.box.fill"
-                ),
+                    "cube.box.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Food Manufacturing",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Beverage Manufacturing",
-                    "cup.and.saucer.fill"
-                ),
+                    "cup.and.saucer.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Textile Manufacturing",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Chemical Manufacturing",
-                    "flask.fill"
-                ),
+                    "flask.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Electronics Manufacturing",
-                    "cpu.fill"
-                ),
+                    "cpu.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Medical Device Manufacturing",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Custom Manufacturing Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+)
 
             ]
 
@@ -2487,93 +3354,111 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Farm",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Crop Farm",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Livestock Farm",
-                    "hare.fill"
-                ),
+                    "hare.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Dairy Farm",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Poultry Farm",
-                    "bird.fill"
-                ),
+                    "bird.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Horse Farm",
-                    "figure.equestrian.sports"
-                ),
+                    "figure.equestrian.sports",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Greenhouse",
-                    "leaf.circle.fill"
-                ),
+                    "leaf.circle.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Nursery",
-                    "tree.fill"
-                ),
+                    "tree.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Garden Center",
-                    "camera.macro"
-                ),
+                    "camera.macro",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Orchard",
-                    "apple.logo"
-                ),
+                    "apple.logo",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Vineyard",
-                    "wineglass.fill"
-                ),
+                    "wineglass.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Apiary",
-                    "hexagon.fill"
-                ),
+                    "hexagon.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Aquaculture",
-                    "fish.fill"
-                ),
+                    "fish.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Agricultural Services",
-                    "tractor"
-                ),
+                    "tractor",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Feed Supplier",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.wholesale
+),
 
                 createMode(
                     "Farm Equipment Dealer",
-                    "tractor"
-                ),
+                    "tractor",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Organic Farming",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.agriculture
+),
 
                 createMode(
                     "Custom Agriculture Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.agriculture
+)
 
             ]
 
@@ -2589,88 +3474,105 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Nonprofit Organization",
-                    "heart.fill"
-                ),
+                    "heart.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Charity",
-                    "heart.circle.fill"
-                ),
+                    "heart.circle.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Foundation",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Religious Organization",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Church",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Community Center",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Food Bank",
-                    "basket.fill"
-                ),
+                    "basket.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Animal Rescue",
-                    "pawprint.fill"
-                ),
+                    "pawprint.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Shelter",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Youth Organization",
-                    "figure.2.and.child.holdinghands"
-                ),
+                    "figure.2.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Senior Center",
-                    "person.fill"
-                ),
+                    "person.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Volunteer Organization",
-                    "person.3.sequence.fill"
-                ),
+                    "person.3.sequence.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Cultural Organization",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Educational Foundation",
-                    "graduationcap.fill"
-                ),
+                    "graduationcap.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Environmental Organization",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Community Outreach",
-                    "person.2.wave.2.fill"
-                ),
+                    "person.2.wave.2.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Custom Nonprofit Organization",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+)
 
             ]
 
@@ -2686,93 +3588,111 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "E-Commerce Brand",
-                    "cart.fill"
-                ),
+                    "cart.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Subscription Business",
-                    "repeat.circle.fill"
-                ),
+                    "repeat.circle.fill",
+                    BUSINESS_MODULE_PROFILES.online
+),
 
                 createMode(
                     "Digital Products",
-                    "square.stack.3d.up.fill"
-                ),
+                    "square.stack.3d.up.fill",
+                    BUSINESS_MODULE_PROFILES.online
+),
 
                 createMode(
                     "Online Courses",
-                    "play.rectangle.fill"
-                ),
+                    "play.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Membership Website",
-                    "person.crop.circle.badge.checkmark"
-                ),
+                    "person.crop.circle.badge.checkmark",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Affiliate Marketing",
-                    "link"
-                ),
+                    "link",
+                    BUSINESS_MODULE_PROFILES.online
+),
 
                 createMode(
                     "Dropshipping",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Print On Demand",
-                    "printer.fill"
-                ),
+                    "printer.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Marketplace Seller",
-                    "storefront.fill"
-                ),
+                    "storefront.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Creator Economy",
-                    "person.crop.square"
-                ),
+                    "person.crop.square",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Influencer Business",
-                    "person.crop.circle.badge.star"
-                ),
+                    "person.crop.circle.badge.star",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "YouTube Channel",
-                    "play.tv.fill"
-                ),
+                    "play.tv.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Podcast Network",
-                    "mic.fill"
-                ),
+                    "mic.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Newsletter Business",
-                    "newspaper.fill"
-                ),
+                    "newspaper.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Online Coaching",
-                    "person.fill.questionmark"
-                ),
+                    "person.fill.questionmark",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Virtual Services",
-                    "desktopcomputer"
-                ),
+                    "desktopcomputer",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Remote Agency",
-                    "network"
-                ),
+                    "network",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Digital Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.online
+)
 
             ]
 
@@ -2788,98 +3708,117 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Bank",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Credit Union",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Mortgage Company",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Investment Firm",
-                    "chart.line.uptrend.xyaxis"
-                ),
+                    "chart.line.uptrend.xyaxis",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Financial Planning",
-                    "dollarsign.circle.fill"
-                ),
+                    "dollarsign.circle.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Wealth Management",
-                    "chart.pie.fill"
-                ),
+                    "chart.pie.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Accounting Firm",
-                    "chart.bar.doc.horizontal.fill"
-                ),
+                    "chart.bar.doc.horizontal.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "CPA Firm",
-                    "doc.text.fill"
-                ),
+                    "doc.text.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Bookkeeping",
-                    "book.closed.fill"
-                ),
+                    "book.closed.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Tax Services",
-                    "percent"
-                ),
+                    "percent",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Payroll Services",
-                    "creditcard.fill"
-                ),
+                    "creditcard.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Payment Processing",
-                    "creditcard.and.123"
-                ),
+                    "creditcard.and.123",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "FinTech Company",
-                    "iphone"
-                ),
+                    "iphone",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Cryptocurrency Services",
-                    "bitcoinsign.circle.fill"
-                ),
+                    "bitcoinsign.circle.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Insurance Company",
-                    "shield.fill"
-                ),
+                    "shield.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Insurance Agency",
-                    "shield.lefthalf.filled"
-                ),
+                    "shield.lefthalf.filled",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Loan Company",
-                    "banknote.fill"
-                ),
+                    "banknote.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Collection Agency",
-                    "tray.full.fill"
-                ),
+                    "tray.full.fill",
+                    BUSINESS_MODULE_PROFILES.financial
+),
 
                 createMode(
                     "Custom Financial Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.financial
+)
 
             ]
 
@@ -2895,78 +3834,93 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Law Firm",
-                    "scale.3d"
-                ),
+                    "scale.3d",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Attorney Office",
-                    "person.crop.rectangle"
-                ),
+                    "person.crop.rectangle",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Family Law",
-                    "person.3.fill"
-                ),
+                    "person.3.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Immigration Law",
-                    "globe"
-                ),
+                    "globe",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Criminal Defense",
-                    "shield.fill"
-                ),
+                    "shield.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Civil Litigation",
-                    "doc.text.fill"
-                ),
+                    "doc.text.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Corporate Law",
-                    "building.columns.fill"
-                ),
+                    "building.columns.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Estate Planning",
-                    "doc.richtext.fill"
-                ),
+                    "doc.richtext.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Real Estate Law",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Bankruptcy Law",
-                    "tray.full.fill"
-                ),
+                    "tray.full.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Employment Law",
-                    "person.2.fill"
-                ),
+                    "person.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Notary Public",
-                    "signature"
-                ),
+                    "signature",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Legal Consulting",
-                    "person.fill.questionmark"
-                ),
+                    "person.fill.questionmark",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Legal Document Services",
-                    "doc.text.fill"
-                ),
+                    "doc.text.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Legal Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -2982,58 +3936,69 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Electric Utility",
-                    "bolt.fill"
-                ),
+                    "bolt.fill",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "Water Utility",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "Natural Gas Utility",
-                    "flame.fill"
-                ),
+                    "flame.fill",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "Solar Energy",
-                    "sun.max.fill"
-                ),
+                    "sun.max.fill",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "Wind Energy",
-                    "wind"
-                ),
+                    "wind",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "Battery Storage",
-                    "battery.100percent"
-                ),
+                    "battery.100percent",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "EV Charging",
-                    "ev.charger.fill"
-                ),
+                    "ev.charger.fill",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "Utility Contractor",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Power Generation",
-                    "bolt.circle.fill"
-                ),
+                    "bolt.circle.fill",
+                    BUSINESS_MODULE_PROFILES.utilities
+),
 
                 createMode(
                     "Energy Consulting",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Energy Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.utilities
+)
 
             ]
 
@@ -3049,53 +4014,63 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Oil Company",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.industrial
+),
 
                 createMode(
                     "Gas Company",
-                    "flame.fill"
-                ),
+                    "flame.fill",
+                    BUSINESS_MODULE_PROFILES.industrial
+),
 
                 createMode(
                     "Pipeline Services",
-                    "pipe.and.drop.fill"
-                ),
+                    "pipe.and.drop.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Refinery",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.industrial
+),
 
                 createMode(
                     "Fuel Distributor",
-                    "fuelpump.fill"
-                ),
+                    "fuelpump.fill",
+                    BUSINESS_MODULE_PROFILES.wholesale
+),
 
                 createMode(
                     "Fuel Station",
-                    "fuelpump.fill"
-                ),
+                    "fuelpump.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Petroleum Services",
-                    "drop.circle.fill"
-                ),
+                    "drop.circle.fill",
+                    BUSINESS_MODULE_PROFILES.industrial
+),
 
                 createMode(
                     "Oilfield Services",
-                    "hammer.fill"
-                ),
+                    "hammer.fill",
+                    BUSINESS_MODULE_PROFILES.industrial
+),
 
                 createMode(
                     "Drilling Contractor",
-                    "mountain.2.fill"
-                ),
+                    "mountain.2.fill",
+                    BUSINESS_MODULE_PROFILES.construction
+),
 
                 createMode(
                     "Custom Oil & Gas Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.industrial
+)
 
             ]
 
@@ -3111,53 +4086,63 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Telecommunications Company",
-                    "antenna.radiowaves.left.and.right"
-                ),
+                    "antenna.radiowaves.left.and.right",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Internet Service Provider",
-                    "wifi"
-                ),
+                    "wifi",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Fiber Internet",
-                    "cable.connector"
-                ),
+                    "cable.connector",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Wireless Carrier",
-                    "cellularbars"
-                ),
+                    "cellularbars",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "VoIP Services",
-                    "phone.connection.fill"
-                ),
+                    "phone.connection.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Satellite Communications",
-                    "dot.radiowaves.left.and.right"
-                ),
+                    "dot.radiowaves.left.and.right",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Network Infrastructure",
-                    "network"
-                ),
+                    "network",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Data Communications",
-                    "externaldrive.connected.to.line.below.fill"
-                ),
+                    "externaldrive.connected.to.line.below.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Telecom Equipment",
-                    "server.rack"
-                ),
+                    "server.rack",
+                    BUSINESS_MODULE_PROFILES.wholesale
+),
 
                 createMode(
                     "Custom Telecommunications Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.technology
+)
 
             ]
 
@@ -3173,88 +4158,105 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Security Company",
-                    "shield.fill"
-                ),
+                    "shield.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Private Security",
-                    "person.badge.shield.checkmark.fill"
-                ),
+                    "person.badge.shield.checkmark.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Security Guard Services",
-                    "person.badge.shield.checkmark.fill"
-                ),
+                    "person.badge.shield.checkmark.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Patrol Services",
-                    "car.2.fill"
-                ),
+                    "car.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Alarm Company",
-                    "bell.and.waves.left.and.right.fill"
-                ),
+                    "bell.and.waves.left.and.right.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Fire Alarm Services",
-                    "flame.fill"
-                ),
+                    "flame.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Security System Installation",
-                    "lock.shield.fill"
-                ),
+                    "lock.shield.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "CCTV Security",
-                    "video.fill"
-                ),
+                    "video.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Access Control",
-                    "lock.rectangle.fill"
-                ),
+                    "lock.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Cybersecurity Services",
-                    "lock.shield.fill"
-                ),
+                    "lock.shield.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Emergency Management",
-                    "exclamationmark.triangle.fill"
-                ),
+                    "exclamationmark.triangle.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Fire Protection Services",
-                    "flame.circle.fill"
-                ),
+                    "flame.circle.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Fire Extinguisher Service",
-                    "flame.fill"
-                ),
+                    "flame.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Workplace Safety",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Safety Consulting",
-                    "checkmark.shield.fill"
-                ),
+                    "checkmark.shield.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Background Check Services",
-                    "person.text.rectangle.fill"
-                ),
+                    "person.text.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Security Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -3270,83 +4272,99 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Scientific Laboratory",
-                    "flask.fill"
-                ),
+                    "flask.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Research Laboratory",
-                    "testtube.2"
-                ),
+                    "testtube.2",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Medical Laboratory",
-                    "cross.vial.fill"
-                ),
+                    "cross.vial.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Diagnostic Laboratory",
-                    "waveform.path.ecg.rectangle.fill"
-                ),
+                    "waveform.path.ecg.rectangle.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Testing Laboratory",
-                    "checkmark.seal.fill"
-                ),
+                    "checkmark.seal.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Environmental Testing",
-                    "leaf.fill"
-                ),
+                    "leaf.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Water Testing",
-                    "drop.fill"
-                ),
+                    "drop.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Food Testing Laboratory",
-                    "fork.knife"
-                ),
+                    "fork.knife",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Chemical Laboratory",
-                    "flask.fill"
-                ),
+                    "flask.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Biotechnology Company",
-                    "microbe.fill"
-                ),
+                    "microbe.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Pharmaceutical Research",
-                    "pills.fill"
-                ),
+                    "pills.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Clinical Research",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Forensic Laboratory",
-                    "magnifyingglass"
-                ),
+                    "magnifyingglass",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Quality Control Laboratory",
-                    "checkmark.shield.fill"
-                ),
+                    "checkmark.shield.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Calibration Services",
-                    "ruler.fill"
-                ),
+                    "ruler.fill",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Custom Scientific Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.scientific
+)
 
             ]
 
@@ -3362,93 +4380,111 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Airline",
-                    "airplane"
-                ),
+                    "airplane",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Charter Airline",
-                    "airplane.departure"
-                ),
+                    "airplane.departure",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Private Aviation",
-                    "airplane.circle.fill"
-                ),
+                    "airplane.circle.fill",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Flight School",
-                    "graduationcap.fill"
-                ),
+                    "graduationcap.fill",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Aircraft Rental",
-                    "airplane"
-                ),
+                    "airplane",
+                    BUSINESS_MODULE_PROFILES.rental
+),
 
                 createMode(
                     "Aircraft Maintenance",
-                    "wrench.and.screwdriver.fill"
-                ),
+                    "wrench.and.screwdriver.fill",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Aircraft Repair",
-                    "gearshape.2.fill"
-                ),
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Aircraft Parts Supplier",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.wholesale
+),
 
                 createMode(
                     "Aviation Consulting",
-                    "person.2.fill"
-                ),
+                    "person.2.fill",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Airport Services",
-                    "airplane.arrival"
-                ),
+                    "airplane.arrival",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Ground Handling",
-                    "truck.box.fill"
-                ),
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Air Cargo",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Drone Company",
-                    "airplane"
-                ),
+                    "airplane",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Drone Photography",
-                    "camera.fill"
-                ),
+                    "camera.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Drone Inspection",
-                    "viewfinder"
-                ),
+                    "viewfinder",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Aerospace Engineering",
-                    "gearshape.2.fill"
-                ),
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.aviation
+),
 
                 createMode(
                     "Aerospace Manufacturing",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Custom Aviation Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.aviation
+)
 
             ]
 
@@ -3464,93 +4500,111 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Veterinary Clinic",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Animal Hospital",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Pet Grooming",
-                    "scissors"
-                ),
+                    "scissors",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Mobile Pet Grooming",
-                    "truck.box.fill"
-                ),
+                    "truck.box.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Pet Boarding",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Dog Daycare",
-                    "pawprint.fill"
-                ),
+                    "pawprint.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Pet Sitting",
-                    "person.and.background.dotted"
-                ),
+                    "person.and.background.dotted",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Dog Walking",
-                    "figure.walk"
-                ),
+                    "figure.walk",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Pet Training",
-                    "figure.and.child.holdinghands"
-                ),
+                    "figure.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Dog Training",
-                    "pawprint.circle.fill"
-                ),
+                    "pawprint.circle.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Pet Store",
-                    "cart.fill"
-                ),
+                    "cart.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Pet Supply Store",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Animal Rescue",
-                    "heart.fill"
-                ),
+                    "heart.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Animal Shelter",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.nonprofit
+),
 
                 createMode(
                     "Horse Boarding",
-                    "figure.equestrian.sports"
-                ),
+                    "figure.equestrian.sports",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Equine Services",
-                    "figure.equestrian.sports"
-                ),
+                    "figure.equestrian.sports",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Pet Transportation",
-                    "car.fill"
-                ),
+                    "car.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Custom Animal Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -3566,58 +4620,69 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Childcare Center",
-                    "figure.2.and.child.holdinghands"
-                ),
+                    "figure.2.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Daycare",
-                    "figure.2.and.child.holdinghands"
-                ),
+                    "figure.2.and.child.holdinghands",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Preschool",
-                    "graduationcap.fill"
-                ),
+                    "graduationcap.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "After School Program",
-                    "book.fill"
-                ),
+                    "book.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Early Learning Center",
-                    "book.closed.fill"
-                ),
+                    "book.closed.fill",
+                    BUSINESS_MODULE_PROFILES.education
+),
 
                 createMode(
                     "Babysitting Services",
-                    "person.fill"
-                ),
+                    "person.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Nanny Agency",
-                    "person.2.fill"
-                ),
+                    "person.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Family Counseling",
-                    "heart.text.square.fill"
-                ),
+                    "heart.text.square.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Parent Coaching",
-                    "person.2.wave.2.fill"
-                ),
+                    "person.2.wave.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Children's Therapy",
-                    "heart.fill"
-                ),
+                    "heart.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Custom Family Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.education
+)
 
             ]
 
@@ -3633,58 +4698,69 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Senior Care",
-                    "person.fill"
-                ),
+                    "person.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Home Care",
-                    "house.fill"
-                ),
+                    "house.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Home Health Agency",
-                    "heart.text.square.fill"
-                ),
+                    "heart.text.square.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Assisted Living",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Memory Care",
-                    "brain.head.profile"
-                ),
+                    "brain.head.profile",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Hospice Care",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Companion Care",
-                    "person.2.fill"
-                ),
+                    "person.2.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Private Duty Nursing",
-                    "cross.case.fill"
-                ),
+                    "cross.case.fill",
+                    BUSINESS_MODULE_PROFILES.healthcare
+),
 
                 createMode(
                     "Medical Transportation",
-                    "car.fill"
-                ),
+                    "car.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Meal Delivery",
-                    "takeoutbag.and.cup.and.straw.fill"
-                ),
+                    "takeoutbag.and.cup.and.straw.fill",
+                    BUSINESS_MODULE_PROFILES.logistics
+),
 
                 createMode(
                     "Custom Senior Care Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.healthcare
+)
 
             ]
 
@@ -3700,53 +4776,63 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Laundry Service",
-                    "washer.fill"
-                ),
+                    "washer.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Laundromat",
-                    "washer.fill"
-                ),
+                    "washer.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Dry Cleaning",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Commercial Laundry",
-                    "building.2.fill"
-                ),
+                    "building.2.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Uniform Rental",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.rental
+),
 
                 createMode(
                     "Alterations",
-                    "scissors"
-                ),
+                    "scissors",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Tailor Shop",
-                    "scissors"
-                ),
+                    "scissors",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Shoe Repair",
-                    "shoeprints.fill"
-                ),
+                    "shoeprints.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Leather Repair",
-                    "shippingbox.fill"
-                ),
+                    "shippingbox.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Laundry Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.professional
+)
 
             ]
 
@@ -3762,58 +4848,69 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Fashion Boutique",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Clothing Brand",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Designer Studio",
-                    "paintpalette.fill"
-                ),
+                    "paintpalette.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Apparel",
-                    "tshirt.fill"
-                ),
+                    "tshirt.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Embroidery",
-                    "pencil.tip"
-                ),
+                    "pencil.tip",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Screen Printing",
-                    "printer.fill"
-                ),
+                    "printer.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Promotional Products",
-                    "gift.fill"
-                ),
+                    "gift.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Uniform Supplier",
-                    "person.crop.rectangle"
-                ),
+                    "person.crop.rectangle",
+                    BUSINESS_MODULE_PROFILES.wholesale
+),
 
                 createMode(
                     "Fashion Accessories",
-                    "bag.fill"
-                ),
+                    "bag.fill",
+                    BUSINESS_MODULE_PROFILES.commerce
+),
 
                 createMode(
                     "Jewelry Designer",
-                    "diamond.fill"
-                ),
+                    "diamond.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Custom Fashion Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.commerce
+)
 
             ]
 
@@ -3829,58 +4926,69 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Publishing Company",
-                    "newspaper.fill"
-                ),
+                    "newspaper.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Magazine Publisher",
-                    "book.closed.fill"
-                ),
+                    "book.closed.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Newspaper",
-                    "newspaper.fill"
-                ),
+                    "newspaper.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Book Publisher",
-                    "book.fill"
-                ),
+                    "book.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Printing Press",
-                    "printer.fill"
-                ),
+                    "printer.fill",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Media Company",
-                    "tv.fill"
-                ),
+                    "tv.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "News Agency",
-                    "newspaper.fill"
-                ),
+                    "newspaper.fill",
+                    BUSINESS_MODULE_PROFILES.media
+),
 
                 createMode(
                     "Research Organization",
-                    "magnifyingglass"
-                ),
+                    "magnifyingglass",
+                    BUSINESS_MODULE_PROFILES.scientific
+),
 
                 createMode(
                     "Technical Documentation",
-                    "doc.richtext.fill"
-                ),
+                    "doc.richtext.fill",
+                    BUSINESS_MODULE_PROFILES.professional
+),
 
                 createMode(
                     "Knowledge Platform",
-                    "brain.head.profile"
-                ),
+                    "brain.head.profile",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Custom Publishing Business",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.media
+)
 
             ]
 
@@ -3896,58 +5004,69 @@ export const BusinessModeLibrary = {
 
                 createMode(
                     "Artificial Intelligence",
-                    "brain.head.profile"
-                ),
+                    "brain.head.profile",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Machine Learning",
-                    "cpu.fill"
-                ),
+                    "cpu.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Robotics",
-                    "gearshape.2.fill"
-                ),
+                    "gearshape.2.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Internet of Things",
-                    "network"
-                ),
+                    "network",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Quantum Computing",
-                    "atom"
-                ),
+                    "atom",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Semiconductor Company",
-                    "cpu"
-                ),
+                    "cpu",
+                    BUSINESS_MODULE_PROFILES.manufacturing
+),
 
                 createMode(
                     "Space Technology",
-                    "sparkles"
-                ),
+                    "sparkles",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Nanotechnology",
-                    "circle.hexagongrid.fill"
-                ),
+                    "circle.hexagongrid.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Research & Development",
-                    "flask.fill"
-                ),
+                    "flask.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Innovation Lab",
-                    "lightbulb.fill"
-                ),
+                    "lightbulb.fill",
+                    BUSINESS_MODULE_PROFILES.technology
+),
 
                 createMode(
                     "Custom Technology Company",
-                    "square.and.pencil"
-                )
+                    "square.and.pencil",
+                    BUSINESS_MODULE_PROFILES.technology
+)
 
             ]
 

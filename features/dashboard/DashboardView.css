@@ -416,19 +416,6 @@
   grid-template-columns: var(--jcs-sidebar-width) minmax(0, 1fr);
   overflow: hidden;
 
-  background:
-    radial-gradient(
-      circle at 90% 4%,
-      rgba(var(--jcs-accent-rgb), 0.09),
-      transparent 31%
-    ),
-    radial-gradient(
-      circle at 8% 92%,
-      rgba(var(--jcs-accent-rgb), 0.055),
-      transparent 34%
-    ),
-    var(--jcs-background);
-
   transition:
     color 220ms ease,
     background 220ms ease;
@@ -2925,24 +2912,24 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .jcs-dashboard-columns {
-    display: flex;
-    flex-direction: column;
-  }
+ .jcs-dashboard-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-  .jcs-dashboard-sections {
-    width: 100%;
-    order: 1;
-  }
+.jcs-dashboard-sections {
+  width: 100%;
+  order: 1;
+}
 
-  .jcs-dashboard-insights {
-    position: static;
-
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    order: 2;
-  }
+.jcs-dashboard-insights {
+  position: static;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  order: 2;
+}
 }
 
 /* ============================================================

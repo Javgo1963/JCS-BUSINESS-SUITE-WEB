@@ -18,7 +18,7 @@ import {
   useRouter,
 } from "next/navigation";
 
-import PlatformAppSettingsView from "@/features/app-settings/PlatformAppSettingsView";
+import PlatformSettingsView from "@/features/platform-settings/PlatformSettingsView";
 
 import {
   usePlatformSettingsContext,
@@ -50,6 +50,7 @@ export default function PlatformSettingsPage() {
   const {
     actor,
 
+    setPlatformAccentColor,
     applyPlatformSettings,
     refreshPlatformSettings,
 
@@ -156,12 +157,15 @@ export default function PlatformSettingsPage() {
 
   return (
     <main className="jcs-platform-settings-route">
-      <PlatformAppSettingsView
+      <PlatformSettingsView
         actor={
           actor
         }
         currentUserUID={
           currentUserUID
+        }
+        onAccentColorChange={
+          setPlatformAccentColor
         }
         onSettingsSaved={
           handleSettingsSaved

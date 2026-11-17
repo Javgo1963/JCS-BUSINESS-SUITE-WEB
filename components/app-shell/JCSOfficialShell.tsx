@@ -26,12 +26,11 @@ import DashboardIcon from
 import DashboardLiveStatus from
   "@/features/dashboard/DashboardLiveStatus";
 
-import {
-  getJCSScreenBackgroundOption,
-} from "@/components/layout/JCSScreenBackground";
-
 import JCSUserAvatarPicker from
   "@/components/app-shell/JCSUserAvatarPicker";
+
+import JCSScreenBackground from
+  "@/components/layout/JCSScreenBackground";
 
 import type {
   JCSOfficialShellProps,
@@ -53,8 +52,9 @@ export default function JCSOfficialShell({
   accentColorCSS,
   appearance,
 
-  backgroundID,
-  backgroundDownloadURL,
+  
+  backgroundID = "default",
+  customBackgroundURL = "",
 
   identity,
   user,
@@ -242,34 +242,17 @@ export default function JCSOfficialShell({
   }
 
   // =====================================================
-  // MARK: - Screen Background
-  // =====================================================
-
-  const selectedBackground =
-    getJCSScreenBackgroundOption(
-      backgroundID,
-    );
-
-  const customBackgroundURL =
-    backgroundDownloadURL
-      ?.trim() ?? "";
-
-  const shellBackground =
-    backgroundID ===
-      "custom" &&
-    customBackgroundURL
-      ? `center / cover no-repeat url(${JSON.stringify(
-          customBackgroundURL,
-        )})`
-      : selectedBackground
-          .background;
-
-  // =====================================================
   // MARK: - Shell View
   // =====================================================
 
   return (
-    <div
+    <JCSScreenBackground
+      backgroundID={
+        backgroundID
+      }
+      customBackgroundURL={
+        customBackgroundURL
+      }
       className="jcs-dashboard-shell"
       data-accent={
         accentName
@@ -289,9 +272,6 @@ export default function JCSOfficialShell({
 
     "--jcs-accent":
       accentColorCSS,
-
-    background:
-      shellBackground,
   } as JCSShellStyle
 }
     >
@@ -1097,6 +1077,6 @@ export default function JCSOfficialShell({
           </div>
         </div>
       )}
-    </div>
-  );
+    </JCSScreenBackground>
+);
 }

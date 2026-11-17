@@ -17,6 +17,7 @@
 
 export const BUSINESS_LOGO_SOURCE_VALUES = [
   "default",
+  "official-jcs",
   "ai-generated",
   "uploaded",
 ] as const;

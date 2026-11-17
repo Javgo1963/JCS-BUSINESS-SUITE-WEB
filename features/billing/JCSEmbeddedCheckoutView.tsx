@@ -33,6 +33,10 @@ import {
   useAuth,
 } from "@/core/hooks/useAuth";
 
+import {
+  canAccessBusiness,
+} from "@/core/business-context/JCSAccessibleBusinessService";
+
 import styles from
   "./JCSBilling.module.css";
 
@@ -145,6 +149,9 @@ export default function JCSEmbeddedCheckoutView() {
     isLoadingBusinessContext,
 
     businessID,
+
+    accessibleBusinesses,
+    refreshBusinessContext,
   } =
     useAuth();
 
@@ -192,6 +199,17 @@ export default function JCSEmbeddedCheckoutView() {
     useRef<Promise<string> | null>(
       null
     );
+
+
+  const billingAccessRefreshStartedRef =
+    useRef(false);
+
+
+  const [
+    billingAccessRefreshComplete,
+    setBillingAccessRefreshComplete,
+  ] =
+    useState(false);
 
 
   useEffect(() => {
@@ -310,9 +328,70 @@ export default function JCSEmbeddedCheckoutView() {
   ]);
 
 
+
+  useEffect(() => {
+
+    if (
+      billingAccessRefreshStartedRef.current ||
+      !routeReady ||
+      !requestedBusinessID ||
+      isLoading ||
+      !isAuthenticated ||
+      isLoadingBusinessContext
+    ) {
+      return;
+    }
+
+    billingAccessRefreshStartedRef.current =
+      true;
+
+    void refreshBusinessContext()
+      .then(() => {
+        setBillingAccessRefreshComplete(
+          true
+        );
+      })
+      .catch((error: unknown) => {
+
+        console.error(
+          "❌ JCS billing access refresh failed:",
+          error
+        );
+
+        setRouteError(
+          error instanceof Error
+            ? error.message
+            : "JCS could not refresh the requested business authorization."
+        );
+
+        setBillingAccessRefreshComplete(
+          true
+        );
+      });
+
+  }, [
+    isAuthenticated,
+    isLoading,
+    isLoadingBusinessContext,
+    refreshBusinessContext,
+    requestedBusinessID,
+    routeReady,
+  ]);
+
+
   const contextBusinessID =
     clean(
       businessID
+    );
+
+
+  const requestedBusinessAccessible =
+    Boolean(
+      requestedBusinessID
+    ) &&
+    canAccessBusiness(
+      accessibleBusinesses,
+      requestedBusinessID
     );
 
 
@@ -323,14 +402,11 @@ export default function JCSEmbeddedCheckoutView() {
     isAuthenticated &&
     !isLoadingBusinessContext &&
     isBusinessContextReady &&
-    Boolean(
-      contextBusinessID
-    ) &&
+    billingAccessRefreshComplete &&
     Boolean(
       requestedBusinessID
     ) &&
-    contextBusinessID ===
-      requestedBusinessID &&
+    requestedBusinessAccessible &&
     Boolean(
       requestedPlan
     );
@@ -363,6 +439,15 @@ export default function JCSEmbeddedCheckoutView() {
                   "JCS billing context is not ready."
                 );
               }
+              if (
+                !requestedBusinessAccessible
+              ) {
+                throw new Error(
+                  "The authenticated JCS user is not authorized for the requested billing business."
+                );
+              }
+
+
 
 
               if (
@@ -595,6 +680,7 @@ export default function JCSEmbeddedCheckoutView() {
         requestedFlow,
         requestedPlan,
         router,
+        requestedBusinessAccessible,
       ]
     );
 

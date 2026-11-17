@@ -263,13 +263,14 @@ export interface JCSOfficialShellProps {
   appearance:
     JCSShellAppearance;
 
-  backgroundID:
-    JCSScreenBackgroundID;
+  
+backgroundID?:
+JCSScreenBackgroundID;
 
-  backgroundDownloadURL?:
-    string;
+customBackgroundURL?:
+string;
 
-  identity:
+identity:
     JCSShellIdentity;
 
   user:

@@ -1,10 +1,49 @@
 .page {
+  /* ==========================================================
+     Public JCS Design Tokens
+     Aligned with Dashboard / Official Shell visual language.
+     ========================================================== */
+
   --jcs-navy: #071f4f;
-  --jcs-blue: #087cf0;
+  --jcs-blue: #2379d4;
   --jcs-cyan: #56c7ff;
-  --jcs-text: #0b234f;
-  --jcs-muted: #557096;
-  --jcs-border: rgba(15, 56, 116, 0.11);
+
+  --jcs-accent: #2379d4;
+  --jcs-accent-rgb: 35, 121, 212;
+
+  --jcs-background: #f6f3f1;
+  --jcs-background-elevated: rgba(255, 255, 255, 0.76);
+  --jcs-background-solid: #ffffff;
+
+  --jcs-card: rgba(255, 255, 255, 0.74);
+  --jcs-card-solid: #ffffff;
+  --jcs-card-hover: rgba(255, 255, 255, 0.95);
+
+  --jcs-text: #2d211d;
+  --jcs-text-primary: #2d211d;
+  --jcs-muted: #715f57;
+  --jcs-text-secondary: #715f57;
+  --jcs-text-tertiary: #9b8981;
+
+  --jcs-border: rgba(67, 44, 35, 0.09);
+  --jcs-border-strong: rgba(67, 44, 35, 0.15);
+
+  --jcs-radius-small: 12px;
+  --jcs-radius-medium: 18px;
+  --jcs-radius-large: 24px;
+  --jcs-radius-xl: 30px;
+
+  --jcs-shadow-small:
+    0 1px 2px rgba(47, 31, 25, 0.04),
+    0 8px 24px rgba(47, 31, 25, 0.05);
+
+  --jcs-shadow-medium:
+    0 2px 4px rgba(47, 31, 25, 0.04),
+    0 16px 38px rgba(47, 31, 25, 0.08);
+
+  --jcs-shadow-large:
+    0 10px 32px rgba(47, 31, 25, 0.08),
+    0 30px 80px rgba(47, 31, 25, 0.11);
 
   position: relative;
   min-height: 100vh;
@@ -847,3 +886,4180 @@
     border-radius: 18px;
   }
 }
+/* ============================================================
+   OFFICIAL PUBLIC EXPERIENCE
+   Dashboard-aligned premium refinements
+   ============================================================ */
+
+.page {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif;
+}
+
+/* MARK: - Public Navigation */
+
+.navigation {
+  border-color: var(--jcs-border);
+  border-radius: var(--jcs-radius-large);
+  background: rgba(252, 250, 249, 0.88);
+  box-shadow: var(--jcs-shadow-medium);
+}
+
+.brandMark {
+  border-radius: var(--jcs-radius-medium);
+}
+
+.desktopNavigation a,
+.signInLink,
+.footerLinks a {
+  transition:
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.desktopNavigation a:hover,
+.signInLink:hover,
+.footerLinks a:hover {
+  color: var(--jcs-accent);
+}
+
+/* MARK: - Primary Actions */
+
+.navigationCTA,
+.primaryButton,
+.mobileGetStarted {
+  border-radius: var(--jcs-radius-medium);
+  background:
+    linear-gradient(
+      135deg,
+      var(--jcs-navy) 0%,
+      var(--jcs-accent) 64%,
+      var(--jcs-cyan) 100%
+    );
+}
+
+.secondaryButton,
+.mobileSignIn {
+  border-color: var(--jcs-border);
+  border-radius: var(--jcs-radius-medium);
+  background: var(--jcs-background-elevated);
+  box-shadow: var(--jcs-shadow-small);
+}
+
+/* MARK: - Hero */
+
+.heroContent h1 {
+  color: var(--jcs-text-primary);
+}
+
+.heroDescription,
+.heroTrust {
+  color: var(--jcs-text-secondary);
+}
+
+.heroDashboard {
+  border-radius: var(--jcs-radius-xl);
+  box-shadow:
+    0 18px 48px rgba(20, 43, 75, 0.12),
+    0 42px 100px rgba(20, 73, 145, 0.16);
+}
+
+/* MARK: - Premium Surfaces */
+
+.previewCard,
+.featureCard,
+.toolCard,
+.industryCard {
+  border-color: var(--jcs-border);
+  background: var(--jcs-card);
+  box-shadow: var(--jcs-shadow-medium);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.previewCard:hover,
+.featureCard:hover,
+.toolCard:hover,
+.industryCard:hover {
+  transform: translateY(-3px);
+  background: var(--jcs-card-hover);
+  box-shadow: var(--jcs-shadow-large);
+}
+
+.previewCard,
+.featureCard {
+  border-radius: var(--jcs-radius-large);
+}
+
+.toolCard,
+.industryCard {
+  border-radius: var(--jcs-radius-large);
+}
+
+.featureIcon,
+.toolIcon,
+.industryEmoji,
+.chevron {
+  background: rgba(var(--jcs-accent-rgb), 0.1);
+}
+
+.tagList span,
+.modeList span {
+  color: var(--jcs-accent);
+  background: rgba(var(--jcs-accent-rgb), 0.09);
+}
+
+/* MARK: - Section Typography */
+
+.sectionHeading h2,
+.callToAction h2 {
+  color: var(--jcs-text-primary);
+}
+
+.sectionHeading p {
+  color: var(--jcs-text-secondary);
+}
+
+/* MARK: - CTA */
+
+.callToAction {
+  border-radius: var(--jcs-radius-xl);
+  box-shadow:
+    0 16px 42px rgba(20, 43, 75, 0.12),
+    0 34px 84px rgba(20, 73, 145, 0.17);
+}
+
+/* MARK: - Footer */
+
+.footer {
+  border-top-color: var(--jcs-border);
+}
+
+.footerBrand p,
+.footer > small {
+  color: var(--jcs-text-secondary);
+}
+
+/* MARK: - Mobile */
+
+@media (max-width: 680px) {
+  .navigation {
+    border-radius: var(--jcs-radius-medium);
+  }
+
+  .heroDashboard,
+  .callToAction {
+    border-radius: var(--jcs-radius-large);
+  }
+
+  .mobileBottomBar {
+    border-top-color: var(--jcs-border);
+    background: rgba(250, 248, 247, 0.9);
+    box-shadow:
+      0 -10px 32px rgba(47, 31, 25, 0.08);
+  }
+}
+
+
+/* ============================================================
+   JCS BUSINESS PROMO — OFFICIAL RESPONSIVE SHELL
+   One preview. Dynamic Accent Color. Daylight / Dark.
+   ============================================================ */
+
+.page {
+  --jcs-blue: var(--jcs-accent);
+  --jcs-cyan: var(--jcs-accent);
+
+  --jcs-surface:
+    rgba(255, 255, 255, 0.76);
+
+  --jcs-surface-solid:
+    #ffffff;
+
+  --jcs-surface-soft:
+    rgba(255, 255, 255, 0.56);
+
+  --jcs-preview-sidebar:
+    #f3f1f0;
+
+  --jcs-preview-surface:
+    #f8f7f6;
+
+  --jcs-preview-card:
+    rgba(255, 255, 255, 0.82);
+
+  color-scheme: light;
+
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(var(--jcs-accent-rgb), 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 18%,
+      rgba(var(--jcs-accent-rgb), 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #fffdfa 0%,
+      #f7f2ed 50%,
+      #f2ece7 100%
+    );
+}
+
+.page[data-theme="dark"] {
+  --jcs-background:
+    #0c0c0d;
+
+  --jcs-background-elevated:
+    rgba(26, 25, 27, 0.82);
+
+  --jcs-background-solid:
+    #151416;
+
+  --jcs-card:
+    rgba(30, 29, 31, 0.82);
+
+  --jcs-card-solid:
+    #1b1a1c;
+
+  --jcs-card-hover:
+    #242226;
+
+  --jcs-text:
+    #f5f3f1;
+
+  --jcs-text-primary:
+    #f5f3f1;
+
+  --jcs-muted:
+    #b4aca7;
+
+  --jcs-text-secondary:
+    #b4aca7;
+
+  --jcs-text-tertiary:
+    #857d79;
+
+  --jcs-border:
+    rgba(255, 255, 255, 0.08);
+
+  --jcs-border-strong:
+    rgba(255, 255, 255, 0.14);
+
+  --jcs-surface:
+    rgba(25, 24, 26, 0.84);
+
+  --jcs-surface-solid:
+    #181719;
+
+  --jcs-surface-soft:
+    rgba(37, 35, 38, 0.72);
+
+  --jcs-preview-sidebar:
+    #151416;
+
+  --jcs-preview-surface:
+    #1c1b1d;
+
+  --jcs-preview-card:
+    rgba(42, 40, 43, 0.9);
+
+  color-scheme: dark;
+
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(var(--jcs-accent-rgb), 0.18),
+      transparent 29%
+    ),
+    radial-gradient(
+      circle at 90% 18%,
+      rgba(var(--jcs-accent-rgb), 0.11),
+      transparent 31%
+    ),
+    linear-gradient(
+      145deg,
+      #09090a 0%,
+      #111012 52%,
+      #171416 100%
+    );
+}
+
+
+/* MARK: - Background */
+
+.backgroundGlow {
+  background:
+    rgba(var(--jcs-accent-rgb), 0.09);
+}
+
+
+/* MARK: - Navigation */
+
+.navigation {
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 84%,
+      transparent
+    );
+
+  border-color:
+    var(--jcs-border);
+
+  box-shadow:
+    0 18px 45px
+      rgba(18, 18, 18, 0.08);
+
+  backdrop-filter:
+    blur(28px)
+    saturate(150%);
+}
+
+.brandMark {
+  overflow: hidden;
+
+  color:
+    var(--jcs-accent);
+
+  background:
+    rgba(var(--jcs-accent-rgb), 0.08);
+
+  border:
+    1px solid
+    rgba(var(--jcs-accent-rgb), 0.12);
+
+  box-shadow:
+    none;
+}
+
+.brandLogoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.navigationCTA,
+.primaryButton,
+.mobileGetStarted {
+  background:
+    var(
+      --jcs-accent-preview,
+      var(--jcs-accent)
+    );
+
+  box-shadow:
+    0 14px 30px
+      rgba(var(--jcs-accent-rgb), 0.22);
+}
+
+.appearanceButton {
+  display: inline-flex;
+  min-height: 42px;
+  padding: 0 13px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  color:
+    var(--jcs-text-primary);
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 13px;
+
+  background:
+    var(--jcs-surface-soft);
+
+  cursor: pointer;
+}
+
+.appearanceButton span {
+  color:
+    var(--jcs-accent);
+
+  font-size: 1rem;
+}
+
+.appearanceButton strong {
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+
+/* ============================================================
+   HERO — DESKTOP
+   ============================================================ */
+
+.hero {
+  width:
+    min(1380px, calc(100% - 48px));
+
+  min-height: auto;
+
+  margin:
+    26px auto 0;
+
+  padding:
+    46px 0 88px;
+
+  grid-template-columns:
+    minmax(380px, 0.78fr)
+    minmax(650px, 1.32fr);
+
+  align-items: start;
+
+  gap: 48px;
+}
+
+.heroContent {
+  min-width: 0;
+  padding-top: 18px;
+}
+
+.heroOfficialBrand {
+  display: flex;
+  width: 100%;
+  margin-bottom: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.heroOfficialLogoStage {
+  display: grid;
+
+  width:
+    min(430px, 100%);
+
+  min-height: 136px;
+
+  padding:
+    12px 0 4px;
+
+  place-items:
+    center start;
+}
+
+.heroOfficialLogo {
+  display: block;
+
+  width:
+    min(420px, 100%);
+
+  max-height: 138px;
+
+  object-fit: contain;
+  object-position:
+    left center;
+}
+
+.heroOfficialLogoStage > span {
+  color:
+    var(--jcs-accent);
+
+  font-size:
+    clamp(3rem, 7vw, 5.6rem);
+
+  font-weight: 950;
+
+  letter-spacing:
+    -0.055em;
+}
+
+.heroOfficialTagline {
+  max-width: 560px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size:
+    clamp(
+      0.68rem,
+      0.9vw,
+      0.82rem
+    );
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.13em;
+
+  line-height: 1.55;
+
+  text-transform:
+    uppercase;
+}
+
+.heroContent h1 {
+  max-width: 660px;
+
+  margin:
+    24px 0 18px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size:
+    clamp(
+      3.15rem,
+      5vw,
+      5.4rem
+    );
+
+  line-height: 0.94;
+
+  letter-spacing:
+    -0.06em;
+}
+
+.heroDescription {
+  max-width: 620px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size:
+    clamp(
+      0.98rem,
+      1.25vw,
+      1.2rem
+    );
+
+  line-height: 1.62;
+}
+
+
+/* MARK: - Performance Card */
+
+.performanceCard {
+  position: relative;
+
+  display: grid;
+
+  margin-top: 26px;
+
+  padding: 24px;
+
+  grid-template-columns:
+    minmax(0, 1fr) auto;
+
+  gap: 18px;
+
+  overflow: hidden;
+
+  color: #ffffff;
+
+  border-radius: 23px;
+
+  background:
+    var(
+      --jcs-accent-preview,
+      var(--jcs-accent)
+    );
+
+  box-shadow:
+    0 22px 48px
+      rgba(var(--jcs-accent-rgb), 0.22);
+}
+
+.performancePrimary {
+  display: flex;
+  flex-direction: column;
+}
+
+.performancePrimary > span {
+  font-size: 0.74rem;
+  font-weight: 760;
+}
+
+.performancePrimary > strong {
+  margin-top: 2px;
+
+  font-size:
+    clamp(
+      2.1rem,
+      4vw,
+      3.45rem
+    );
+
+  line-height: 1;
+}
+
+.performancePrimary > small {
+  margin-top: 7px;
+
+  font-size: 0.72rem;
+
+  opacity: 0.84;
+}
+
+.performanceTrend {
+  display: grid;
+
+  width: 54px;
+  height: 54px;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.24);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+  font-size: 1.8rem;
+}
+
+.performanceMetrics {
+  grid-column: 1 / -1;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 10px;
+}
+
+.performanceMetrics > div {
+  display: flex;
+
+  min-width: 0;
+
+  padding: 12px;
+
+  flex-direction: column;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.17);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255, 255, 255, 0.11);
+}
+
+.performanceMetrics > div > span {
+  font-size: 0.76rem;
+
+  opacity: 0.85;
+}
+
+.performanceMetrics strong {
+  margin-top: 7px;
+
+  font-size: 1rem;
+}
+
+.performanceMetrics small {
+  margin-top: 2px;
+
+  font-size: 0.63rem;
+
+  opacity: 0.76;
+}
+
+
+/* MARK: - Three Feature Chips */
+
+.heroFeatureChips {
+  display: grid;
+
+  margin-top: 14px;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 10px;
+}
+
+.heroFeatureChips > div {
+  display: flex;
+
+  min-width: 0;
+
+  padding: 13px 14px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 15px;
+
+  background:
+    var(--jcs-surface);
+
+  box-shadow:
+    var(--jcs-shadow-small);
+}
+
+.heroFeatureChips > div > span {
+  color:
+    var(--jcs-accent);
+
+  font-size: 1rem;
+}
+
+.heroFeatureChips p {
+  display: flex;
+
+  min-width: 0;
+
+  margin: 0;
+
+  flex-direction: column;
+}
+
+.heroFeatureChips strong {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.72rem;
+}
+
+.heroFeatureChips small {
+  margin-top: 2px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.58rem;
+}
+
+
+/* MARK: - START */
+
+.startPanel {
+  display: flex;
+
+  margin-top: 34px;
+
+  flex-direction: column;
+
+  gap: 11px;
+}
+
+.startHeading {
+  display: flex;
+
+  margin-bottom: 3px;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.startHeading > span {
+  width: 4px;
+  height: 18px;
+
+  border-radius: 999px;
+
+  background:
+    var(--jcs-accent);
+}
+
+.startHeading strong {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.82rem;
+
+  letter-spacing:
+    0.08em;
+}
+
+.startAction {
+  display: grid;
+
+  min-height: 74px;
+
+  padding:
+    13px 16px;
+
+  grid-template-columns:
+    42px
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 12px;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  border-radius: 18px;
+
+  background:
+    var(
+      --jcs-accent-preview,
+      var(--jcs-accent)
+    );
+
+  box-shadow:
+    0 12px 28px
+      rgba(var(--jcs-accent-rgb), 0.18);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.startAction:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 17px 34px
+      rgba(var(--jcs-accent-rgb), 0.24);
+}
+
+.startActionIcon {
+  display: grid;
+
+  width: 40px;
+  height: 40px;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.2);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.13);
+}
+
+.startActionCopy {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+}
+
+.startActionCopy strong {
+  font-size: 0.84rem;
+}
+
+.startActionCopy small {
+  margin-top: 3px;
+
+  color:
+    rgba(255, 255, 255, 0.82);
+
+  font-size: 0.64rem;
+
+  line-height: 1.35;
+}
+
+
+/* ============================================================
+   PLATFORM PREVIEW — ONE INSTANCE ONLY
+   ============================================================ */
+
+.platformPreview {
+  min-width: 0;
+
+  padding-top: 24px;
+}
+
+.platformPreviewHeading {
+  display: flex;
+
+  margin:
+    0 0 13px;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.platformPreviewHeading > span {
+  width: 4px;
+  height: 28px;
+
+  flex: 0 0 auto;
+
+  border-radius: 999px;
+
+  background:
+    var(--jcs-accent);
+}
+
+.platformPreviewHeading > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.platformPreviewHeading strong {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.82rem;
+
+  letter-spacing:
+    0.08em;
+}
+
+.platformPreviewHeading small {
+  margin-top: 2px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.66rem;
+}
+
+
+/* MARK: - Dashboard Window */
+
+.dashboardWindow {
+  min-width: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 22px;
+
+  background:
+    var(--jcs-preview-surface);
+
+  box-shadow:
+    0 24px 65px
+      rgba(16, 14, 15, 0.16);
+}
+
+.dashboardTopBar {
+  display: grid;
+
+  min-height: 58px;
+
+  padding:
+    8px 12px;
+
+  grid-template-columns:
+    auto
+    auto
+    minmax(180px, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 10px;
+
+  border-bottom:
+    1px solid
+    var(--jcs-border);
+
+  background:
+    var(--jcs-surface-solid);
+}
+
+.dashboardWorkspace {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.dashboardWorkspace small {
+  color:
+    var(--jcs-text-tertiary);
+
+  font-size: 0.45rem;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.1em;
+}
+
+.dashboardWorkspace strong {
+  margin-top: 2px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.72rem;
+}
+
+.syncBadge {
+  display: inline-flex;
+
+  padding: 6px 8px;
+
+  align-items: center;
+
+  gap: 5px;
+
+  color:
+    #2d9366;
+
+  border:
+    1px solid
+    rgba(45, 147, 102, 0.16);
+
+  border-radius: 999px;
+
+  background:
+    rgba(45, 147, 102, 0.08);
+
+  font-size: 0.5rem;
+
+  font-weight: 760;
+}
+
+.syncBadge i,
+.previewWeatherCard footer i {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+.dashboardSearch {
+  display: flex;
+
+  min-width: 0;
+
+  padding:
+    8px 10px;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  color:
+    var(--jcs-text-tertiary);
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 10px;
+
+  background:
+    var(--jcs-surface-soft);
+
+  font-size: 0.52rem;
+}
+
+.dashboardSearch kbd {
+  padding:
+    2px 5px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 5px;
+
+  background:
+    var(--jcs-surface-solid);
+
+  font-size: 0.44rem;
+}
+
+.dashboardTopActions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.66rem;
+}
+
+.dashboardTopActions > div {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.dashboardTopActions strong {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.55rem;
+}
+
+.dashboardTopActions small {
+  color:
+    var(--jcs-text-tertiary);
+
+  font-size: 0.44rem;
+}
+
+
+/* MARK: - Dashboard Body */
+
+.dashboardBody {
+  display: grid;
+
+  min-height: 520px;
+
+  grid-template-columns:
+    126px
+    minmax(0, 1fr)
+    205px;
+}
+
+
+/* Sidebar */
+
+.previewSidebar {
+  display: flex;
+
+  min-width: 0;
+
+  padding: 12px 9px;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  border-right:
+    1px solid
+    var(--jcs-border);
+
+  background:
+    var(--jcs-preview-sidebar);
+}
+
+.previewSidebarBrand {
+  display: flex;
+
+  margin-bottom: 8px;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+.previewSidebarBrand > span,
+.previewSidebarFooter > span {
+  display: grid;
+
+  width: 27px;
+  height: 27px;
+
+  place-items: center;
+
+  color: #ffffff;
+
+  border-radius: 50%;
+
+  background:
+    var(--jcs-accent);
+
+  font-size: 0.62rem;
+
+  font-weight: 900;
+}
+
+.previewSidebarBrand > div {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.previewSidebarBrand strong {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.63rem;
+}
+
+.previewSidebarBrand small {
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.48rem;
+}
+
+.previewNavLabel {
+  margin-top: 7px;
+
+  color:
+    var(--jcs-text-tertiary);
+
+  font-size: 0.43rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.11em;
+}
+
+.previewSidebar nav {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.previewSidebar nav span {
+  display: block;
+
+  padding:
+    6px 7px;
+
+  overflow: hidden;
+
+  color:
+    var(--jcs-text-secondary);
+
+  border-radius: 7px;
+
+  font-size: 0.48rem;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.previewSidebar nav .previewNavActive {
+  color:
+    var(--jcs-accent);
+
+  background:
+    rgba(var(--jcs-accent-rgb), 0.1);
+
+  font-weight: 780;
+}
+
+.previewSidebarFooter {
+  display: flex;
+
+  margin-top: auto;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color:
+    var(--jcs-text-secondary);
+}
+
+
+/* Main Dashboard */
+
+.previewDashboardMain {
+  display: flex;
+
+  min-width: 0;
+
+  padding:
+    28px 22px 18px;
+
+  flex-direction: column;
+
+  background:
+    radial-gradient(
+      circle at 52% 16%,
+      rgba(var(--jcs-accent-rgb), 0.08),
+      transparent 35%
+    );
+}
+
+.previewLogoArea {
+  display: flex;
+
+  min-height: 170px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+  text-align: center;
+}
+
+.previewLogoArea img {
+  display: block;
+
+  width:
+    min(330px, 88%);
+
+  max-height: 125px;
+
+  object-fit: contain;
+}
+
+.previewLogoArea > strong {
+  color:
+    var(--jcs-accent);
+
+  font-size: 3.8rem;
+
+  font-weight: 950;
+}
+
+.previewLogoArea > small {
+  margin-top: 4px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.51rem;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.14em;
+
+  text-transform: uppercase;
+}
+
+.executiveOverview {
+  display: flex;
+
+  margin-top: auto;
+
+  padding: 14px;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  border:
+    1px solid
+    rgba(var(--jcs-accent-rgb), 0.13);
+
+  border-radius: 14px;
+
+  background:
+    rgba(var(--jcs-accent-rgb), 0.05);
+}
+
+.executiveOverview > span {
+  color:
+    var(--jcs-accent);
+}
+
+.executiveOverview > div {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+}
+
+.executiveOverview small {
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.47rem;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform: uppercase;
+}
+
+.executiveOverview strong {
+  margin-top: 3px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.58rem;
+}
+
+.executiveOverview p {
+  margin:
+    4px 0 0;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.49rem;
+
+  line-height: 1.4;
+}
+
+.previewStatRow {
+  display: grid;
+
+  margin-top: 11px;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 7px;
+}
+
+.previewStatRow article {
+  display: flex;
+
+  min-width: 0;
+
+  padding: 9px;
+
+  flex-direction: column;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 11px;
+
+  background:
+    var(--jcs-preview-card);
+}
+
+.previewStatRow span {
+  color:
+    var(--jcs-text-tertiary);
+
+  font-size: 0.42rem;
+}
+
+.previewStatRow strong {
+  margin-top: 3px;
+
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.65rem;
+}
+
+.previewStatRow small {
+  margin-top: 2px;
+
+  overflow: hidden;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.4rem;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* Command Center */
+
+.previewCommandCenter {
+  display: flex;
+
+  min-width: 0;
+
+  padding: 20px 15px;
+
+  flex-direction: column;
+
+  border-left:
+    1px solid
+    var(--jcs-border);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 70%,
+      transparent
+    );
+}
+
+.previewCommandCenter > small {
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.45rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.1em;
+}
+
+.previewCommandCenter h3 {
+  margin:
+    6px 0 0;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 1rem;
+}
+
+.previewCommandCenter > p {
+  margin:
+    1px 0 11px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.58rem;
+}
+
+.previewDateCard,
+.previewWeatherCard {
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 13px;
+
+  background:
+    var(--jcs-preview-card);
+}
+
+.previewDateCard {
+  display: flex;
+
+  padding: 10px;
+
+  flex-direction: column;
+}
+
+.previewDateCard span {
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.48rem;
+}
+
+.previewDateCard strong {
+  margin-top: 4px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.77rem;
+}
+
+.previewWeatherCard {
+  display: flex;
+
+  margin-top: 9px;
+
+  padding: 12px;
+
+  flex-direction: column;
+}
+
+.previewWeatherCard > div:first-child {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+.previewWeatherCard > div:first-child > span {
+  color:
+    var(--jcs-accent);
+
+  font-size: 1.6rem;
+}
+
+.previewWeatherCard p {
+  display: flex;
+
+  margin: 0;
+
+  flex-direction: column;
+}
+
+.previewWeatherCard p strong {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.62rem;
+}
+
+.previewWeatherCard p small {
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.45rem;
+}
+
+.previewWeatherCard > strong {
+  margin-top: 8px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 1.65rem;
+}
+
+.previewWeatherCard > small {
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.5rem;
+}
+
+.previewWeatherStats {
+  display: grid;
+
+  margin-top: 11px;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 7px;
+}
+
+.previewWeatherStats span {
+  display: flex;
+
+  padding: 7px;
+
+  flex-direction: column;
+
+  color:
+    var(--jcs-text-tertiary);
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 9px;
+
+  font-size: 0.42rem;
+}
+
+.previewWeatherStats strong {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.52rem;
+}
+
+.previewWeatherCard footer {
+  display: flex;
+
+  margin-top: 10px;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  color:
+    var(--jcs-text-tertiary);
+}
+
+.previewWeatherCard footer > span {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  color: #2d9366;
+
+  font-size: 0.44rem;
+}
+
+
+/* ============================================================
+   Existing lower Promo sections follow theme
+   ============================================================ */
+
+.section,
+.industriesSection,
+.callToAction,
+.featureCard,
+.toolCard,
+.previewCard,
+.industryCard {
+  color:
+    var(--jcs-text-primary);
+}
+
+.featureCard,
+.toolCard,
+.previewCard,
+.industryCard {
+  border-color:
+    var(--jcs-border);
+
+  background:
+    var(--jcs-card);
+}
+
+.callToAction {
+  border-color:
+    var(--jcs-border);
+
+  background:
+    var(--jcs-surface);
+}
+
+.footer {
+  border-color:
+    var(--jcs-border);
+}
+
+.mobileBottomBar {
+  border-top-color:
+    var(--jcs-border);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 92%,
+      transparent
+    );
+}
+
+
+/* ============================================================
+   TABLET / IPAD / CHROMEBOOK NARROW
+   Everything vertical.
+   Preview BELOW START.
+   ============================================================ */
+
+@media (max-width: 1050px) {
+  .hero {
+    width:
+      min(820px, calc(100% - 36px));
+
+    padding-top: 34px;
+
+    grid-template-columns:
+      1fr;
+
+    gap: 42px;
+  }
+
+  .heroContent {
+    padding-top: 10px;
+  }
+
+  .heroOfficialBrand {
+    align-items: center;
+
+    text-align: center;
+  }
+
+  .heroOfficialLogoStage {
+    place-items: center;
+  }
+
+  .heroOfficialLogo {
+    object-position:
+      center;
+  }
+
+  .heroOfficialTagline {
+    text-align: center;
+  }
+
+  .heroContent h1,
+  .heroDescription {
+    margin-left: auto;
+    margin-right: auto;
+
+    text-align: center;
+  }
+
+  .performanceCard,
+  .heroFeatureChips,
+  .startPanel {
+    width:
+      min(650px, 100%);
+
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .platformPreview {
+    width: 100%;
+
+    padding-top: 0;
+  }
+
+  .dashboardBody {
+    grid-template-columns:
+      112px
+      minmax(0, 1fr)
+      190px;
+  }
+
+  .dashboardTopActions > div {
+    display: none;
+  }
+}
+
+
+/* ============================================================
+   MOBILE / IPHONE / ANDROID
+   ============================================================ */
+
+@media (max-width: 680px) {
+  .navigation {
+    width:
+      calc(100% - 22px);
+
+    min-height: 64px;
+
+    margin-top: 10px;
+
+    padding: 8px 10px;
+  }
+
+  .brandCopy,
+  .desktopNavigation,
+  .signInLink,
+  .appearanceButton strong {
+    display: none;
+  }
+
+  .appearanceButton {
+    width: 40px;
+    min-height: 40px;
+
+    padding: 0;
+  }
+
+  .navigationCTA {
+    min-height: 40px;
+
+    padding:
+      0 13px;
+
+    border-radius: 12px;
+
+    font-size: 0.72rem;
+  }
+
+  .hero {
+    width:
+      calc(100% - 26px);
+
+    margin-top: 12px;
+
+    padding:
+      24px 0 100px;
+
+    gap: 34px;
+  }
+
+  .heroOfficialBrand {
+    margin-bottom: 18px;
+  }
+
+  .heroOfficialLogoStage {
+    width: 100%;
+
+    min-height: 108px;
+
+    padding-top: 14px;
+  }
+
+  .heroOfficialLogo {
+    width:
+      min(330px, 92vw);
+
+    max-height: 112px;
+  }
+
+  .heroOfficialTagline {
+    max-width: 350px;
+
+    font-size: 0.61rem;
+
+    letter-spacing: 0.1em;
+  }
+
+  .heroContent h1 {
+    margin-top: 24px;
+
+    font-size:
+      clamp(
+        2.65rem,
+        13vw,
+        4.1rem
+      );
+
+    line-height: 0.96;
+  }
+
+  .heroDescription {
+    font-size: 0.94rem;
+
+    line-height: 1.55;
+  }
+
+  .performanceCard {
+    padding: 18px;
+
+    border-radius: 20px;
+  }
+
+  .performanceMetrics {
+    gap: 7px;
+  }
+
+  .performanceMetrics > div {
+    padding: 10px 8px;
+  }
+
+  .heroFeatureChips {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 6px;
+  }
+
+  .heroFeatureChips > div {
+    padding: 10px 7px;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 5px;
+  }
+
+  .heroFeatureChips small {
+    display: none;
+  }
+
+  .startAction {
+    min-height: 68px;
+
+    padding:
+      11px 13px;
+
+    grid-template-columns:
+      38px
+      minmax(0, 1fr)
+      auto;
+  }
+
+  .startActionIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .platformPreviewHeading {
+    margin-bottom: 12px;
+  }
+
+  /*
+   * Keep the full Dashboard together.
+   * On a phone the customer sees the actual
+   * desktop workspace scaled down rather than
+   * a completely different fake layout.
+   */
+
+  .dashboardWindow {
+    overflow-x: auto;
+
+    border-radius: 16px;
+  }
+
+  .dashboardTopBar {
+    min-width: 680px;
+  }
+
+  .dashboardBody {
+    width: 680px;
+
+    min-height: 430px;
+
+    grid-template-columns:
+      105px
+      minmax(0, 1fr)
+      175px;
+  }
+
+  .previewDashboardMain {
+    padding:
+      20px 15px 14px;
+  }
+
+  .previewLogoArea {
+    min-height: 135px;
+  }
+
+  .previewLogoArea img {
+    width:
+      min(260px, 84%);
+  }
+
+  .previewStatRow {
+    gap: 5px;
+  }
+
+  .previewStatRow article {
+    padding: 7px;
+  }
+
+  .previewCommandCenter {
+    padding: 15px 11px;
+  }
+}
+
+
+
+/* JCS BUSINESS PROMO — VISUAL REFINEMENT V2 */
+
+/* ============================================================
+   OFFICIAL BACKGROUND AUTHORITY
+   Same registry used by Dashboard / JCSScreenBackground.
+   ============================================================ */
+
+.page {
+  background-image:
+    var(--jcs-screen-background) !important;
+
+  background-size:
+    auto;
+
+  background-position:
+    center top;
+
+  background-repeat:
+    no-repeat;
+}
+
+/*
+ * A subtle theme veil allows Daylight / Dark
+ * to remain readable without replacing the selected
+ * AppSettings / Platform Settings background.
+ */
+
+.page::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 0;
+
+  pointer-events: none;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+}
+
+.page[data-theme="dark"]::before {
+  background:
+    rgba(3, 5, 10, 0.34);
+}
+
+.navigation,
+.hero,
+.section,
+.industriesSection,
+.callToAction,
+.footer,
+.mobileBottomBar {
+  position: relative;
+
+  z-index: 1;
+}
+
+
+/* ============================================================
+   TOP BAR OFFICIAL LOGO
+   No surrounding box + approximately 30% larger.
+   ============================================================ */
+
+.brandMark {
+  width: 63px;
+  height: 63px;
+
+  padding: 0;
+
+  overflow: visible;
+
+  color:
+    var(--jcs-accent);
+
+  border: 0;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  box-shadow:
+    none;
+}
+
+.brandLogoImage {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  object-position:
+    center;
+}
+
+
+/* ============================================================
+   HERO
+   Begins directly with BUILD, RUN & GROW YOUR BUSINESS.
+   ============================================================ */
+
+.heroContent {
+  padding-top: 44px;
+}
+
+.heroContent h1 {
+  margin-top: 0;
+}
+
+
+/* Old hero branding is intentionally no longer rendered. */
+
+.heroOfficialBrand,
+.heroOfficialLogoStage,
+.heroOfficialLogo,
+.heroOfficialTagline {
+  display: none;
+}
+
+
+/* ============================================================
+   PLATFORM PREVIEW — MORE VERTICAL PRESENCE
+   ============================================================ */
+
+.platformPreview {
+  height: 100%;
+
+  padding-top: 14px;
+}
+
+.dashboardWindow {
+  min-height: 960px;
+
+  background-image:
+    var(--jcs-screen-background);
+
+  background-size:
+    cover;
+
+  background-position:
+    center;
+
+  background-repeat:
+    no-repeat;
+}
+
+.dashboardTopBar {
+  min-height: 64px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 84%,
+      transparent
+    );
+
+  backdrop-filter:
+    blur(26px)
+    saturate(145%);
+
+  -webkit-backdrop-filter:
+    blur(26px)
+    saturate(145%);
+}
+
+.dashboardBody {
+  min-height: 895px;
+
+  grid-template-columns:
+    145px
+    minmax(0, 1fr)
+    218px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 23%,
+      transparent
+    );
+}
+
+
+/* ============================================================
+   PREVIEW SIDEBAR — FULLER DASHBOARD
+   ============================================================ */
+
+.previewSidebar {
+  min-height: 895px;
+
+  padding:
+    14px 9px 12px;
+
+  overflow: hidden;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-preview-sidebar) 88%,
+      transparent
+    );
+
+  backdrop-filter:
+    blur(22px)
+    saturate(140%);
+
+  -webkit-backdrop-filter:
+    blur(22px)
+    saturate(140%);
+}
+
+.previewSidebar nav {
+  gap: 2px;
+}
+
+.previewSidebar nav span {
+  min-height: 23px;
+
+  padding:
+    5px 7px;
+
+  font-size:
+    0.46rem;
+
+  line-height: 1.2;
+}
+
+.previewSidebarFooter {
+  margin-top: auto;
+}
+
+
+/* ============================================================
+   MAIN DASHBOARD
+   Larger logo + tagline moved downward.
+   ============================================================ */
+
+.previewDashboardMain {
+  min-height: 895px;
+
+  padding:
+    30px 22px 20px;
+
+  background:
+    radial-gradient(
+      circle at 52% 22%,
+      rgba(var(--jcs-accent-rgb), 0.12),
+      transparent 37%
+    ),
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 12%,
+      transparent
+    );
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+}
+
+.previewLogoArea {
+  min-height: 475px;
+
+  padding-top: 26px;
+
+  justify-content:
+    flex-start;
+}
+
+.previewLogoArea img {
+  width:
+    min(620px, 98%);
+
+  max-height:
+    255px;
+
+  object-fit:
+    contain;
+}
+
+.previewLogoArea > strong {
+  font-size:
+    7rem;
+}
+
+.previewLogoArea > small {
+  width: 100%;
+
+  margin-top: auto;
+
+  margin-bottom: 18px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size:
+    0.57rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.14em;
+
+  text-align:
+    center;
+
+  text-transform:
+    uppercase;
+}
+
+.executiveOverview {
+  margin-top: 0;
+
+  backdrop-filter:
+    blur(18px);
+
+  -webkit-backdrop-filter:
+    blur(18px);
+}
+
+.previewStatRow {
+  margin-top: 13px;
+}
+
+
+/* ============================================================
+   COMMAND CENTER — EXTEND TO FULL PREVIEW HEIGHT
+   ============================================================ */
+
+.previewCommandCenter {
+  min-height: 895px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 73%,
+      transparent
+    );
+
+  backdrop-filter:
+    blur(24px)
+    saturate(135%);
+
+  -webkit-backdrop-filter:
+    blur(24px)
+    saturate(135%);
+}
+
+.previewWeatherCard {
+  margin-bottom: 12px;
+}
+
+
+/* ============================================================
+   DARK MODE — PREVIEW SURFACES
+   ============================================================ */
+
+.page[data-theme="dark"] .dashboardWindow {
+  box-shadow:
+    0 28px 70px
+      rgba(0, 0, 0, 0.38);
+}
+
+.page[data-theme="dark"] .dashboardBody {
+  background:
+    rgba(5, 7, 12, 0.16);
+}
+
+.page[data-theme="dark"] .previewSidebar {
+  background:
+    rgba(14, 14, 16, 0.82);
+}
+
+.page[data-theme="dark"] .previewDashboardMain {
+  background:
+    radial-gradient(
+      circle at 52% 22%,
+      rgba(var(--jcs-accent-rgb), 0.14),
+      transparent 38%
+    ),
+    rgba(10, 10, 12, 0.22);
+}
+
+.page[data-theme="dark"] .previewCommandCenter {
+  background:
+    rgba(17, 16, 19, 0.82);
+}
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 1050px) {
+  .heroContent {
+    padding-top: 24px;
+  }
+
+  .dashboardWindow {
+    min-height: 850px;
+  }
+
+  .dashboardBody {
+    min-height: 785px;
+
+    grid-template-columns:
+      130px
+      minmax(0, 1fr)
+      205px;
+  }
+
+  .previewSidebar,
+  .previewDashboardMain,
+  .previewCommandCenter {
+    min-height: 785px;
+  }
+
+  .previewLogoArea {
+    min-height: 385px;
+  }
+
+  .previewLogoArea img {
+    width:
+      min(560px, 96%);
+
+    max-height:
+      230px;
+  }
+}
+
+
+/* ============================================================
+   PHONE
+   Preserve the complete dashboard as one horizontal workspace.
+   ============================================================ */
+
+@media (max-width: 680px) {
+  .brandMark {
+    width: 52px;
+    height: 52px;
+  }
+
+  .heroContent {
+    padding-top: 16px;
+  }
+
+  .dashboardWindow {
+    min-height: 730px;
+
+    background-size:
+      cover;
+  }
+
+  .dashboardTopBar {
+    min-width: 760px;
+  }
+
+  .dashboardBody {
+    width: 760px;
+
+    min-height: 665px;
+
+    grid-template-columns:
+      130px
+      minmax(0, 1fr)
+      190px;
+  }
+
+  .previewSidebar,
+  .previewDashboardMain,
+  .previewCommandCenter {
+    min-height: 665px;
+  }
+
+  .previewLogoArea {
+    min-height: 300px;
+  }
+
+  .previewLogoArea img {
+    width:
+      min(480px, 96%);
+
+    max-height:
+      190px;
+  }
+
+  .previewSidebar nav span {
+    min-height: 21px;
+
+    padding:
+      4px 6px;
+
+    font-size:
+      0.43rem;
+  }
+}
+
+
+
+/* JCS BUSINESS PROMO — DASHBOARD PREVIEW V3 */
+
+/* ============================================================
+   DASHBOARD PREVIEW MAIN AREA
+   ============================================================ */
+
+.previewDashboardMain {
+  min-height: 0;
+
+  padding:
+    22px;
+
+  gap: 18px;
+
+  background:
+    transparent;
+}
+
+
+/* ============================================================
+   HERO CARD — EXACT HIERARCHY
+   ============================================================ */
+
+.previewHeroCard {
+  position: relative;
+
+  display: grid;
+
+  min-height: 455px;
+
+  padding:
+    28px;
+
+  grid-template-columns:
+    minmax(0, 1.58fr)
+    minmax(215px, 0.68fr);
+
+  gap: 22px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(var(--jcs-accent-rgb), 0.14);
+
+  border-radius: 24px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 56%,
+      transparent
+    );
+
+  box-shadow:
+    0 18px 48px
+      rgba(15, 23, 42, 0.08);
+
+  backdrop-filter:
+    blur(24px)
+    saturate(145%);
+
+  -webkit-backdrop-filter:
+    blur(24px)
+    saturate(145%);
+}
+
+.previewHeroCard::after {
+  content: "";
+
+  position: absolute;
+
+  right: -105px;
+  bottom: -145px;
+
+  width: 340px;
+  height: 340px;
+
+  pointer-events: none;
+
+  border:
+    1px solid
+    rgba(var(--jcs-accent-rgb), 0.13);
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 35px
+      rgba(var(--jcs-accent-rgb), 0.025),
+    0 0 0 70px
+      rgba(var(--jcs-accent-rgb), 0.016);
+}
+
+.previewHeroContent {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+}
+
+.previewLogoArea {
+  min-height: 245px;
+
+  padding: 12px 0 0;
+
+  justify-content:
+    flex-start;
+}
+
+.previewLogoArea img {
+  width:
+    min(590px, 98%);
+
+  max-height:
+    245px;
+}
+
+.previewHeroTagline {
+  margin-top: auto;
+
+  margin-bottom: 16px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size:
+    0.58rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.14em;
+
+  text-align: center;
+
+  text-transform: uppercase;
+}
+
+.executiveOverview {
+  width: 100%;
+
+  margin-top: 0;
+
+  padding: 14px 16px;
+
+  border-radius: 15px;
+}
+
+
+/* ============================================================
+   COMMAND CENTER — INSIDE HERO
+   ============================================================ */
+
+.previewHeroCommandCenter {
+  position: relative;
+
+  z-index: 1;
+
+  align-self: stretch;
+
+  display: flex;
+
+  min-width: 0;
+
+  padding:
+    20px 17px;
+
+  flex-direction: column;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 21px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 50%,
+      transparent
+    );
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.24);
+
+  backdrop-filter:
+    blur(22px);
+
+  -webkit-backdrop-filter:
+    blur(22px);
+}
+
+.previewHeroCommandCenter > small {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.46rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.1em;
+
+  text-align: center;
+}
+
+.previewHeroCommandCenter h3 {
+  margin:
+    6px 0 0;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 1rem;
+
+  text-align: center;
+}
+
+.previewHeroCommandCenter > p {
+  margin:
+    2px 0 14px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.56rem;
+
+  text-align: center;
+}
+
+
+/* ============================================================
+   FOUR METRIC CARDS BELOW HERO
+   ============================================================ */
+
+.previewMetricsGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.previewMetricsGrid article {
+  position: relative;
+
+  display: flex;
+
+  min-height: 98px;
+
+  padding:
+    13px;
+
+  flex-direction: column;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 15px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 67%,
+      transparent
+    );
+
+  backdrop-filter:
+    blur(18px);
+}
+
+.previewMetricsGrid article > span {
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.47rem;
+}
+
+.previewMetricsGrid article > strong {
+  margin-top: 5px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.82rem;
+}
+
+.previewMetricsGrid article > small {
+  margin-top: 3px;
+
+  color:
+    var(--jcs-text-tertiary);
+
+  font-size: 0.42rem;
+
+  line-height: 1.35;
+}
+
+.previewMetricsGrid article > b {
+  margin-top: auto;
+
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.42rem;
+
+  font-weight: 800;
+}
+
+
+/* ============================================================
+   LOWER DASHBOARD
+   ============================================================ */
+
+.previewLowerDashboard {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    220px;
+
+  gap: 14px;
+}
+
+.previewLowerMain {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.previewSectionCard {
+  padding:
+    14px;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 17px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 64%,
+      transparent
+    );
+
+  backdrop-filter:
+    blur(18px);
+}
+
+.previewSectionCard header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+}
+
+.previewSectionCard header > div {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.previewSectionCard header small {
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.45rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.1em;
+}
+
+.previewSectionCard header strong {
+  margin-top: 2px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.62rem;
+}
+
+.previewQuickGrid,
+.previewModuleGrid {
+  display: grid;
+
+  margin-top: 11px;
+
+  gap: 7px;
+}
+
+.previewQuickGrid {
+  grid-template-columns:
+    repeat(3, 1fr);
+}
+
+.previewModuleGrid {
+  grid-template-columns:
+    repeat(3, 1fr);
+}
+
+.previewQuickGrid span,
+.previewModuleGrid span {
+  display: flex;
+
+  min-height: 34px;
+
+  padding:
+    8px;
+
+  align-items: center;
+
+  color:
+    var(--jcs-text-secondary);
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 10px;
+
+  background:
+    var(--jcs-card);
+
+  font-size: 0.46rem;
+}
+
+
+/* ============================================================
+   RIGHT LOWER CARDS
+   ============================================================ */
+
+.previewLowerAside {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.previewSofiaCard,
+.previewWorkspaceCard,
+.previewActivityCard {
+  padding:
+    15px;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 17px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 67%,
+      transparent
+    );
+
+  backdrop-filter:
+    blur(18px);
+}
+
+.previewSofiaCard {
+  background:
+    radial-gradient(
+      circle at 88% 4%,
+      rgba(var(--jcs-accent-rgb), 0.17),
+      transparent 42%
+    ),
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 67%,
+      transparent
+    );
+}
+
+.previewSofiaCard header {
+  display: grid;
+
+  grid-template-columns:
+    28px
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+.previewSofiaCard header > span {
+  display: grid;
+
+  width: 28px;
+  height: 28px;
+
+  place-items: center;
+
+  color:
+    var(--jcs-accent);
+
+  border-radius: 9px;
+
+  background:
+    rgba(var(--jcs-accent-rgb), 0.1);
+}
+
+.previewSofiaCard header > div {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.previewSofiaCard header small {
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.38rem;
+
+  font-weight: 850;
+}
+
+.previewSofiaCard header strong {
+  margin-top: 2px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.56rem;
+}
+
+.previewSofiaCard header b {
+  color: #2d9366;
+
+  font-size: 0.36rem;
+}
+
+.previewSofiaCard p {
+  margin:
+    12px 0;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.46rem;
+
+  line-height: 1.45;
+}
+
+.previewSofiaCard button {
+  display: flex;
+
+  width: 100%;
+
+  min-height: 32px;
+
+  padding:
+    0 10px;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  color:
+    var(--jcs-accent);
+
+  border:
+    1px solid
+    rgba(var(--jcs-accent-rgb), 0.15);
+
+  border-radius: 9px;
+
+  background:
+    rgba(var(--jcs-accent-rgb), 0.06);
+
+  font-size: 0.47rem;
+}
+
+.previewWorkspaceCard,
+.previewActivityCard {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.previewWorkspaceCard > small,
+.previewActivityCard > small {
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.4rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.1em;
+}
+
+.previewWorkspaceCard > strong,
+.previewActivityCard > strong {
+  margin-top: 3px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.62rem;
+}
+
+.previewWorkspaceCard > div,
+.previewActivityCard > div {
+  display: flex;
+
+  margin-top: 10px;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.previewWorkspaceCard span,
+.previewActivityCard span {
+  display: flex;
+
+  padding:
+    8px;
+
+  flex-direction: column;
+
+  color:
+    var(--jcs-text-secondary);
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 9px;
+
+  background:
+    var(--jcs-card);
+
+  font-size: 0.42rem;
+}
+
+.previewWorkspaceCard b {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.5rem;
+}
+
+
+/* ============================================================
+   OLD EXTERNAL COMMAND CENTER MUST NOT CONTROL LAYOUT
+   ============================================================ */
+
+.previewCommandCenter {
+  display: none;
+}
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 1050px) {
+  .previewHeroCard {
+    grid-template-columns:
+      minmax(0, 1.45fr)
+      minmax(200px, 0.7fr);
+  }
+
+  .previewLowerDashboard {
+    grid-template-columns:
+      minmax(0, 1fr)
+      205px;
+  }
+}
+
+
+/* ============================================================
+   PHONE — KEEP COMPLETE DASHBOARD TOGETHER
+   ============================================================ */
+
+@media (max-width: 680px) {
+  .previewHeroCard {
+    width: 600px;
+
+    min-height: 420px;
+
+    grid-template-columns:
+      minmax(0, 1.55fr)
+      190px;
+  }
+
+  .previewMetricsGrid {
+    width: 600px;
+  }
+
+  .previewLowerDashboard {
+    width: 600px;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      190px;
+  }
+
+  .previewModuleGrid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+}
+
+
+
+/* JCS BUSINESS PROMO — DASHBOARD WIDTH REBALANCE V4 */
+
+/* ============================================================
+   IMPORTANT
+   V3 moved Command Center INSIDE the Hero.
+   Therefore Dashboard Body now needs ONLY TWO columns:
+   Sidebar + Main Dashboard.
+   The old third column was creating the large empty area
+   visible on the right side.
+   ============================================================ */
+
+
+/* ============================================================
+   COMPLETE DASHBOARD WINDOW
+   ============================================================ */
+
+.dashboardWindow {
+  width: 100%;
+
+  max-width: none;
+
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+/* ============================================================
+   DASHBOARD BODY
+   SIDEBAR + FULL-WIDTH MAIN AREA
+   ============================================================ */
+
+.dashboardBody {
+  width: 100%;
+
+  grid-template-columns:
+    145px
+    minmax(0, 1fr);
+
+  align-items: stretch;
+}
+
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.previewSidebar {
+  width: 145px;
+
+  min-width: 145px;
+}
+
+
+/* ============================================================
+   MAIN DASHBOARD
+   Recover all space that belonged to old external
+   Command Center column.
+   ============================================================ */
+
+.previewDashboardMain {
+  width: 100%;
+
+  max-width: none;
+
+  min-width: 0;
+
+  grid-column: 2;
+
+  padding:
+    20px 20px 22px;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   HERO CARD
+   Make better use of recovered horizontal space.
+   Command Center remains INSIDE.
+   ============================================================ */
+
+.previewHeroCard {
+  width: 100%;
+
+  max-width: none;
+
+  min-height: 455px;
+
+  padding:
+    24px;
+
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(245px, 0.72fr);
+
+  gap: 18px;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   HERO LEFT SIDE
+   Bring the visual composition slightly closer to the logo.
+   Logo design itself is NOT changed.
+   ============================================================ */
+
+.previewHeroContent {
+  width: 100%;
+
+  min-width: 0;
+
+  justify-content: flex-start;
+}
+
+.previewLogoArea {
+  width: 100%;
+
+  min-height: 225px;
+
+  padding:
+    4px 0 0;
+
+  align-items: center;
+
+  justify-content: flex-start;
+}
+
+.previewLogoArea img {
+  width:
+    min(620px, 100%);
+
+  max-width: 100%;
+
+  max-height: 250px;
+
+  object-fit: contain;
+
+  object-position:
+    center center;
+
+  transform:
+    scale(1.04);
+
+  transform-origin:
+    center center;
+}
+
+
+/* Tagline stays inside Hero but closer to main identity. */
+
+.previewHeroTagline {
+  margin-top: auto;
+
+  margin-bottom: 12px;
+}
+
+
+/* Executive Overview remains fully inside Hero. */
+
+.executiveOverview {
+  width: 100%;
+
+  max-width: none;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   COMMAND CENTER INSIDE HERO
+   Give it enough width now that Dashboard has more room.
+   ============================================================ */
+
+.previewHeroCommandCenter {
+  width: 100%;
+
+  min-width: 0;
+
+  max-width: none;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   FOUR METRIC CARDS
+   Use the complete recovered width.
+   ============================================================ */
+
+.previewMetricsGrid {
+  width: 100%;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 12px;
+}
+
+
+/* ============================================================
+   LOWER DASHBOARD
+   Fill the page horizontally.
+   Left: sections/modules
+   Right: Sofia / Workspace / Activity
+   ============================================================ */
+
+.previewLowerDashboard {
+  width: 100%;
+
+  max-width: none;
+
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(245px, 0.72fr);
+
+  gap: 14px;
+
+  align-items: start;
+}
+
+.previewLowerMain {
+  width: 100%;
+
+  min-width: 0;
+}
+
+.previewLowerAside {
+  width: 100%;
+
+  min-width: 0;
+}
+
+
+/* ============================================================
+   SECTION CARDS
+   Allow cards and buttons to breathe horizontally.
+   ============================================================ */
+
+.previewSectionCard {
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+.previewQuickGrid {
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+}
+
+.previewModuleGrid {
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 8px;
+}
+
+.previewQuickGrid span,
+.previewModuleGrid span {
+  width: 100%;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   RIGHT COLUMN CARDS
+   Sofia / Workspace / Activity now fill their column.
+   ============================================================ */
+
+.previewSofiaCard,
+.previewWorkspaceCard,
+.previewActivityCard {
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   PLATFORM PREVIEW CONTAINER
+   Prevent accidental left alignment constraints.
+   ============================================================ */
+
+.platformPreview {
+  width: 100%;
+
+  max-width: none;
+
+  justify-self: stretch;
+}
+
+
+/* ============================================================
+   TABLET / IPAD
+   Two columns remain Sidebar + Dashboard.
+   ============================================================ */
+
+@media (max-width: 1050px) {
+
+  .dashboardBody {
+    grid-template-columns:
+      130px
+      minmax(0, 1fr);
+  }
+
+  .previewSidebar {
+    width: 130px;
+
+    min-width: 130px;
+  }
+
+  .previewDashboardMain {
+    padding:
+      18px;
+  }
+
+  .previewHeroCard {
+    grid-template-columns:
+      minmax(0, 1.48fr)
+      minmax(225px, 0.72fr);
+
+    gap: 16px;
+
+    padding:
+      21px;
+  }
+
+  .previewLowerDashboard {
+    grid-template-columns:
+      minmax(0, 1.45fr)
+      minmax(220px, 0.72fr);
+  }
+
+  .previewLogoArea img {
+    width:
+      min(570px, 100%);
+  }
+}
+
+
+/* ============================================================
+   PHONE
+   Keep complete Dashboard composition together.
+   Remove obsolete third column here too.
+   ============================================================ */
+
+@media (max-width: 680px) {
+
+  .dashboardTopBar {
+    min-width: 760px;
+  }
+
+  .dashboardBody {
+    width: 760px;
+
+    grid-template-columns:
+      130px
+      minmax(0, 1fr);
+  }
+
+  .previewSidebar {
+    width: 130px;
+
+    min-width: 130px;
+  }
+
+  .previewDashboardMain {
+    width: 630px;
+
+    padding:
+      16px;
+  }
+
+  .previewHeroCard {
+    width: 100%;
+
+    min-height: 420px;
+
+    padding:
+      18px;
+
+    grid-template-columns:
+      minmax(0, 1.5fr)
+      190px;
+
+    gap: 13px;
+  }
+
+  .previewMetricsGrid {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(0, 1fr)
+      );
+  }
+
+  .previewLowerDashboard {
+    width: 100%;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      190px;
+
+    gap: 12px;
+  }
+
+  .previewLogoArea {
+    min-height: 205px;
+  }
+
+  .previewLogoArea img {
+    width:
+      min(450px, 100%);
+
+    max-height:
+      205px;
+
+    transform:
+      scale(1.03);
+  }
+}
+
+
+
+/* JCS BUSINESS PROMO — FINAL ALIGNMENT V5 */
+
+/* ============================================================
+   TOP BAR
+   Align LEFT edge with Build / Run / Grow column
+   and RIGHT edge with Dashboard Preview.
+   Hero desktop already uses:
+   min(1380px, calc(100% - 48px))
+   ============================================================ */
+
+.navigation {
+  width:
+    min(
+      1380px,
+      calc(100% - 48px)
+    );
+
+  max-width: none;
+}
+
+
+/* ============================================================
+   TOP-BAR PLATFORM LOGO
+   Previous V4 width = 63px.
+   63 x 1.40 ≈ 88px.
+   Increase horizontal presentation without making
+   the navigation unnecessarily tall.
+   ============================================================ */
+
+.brandMark {
+  width: 88px;
+  height: 63px;
+
+  min-width: 88px;
+
+  flex: 0 0 88px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 0;
+
+  background: transparent;
+
+  box-shadow: none;
+
+  overflow: visible;
+}
+
+.brandLogoImage {
+  width: 100%;
+  height: 100%;
+
+  max-width: none;
+
+  object-fit: contain;
+
+  object-position:
+    center left;
+}
+
+
+/* Give the branding group enough room for the bigger logo. */
+
+.brand {
+  min-width: 0;
+
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   DARK MODE — HERO DESCRIPTION
+   This is the paragraph directly below:
+   BUILD, RUN & GROW YOUR BUSINESS.
+   ============================================================ */
+
+.page[data-theme="dark"] .heroDescription {
+  color:
+    rgba(255, 255, 255, 0.82);
+
+  opacity: 1;
+
+  text-shadow:
+    0 1px 1px
+      rgba(0, 0, 0, 0.15);
+}
+
+
+/* Also keep heading clearly readable over dark backgrounds. */
+
+.page[data-theme="dark"] .heroContent h1 {
+  color:
+    rgba(255, 255, 255, 0.97);
+}
+
+
+/* ============================================================
+   BUSINESS HEALTH
+   Right-side card using the same visual family
+   as Sofia / Workspace / Recent Activity.
+   ============================================================ */
+
+.previewBusinessHealthCard {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 15px;
+
+  border:
+    1px solid
+    rgba(var(--jcs-accent-rgb), 0.14);
+
+  border-radius: 17px;
+
+  background:
+    radial-gradient(
+      circle at 92% 8%,
+      rgba(var(--jcs-accent-rgb), 0.15),
+      transparent 42%
+    ),
+    color-mix(
+      in srgb,
+      var(--jcs-surface-solid) 67%,
+      transparent
+    );
+
+  box-shadow:
+    0 10px 28px
+      rgba(15, 23, 42, 0.06);
+
+  backdrop-filter:
+    blur(18px);
+
+  -webkit-backdrop-filter:
+    blur(18px);
+}
+
+.previewBusinessHealthCard header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 10px;
+}
+
+.previewBusinessHealthCard header > div {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+}
+
+.previewBusinessHealthCard header small {
+  color:
+    var(--jcs-accent);
+
+  font-size: 0.4rem;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.1em;
+}
+
+.previewBusinessHealthCard header strong {
+  margin-top: 3px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.62rem;
+}
+
+.previewBusinessHealthCard header > span {
+  padding:
+    5px 7px;
+
+  color: #2d9366;
+
+  border:
+    1px solid
+    rgba(45, 147, 102, 0.17);
+
+  border-radius: 999px;
+
+  background:
+    rgba(45, 147, 102, 0.08);
+
+  font-size: 0.38rem;
+
+  font-weight: 820;
+}
+
+.previewBusinessHealthScore {
+  display: grid;
+
+  margin-top: 13px;
+
+  padding:
+    11px;
+
+  grid-template-columns:
+    auto
+    minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 10px;
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 11px;
+
+  background:
+    var(--jcs-card);
+}
+
+.previewBusinessHealthScore > strong {
+  color:
+    var(--jcs-accent);
+
+  font-size: 1.25rem;
+
+  line-height: 1;
+}
+
+.previewBusinessHealthScore > div {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+}
+
+.previewBusinessHealthScore span {
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.47rem;
+
+  font-weight: 760;
+}
+
+.previewBusinessHealthScore small {
+  margin-top: 2px;
+
+  color:
+    var(--jcs-text-secondary);
+
+  font-size: 0.39rem;
+
+  line-height: 1.35;
+}
+
+.previewBusinessHealthGrid {
+  display: grid;
+
+  margin-top: 9px;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 7px;
+}
+
+.previewBusinessHealthGrid span {
+  display: flex;
+
+  min-width: 0;
+
+  padding:
+    8px;
+
+  flex-direction: column;
+
+  color:
+    var(--jcs-text-secondary);
+
+  border:
+    1px solid
+    var(--jcs-border);
+
+  border-radius: 9px;
+
+  background:
+    var(--jcs-card);
+
+  font-size: 0.39rem;
+}
+
+.previewBusinessHealthGrid b {
+  margin-bottom: 2px;
+
+  color:
+    var(--jcs-text-primary);
+
+  font-size: 0.46rem;
+}
+
+
+/* ============================================================
+   DARK MODE — BUSINESS HEALTH
+   ============================================================ */
+
+.page[data-theme="dark"]
+.previewBusinessHealthCard {
+  background:
+    radial-gradient(
+      circle at 92% 8%,
+      rgba(var(--jcs-accent-rgb), 0.18),
+      transparent 44%
+    ),
+    rgba(20, 19, 22, 0.78);
+}
+
+
+/* ============================================================
+   TABLET
+   Keep navbar aligned with the same content width
+   used by the tablet hero.
+   ============================================================ */
+
+@media (max-width: 1050px) {
+  .navigation {
+    width:
+      min(
+        820px,
+        calc(100% - 36px)
+      );
+  }
+
+  .brandMark {
+    width: 82px;
+
+    min-width: 82px;
+
+    flex-basis: 82px;
+  }
+}
+
+
+/* ============================================================
+   MOBILE
+   Preserve existing compact navigation behavior.
+   Logo still receives a proportional increase.
+   ============================================================ */
+
+@media (max-width: 680px) {
+  .navigation {
+    width:
+      calc(100% - 22px);
+  }
+
+  .brandMark {
+    width: 73px;
+    height: 52px;
+
+    min-width: 73px;
+
+    flex-basis: 73px;
+  }
+}
+
+
+
+/* JCS BUSINESS PROMO — TOP BAR LOGO FINAL V6 */
+
+/*
+ * Final top-bar logo refinement.
+ *
+ * Desktop V5: 88px
+ * +30% ≈ 114px
+ *
+ * Navigation height is intentionally preserved.
+ * Only the visual width/presence of the transparent
+ * official Platform logo increases.
+ */
+
+.brandMark {
+  width: 114px;
+
+  min-width: 114px;
+
+  flex:
+    0 0 114px;
+
+  height: 63px;
+}
+
+.brandLogoImage {
+  width: 100%;
+  height: 100%;
+
+  max-width: none;
+
+  object-fit: contain;
+
+  object-position:
+    left center;
+}
+
+
+/* Tablet */
+
+@media (max-width: 1050px) {
+  .brandMark {
+    width: 107px;
+
+    min-width: 107px;
+
+    flex:
+      0 0 107px;
+
+    height: 63px;
+  }
+}
+
+
+/* Phone */
+
+@media (max-width: 680px) {
+  .brandMark {
+    width: 95px;
+
+    min-width: 95px;
+
+    flex:
+      0 0 95px;
+
+    height: 52px;
+  }
+}
+

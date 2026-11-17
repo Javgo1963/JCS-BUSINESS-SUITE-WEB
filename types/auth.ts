@@ -5,6 +5,10 @@ import type {
   UserRole,
 } from "@/types/app-user";
 
+import type {
+  JCSAccessibleBusiness,
+} from "@/core/business-context/JCSAccessibleBusinessService";
+
 // MARK: - Authentication Inputs
 
 export interface SignInCredentials {
@@ -49,6 +53,10 @@ export interface AuthContextValue {
   ownerUID: string | null;
   businessName: string | null;
 
+  // Multi-business workspace authority
+  accessibleBusinesses: JCSAccessibleBusiness[];
+  activeBusinessID: string | null;
+
   // Role
   role: UserRole | null;
 
@@ -86,6 +94,12 @@ export interface AuthContextValue {
 
   // Firestore business-context actions
   refreshBusinessContext: () => Promise<void>;
+
+  selectBusiness: (
+    businessID: string
+  ) => boolean;
+
+  clearActiveBusinessSelection: () => void;
 
   clearError: () => void;
   clearBusinessContextError: () => void;

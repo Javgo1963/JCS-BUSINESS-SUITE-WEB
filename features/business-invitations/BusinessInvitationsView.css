@@ -1,0 +1,1093 @@
+/*
+ * JCS Business Suite
+ * BusinessInvitationsView.css
+ *
+ * Business Invitations workspace.
+ * Visual language aligned with DashboardView.
+ *
+ * Functional invitation logic remains in:
+ * - BusinessInvitationsView.tsx
+ * - BusinessInvitationSenderService.ts
+ * - BusinessInvitationService.ts
+ */
+
+/* ============================================================
+   ROOT
+   ============================================================ */
+
+.jcs-business-invitations {
+  --jcs-accent: #2379d4;
+  --jcs-accent-rgb: 35, 121, 212;
+
+  --jcs-background: #f6f3f1;
+  --jcs-background-elevated: rgba(255, 255, 255, 0.78);
+  --jcs-card: rgba(255, 255, 255, 0.76);
+  --jcs-card-solid: #ffffff;
+
+  --jcs-text-primary: #2d211d;
+  --jcs-text-secondary: #715f57;
+  --jcs-text-tertiary: #9b8981;
+
+  --jcs-border: rgba(67, 44, 35, 0.09);
+  --jcs-border-strong: rgba(67, 44, 35, 0.15);
+
+  --jcs-success: #29885d;
+  --jcs-danger: #c34747;
+
+  --jcs-radius-small: 12px;
+  --jcs-radius-medium: 18px;
+  --jcs-radius-large: 24px;
+  --jcs-radius-xl: 30px;
+
+  --jcs-shadow-small:
+    0 1px 2px rgba(47, 31, 25, 0.04),
+    0 8px 24px rgba(47, 31, 25, 0.05);
+
+  --jcs-shadow-medium:
+    0 2px 4px rgba(47, 31, 25, 0.04),
+    0 16px 38px rgba(47, 31, 25, 0.08);
+
+  min-height: 100vh;
+  padding: 32px;
+
+  color: var(--jcs-text-primary);
+
+  background:
+    radial-gradient(
+      circle at 14% 8%,
+      rgba(var(--jcs-accent-rgb), 0.11),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #faf8f7 0%,
+      var(--jcs-background) 52%,
+      #f4f1ef 100%
+    );
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif;
+}
+
+/* ============================================================
+   WORKSPACE
+   ============================================================ */
+
+.jcs-business-invitations__workspace {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+
+  display: grid;
+  gap: 24px;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.jcs-business-invitations__hero {
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 28px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-xl);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.94),
+      rgba(255, 255, 255, 0.72)
+    );
+
+  box-shadow: var(--jcs-shadow-medium);
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.jcs-business-invitations__hero::before {
+  content: "";
+
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  right: -95px;
+  top: -125px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(var(--jcs-accent-rgb), 0.2),
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+.jcs-business-invitations__hero-copy {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.jcs-business-invitations__hero-icon {
+  width: 60px;
+  height: 60px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 19px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--jcs-accent),
+      color-mix(
+        in srgb,
+        var(--jcs-accent) 66%,
+        #163b63
+      )
+    );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 12px 24px rgba(var(--jcs-accent-rgb), 0.22);
+}
+
+.jcs-business-invitations__eyebrow {
+  margin: 0 0 5px;
+
+  color: var(--jcs-accent);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.jcs-business-invitations__hero h1 {
+  margin: 0;
+
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  font-weight: 820;
+  letter-spacing: -0.035em;
+}
+
+.jcs-business-invitations__hero p {
+  margin: 7px 0 0;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.jcs-business-invitations__business-badge {
+  position: relative;
+  z-index: 1;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  max-width: 320px;
+
+  padding: 10px 14px;
+
+  border: 1px solid rgba(var(--jcs-accent-rgb), 0.16);
+  border-radius: 999px;
+
+  color: var(--jcs-accent);
+
+  background: rgba(var(--jcs-accent-rgb), 0.08);
+
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+/* ============================================================
+   MAIN CARD
+   ============================================================ */
+
+.jcs-business-invitations__card {
+  padding: 26px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-large);
+
+  background: var(--jcs-card);
+
+  box-shadow: var(--jcs-shadow-small);
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+.jcs-business-invitations__section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-bottom: 24px;
+}
+
+.jcs-business-invitations__section-heading-main {
+  display: flex;
+  gap: 12px;
+}
+
+.jcs-business-invitations__section-marker {
+  width: 4px;
+  min-height: 44px;
+
+  border-radius: 999px;
+
+  background: var(--jcs-accent);
+}
+
+.jcs-business-invitations__section-heading h2 {
+  margin: 0;
+
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.jcs-business-invitations__section-heading p {
+  margin: 5px 0 0;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   FORM
+   ============================================================ */
+
+.jcs-business-invitations__form {
+  display: grid;
+  gap: 20px;
+}
+
+.jcs-business-invitations__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.jcs-business-invitations__field {
+  display: grid;
+  gap: 7px;
+}
+
+.jcs-business-invitations__field--full {
+  grid-column: 1 / -1;
+}
+
+.jcs-business-invitations__field label {
+  color: var(--jcs-text-secondary);
+
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.jcs-business-invitations__input,
+.jcs-business-invitations__select,
+.jcs-business-invitations__textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid var(--jcs-border-strong);
+  border-radius: 15px;
+
+  color: var(--jcs-text-primary);
+  background: rgba(255, 255, 255, 0.86);
+
+  font: inherit;
+  font-size: 0.9rem;
+
+  outline: none;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.jcs-business-invitations__input,
+.jcs-business-invitations__select {
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+.jcs-business-invitations__textarea {
+  min-height: 112px;
+  padding: 13px 14px;
+
+  resize: vertical;
+}
+
+.jcs-business-invitations__input:focus,
+.jcs-business-invitations__select:focus,
+.jcs-business-invitations__textarea:focus {
+  border-color: rgba(var(--jcs-accent-rgb), 0.55);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgba(var(--jcs-accent-rgb), 0.1);
+}
+
+/* ============================================================
+   ROLE PREVIEW
+   ============================================================ */
+
+.jcs-business-invitations__role-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 16px 18px;
+
+  border: 1px solid rgba(var(--jcs-accent-rgb), 0.13);
+  border-radius: var(--jcs-radius-medium);
+
+  background: rgba(var(--jcs-accent-rgb), 0.055);
+}
+
+.jcs-business-invitations__role-preview strong {
+  display: block;
+
+  font-size: 0.86rem;
+}
+
+.jcs-business-invitations__role-preview span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 0.76rem;
+}
+
+.jcs-business-invitations__role-pill {
+  flex: 0 0 auto;
+
+  padding: 7px 11px;
+
+  border-radius: 999px;
+
+  color: #ffffff;
+  background: var(--jcs-accent);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+
+.jcs-business-invitations__message {
+  padding: 13px 15px;
+
+  border-radius: 14px;
+
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.jcs-business-invitations__message--error {
+  border: 1px solid rgba(195, 71, 71, 0.18);
+
+  color: var(--jcs-danger);
+
+  background: rgba(195, 71, 71, 0.07);
+}
+
+.jcs-business-invitations__message--success {
+  border: 1px solid rgba(41, 136, 93, 0.18);
+
+  color: var(--jcs-success);
+
+  background: rgba(41, 136, 93, 0.08);
+}
+
+/* ============================================================
+   BUTTON
+   ============================================================ */
+
+.jcs-business-invitations__submit {
+  min-height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  padding: 0 20px;
+
+  border: 0;
+  border-radius: 17px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--jcs-accent),
+      color-mix(
+        in srgb,
+        var(--jcs-accent) 72%,
+        #173b5e
+      )
+    );
+
+  box-shadow:
+    0 12px 24px rgba(var(--jcs-accent-rgb), 0.2);
+
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.jcs-business-invitations__submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 16px 30px rgba(var(--jcs-accent-rgb), 0.25);
+}
+
+.jcs-business-invitations__submit:disabled {
+  opacity: 0.56;
+  cursor: wait;
+}
+
+/* ============================================================
+   STATES
+   ============================================================ */
+
+.jcs-business-invitations__state {
+  width: min(680px, calc(100% - 32px));
+  margin: 80px auto;
+
+  padding: 28px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-large);
+
+  background: var(--jcs-card);
+
+  box-shadow: var(--jcs-shadow-medium);
+
+  text-align: center;
+}
+
+.jcs-business-invitations__state h1 {
+  margin: 0 0 8px;
+
+  font-size: 1.5rem;
+}
+
+.jcs-business-invitations__state p {
+  margin: 0;
+
+  color: var(--jcs-text-secondary);
+
+  line-height: 1.6;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 760px) {
+  .jcs-business-invitations {
+    padding: 18px 14px 30px;
+  }
+
+  .jcs-business-invitations__hero {
+    align-items: flex-start;
+    flex-direction: column;
+
+    padding: 22px;
+  }
+
+  .jcs-business-invitations__business-badge {
+    max-width: 100%;
+  }
+
+  .jcs-business-invitations__card {
+    padding: 20px;
+  }
+
+  .jcs-business-invitations__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jcs-business-invitations__field--full {
+    grid-column: auto;
+  }
+
+  .jcs-business-invitations__role-preview {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .jcs-business-invitations__submit {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   INVITATION OVERVIEW
+   ============================================================ */
+
+.jcs-business-invitations__overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.jcs-business-invitations__stat-card {
+  min-height: 132px;
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-medium);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 255, 255, 0.68)
+    );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 8px 22px rgba(47, 31, 25, 0.045);
+}
+
+.jcs-business-invitations__stat-card svg {
+  color: var(--jcs-accent);
+}
+
+.jcs-business-invitations__stat-card strong {
+  margin-top: 3px;
+
+  color: var(--jcs-text-primary);
+
+  font-size: 1.65rem;
+  font-weight: 850;
+  letter-spacing: -0.045em;
+}
+
+.jcs-business-invitations__stat-card span {
+  color: var(--jcs-text-secondary);
+
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+.jcs-business-invitations__search {
+  min-height: 52px;
+
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  padding: 0 16px;
+
+  border: 1px solid var(--jcs-border-strong);
+  border-radius: 16px;
+
+  color: var(--jcs-text-tertiary);
+  background: rgba(255, 255, 255, 0.84);
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.jcs-business-invitations__search:focus-within {
+  border-color: rgba(var(--jcs-accent-rgb), 0.5);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgba(var(--jcs-accent-rgb), 0.09);
+}
+
+.jcs-business-invitations__search svg {
+  flex: 0 0 auto;
+
+  color: var(--jcs-accent);
+}
+
+.jcs-business-invitations__search input {
+  width: 100%;
+  min-width: 0;
+
+  border: 0;
+  outline: 0;
+
+  color: var(--jcs-text-primary);
+  background: transparent;
+
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.jcs-business-invitations__search input::placeholder {
+  color: var(--jcs-text-tertiary);
+}
+
+/* ============================================================
+   CREATE NEW INVITATION
+   ============================================================ */
+
+.jcs-business-invitations__create-button {
+  width: 100%;
+  min-height: 66px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 18px;
+
+  border: 1px solid rgba(var(--jcs-accent-rgb), 0.15);
+  border-radius: var(--jcs-radius-medium);
+
+  color: var(--jcs-text-primary);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--jcs-accent-rgb), 0.075),
+      rgba(255, 255, 255, 0.82)
+    );
+
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.jcs-business-invitations__create-button > svg:first-child {
+  width: 34px;
+  height: 34px;
+
+  padding: 7px;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+  background: var(--jcs-accent);
+
+  box-sizing: border-box;
+}
+
+.jcs-business-invitations__create-button > span {
+  flex: 1;
+
+  text-align: left;
+}
+
+.jcs-business-invitations__create-button > svg:last-child {
+  color: var(--jcs-text-tertiary);
+}
+
+.jcs-business-invitations__create-button:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(var(--jcs-accent-rgb), 0.26);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--jcs-accent-rgb), 0.11),
+      rgba(255, 255, 255, 0.92)
+    );
+
+  box-shadow:
+    0 10px 26px rgba(var(--jcs-accent-rgb), 0.08);
+}
+
+/* ============================================================
+   INVITATION LIST
+   ============================================================ */
+
+.jcs-business-invitations__list {
+  display: grid;
+  gap: 13px;
+}
+
+.jcs-business-invitations__invite-card {
+  overflow: hidden;
+
+  border: 1px solid var(--jcs-border);
+  border-radius: var(--jcs-radius-medium);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.94),
+      rgba(255, 255, 255, 0.72)
+    );
+
+  box-shadow:
+    0 6px 18px rgba(47, 31, 25, 0.035);
+
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.jcs-business-invitations__invite-card:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(var(--jcs-accent-rgb), 0.18);
+
+  box-shadow:
+    0 10px 26px rgba(47, 31, 25, 0.06);
+}
+
+.jcs-business-invitations__invite-main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+
+  padding: 17px 18px 10px;
+}
+
+.jcs-business-invitations__invite-avatar {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  color: var(--jcs-accent);
+  background: rgba(var(--jcs-accent-rgb), 0.09);
+}
+
+.jcs-business-invitations__invite-person {
+  min-width: 0;
+
+  display: grid;
+  gap: 3px;
+}
+
+.jcs-business-invitations__invite-person strong {
+  overflow: hidden;
+
+  color: var(--jcs-text-primary);
+
+  font-size: 0.91rem;
+  font-weight: 820;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jcs-business-invitations__invite-person span {
+  color: var(--jcs-text-secondary);
+
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.jcs-business-invitations__invite-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 16px;
+
+  padding: 0 18px 15px 73px;
+
+  color: var(--jcs-text-secondary);
+
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.jcs-business-invitations__invite-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding: 13px 18px;
+
+  border-top: 1px solid var(--jcs-border);
+
+  background: rgba(var(--jcs-accent-rgb), 0.035);
+}
+
+.jcs-business-invitations__invite-code > div {
+  display: grid;
+  gap: 3px;
+}
+
+.jcs-business-invitations__invite-code span {
+  color: var(--jcs-text-tertiary);
+
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+}
+
+.jcs-business-invitations__invite-code strong {
+  color: var(--jcs-text-primary);
+
+  font-size: 0.82rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.jcs-business-invitations__invite-code > svg {
+  color: var(--jcs-text-tertiary);
+}
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.jcs-business-invitations__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 0.68rem;
+  font-weight: 820;
+  white-space: nowrap;
+}
+
+.jcs-business-invitations__status--pending {
+  color: #9a6817;
+  background: rgba(197, 143, 41, 0.11);
+}
+
+.jcs-business-invitations__status--accepted {
+  color: var(--jcs-success);
+  background: rgba(41, 136, 93, 0.1);
+}
+
+.jcs-business-invitations__status--declined,
+.jcs-business-invitations__status--cancelled {
+  color: var(--jcs-danger);
+  background: rgba(195, 71, 71, 0.09);
+}
+
+.jcs-business-invitations__status--expired {
+  color: var(--jcs-text-secondary);
+  background: rgba(113, 95, 87, 0.09);
+}
+
+/* ============================================================
+   LIST STATES
+   ============================================================ */
+
+.jcs-business-invitations__list-state,
+.jcs-business-invitations__empty {
+  min-height: 150px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  padding: 24px;
+
+  border: 1px dashed var(--jcs-border-strong);
+  border-radius: var(--jcs-radius-medium);
+
+  color: var(--jcs-text-secondary);
+  background: rgba(255, 255, 255, 0.44);
+
+  text-align: center;
+}
+
+.jcs-business-invitations__list-state svg,
+.jcs-business-invitations__empty svg {
+  color: var(--jcs-accent);
+}
+
+.jcs-business-invitations__empty strong {
+  color: var(--jcs-text-primary);
+
+  font-size: 0.9rem;
+}
+
+.jcs-business-invitations__empty span,
+.jcs-business-invitations__list-state span {
+  max-width: 420px;
+
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   MESSAGE ALIGNMENT
+   ============================================================ */
+
+.jcs-business-invitations__message--success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .jcs-business-invitations {
+    padding: 22px;
+  }
+
+  .jcs-business-invitations__overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .jcs-business-invitations {
+    padding: 16px;
+  }
+
+  .jcs-business-invitations__workspace {
+    gap: 16px;
+  }
+
+  .jcs-business-invitations__hero {
+    align-items: flex-start;
+    flex-direction: column;
+
+    padding: 22px;
+  }
+
+  .jcs-business-invitations__hero-copy {
+    align-items: flex-start;
+  }
+
+  .jcs-business-invitations__business-badge {
+    max-width: 100%;
+  }
+
+  .jcs-business-invitations__card {
+    padding: 20px;
+  }
+
+  .jcs-business-invitations__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jcs-business-invitations__field--full {
+    grid-column: auto;
+  }
+
+  .jcs-business-invitations__role-preview {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .jcs-business-invitations__invite-main {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .jcs-business-invitations__status {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .jcs-business-invitations__invite-details {
+    padding-left: 18px;
+  }
+}
+
+@media (max-width: 460px) {
+  .jcs-business-invitations__overview-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .jcs-business-invitations__stat-card {
+    min-height: 112px;
+    padding: 15px;
+  }
+
+  .jcs-business-invitations__section-heading {
+    gap: 12px;
+  }
+
+  .jcs-business-invitations__create-button {
+    min-height: 60px;
+  }
+
+  .jcs-business-invitations__invite-code {
+    align-items: flex-start;
+  }
+}

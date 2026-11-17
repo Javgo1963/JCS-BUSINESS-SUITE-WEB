@@ -333,6 +333,32 @@ export function usePlatformSettings({
   const mountedReference =
     useRef(true);
 
+  /*
+   * Keep presentation callbacks in refs so changing callback
+   * identities never recreates applySettings -> reload ->
+   * automatic load. This prevents repeated Firestore loads
+   * and UI flickering.
+   */
+  const onAccentColorChangeReference =
+    useRef(onAccentColorChange);
+
+  const onLanguageChangeReference =
+    useRef(onLanguageChange);
+
+  useEffect(() => {
+    onAccentColorChangeReference.current =
+      onAccentColorChange;
+  }, [
+    onAccentColorChange,
+  ]);
+
+  useEffect(() => {
+    onLanguageChangeReference.current =
+      onLanguageChange;
+  }, [
+    onLanguageChange,
+  ]);
+
   // =====================================================
   // MARK: - Mounted State
   // =====================================================
@@ -409,18 +435,17 @@ export function usePlatformSettings({
           nextSettings.logoDownloadURL,
         );
 
-        onAccentColorChange?.(
-          nextSettings.accentColorName,
-        );
+        onAccentColorChangeReference
+          .current?.(
+            nextSettings.accentColorName,
+          );
 
-        onLanguageChange?.(
-          nextSettings.languageCode,
-        );
+        onLanguageChangeReference
+          .current?.(
+            nextSettings.languageCode,
+          );
       },
-      [
-        onAccentColorChange,
-        onLanguageChange,
-      ],
+      [],
     );
 
   // =====================================================
@@ -557,39 +582,43 @@ export function usePlatformSettings({
         setFormValues(
           (
             currentValues
-          ) => {
-            const nextValues = {
-              ...currentValues,
+          ) => ({
+            ...currentValues,
 
-              [fieldName]:
-                value,
-            };
-
-            if (
-              fieldName ===
-              "accentColorName"
-            ) {
-              onAccentColorChange?.(
-                String(
-                  value,
-                ),
-              );
-            }
-
-            if (
-              fieldName ===
-              "languageCode"
-            ) {
-              onLanguageChange?.(
-                String(
-                  value,
-                ),
-              );
-            }
-
-            return nextValues;
-          },
+            [fieldName]:
+              value,
+          }),
         );
+
+        /*
+         * Presentation callbacks must run outside the React
+         * state-updater function. Calling them from inside the
+         * updater can update a parent Context while React is
+         * rendering PlatformAppSettingsView.
+         */
+        if (
+          fieldName ===
+          "accentColorName"
+        ) {
+          onAccentColorChangeReference
+            .current?.(
+              String(
+                value,
+              ),
+            );
+        }
+
+        if (
+          fieldName ===
+          "languageCode"
+        ) {
+          onLanguageChangeReference
+            .current?.(
+              String(
+                value,
+              ),
+            );
+        }
 
         setFormErrors(
           (
@@ -604,10 +633,7 @@ export function usePlatformSettings({
         setErrorMessage("");
         setSuccessMessage("");
       },
-      [
-        onAccentColorChange,
-        onLanguageChange,
-      ],
+      [],
     );
 
   // =====================================================

@@ -37,6 +37,7 @@ import {
   createEmptyAppSettingsFormErrors,
   createFullBusinessAddress,
   normalizeAppAccentColorName,
+  normalizeAppScreenBackgroundID,
   normalizeAppLanguageCode,
   normalizeTaxPercent,
 } from "./AppSettingsTypes";
@@ -63,10 +64,6 @@ import type {
   BusinessLogoRenderingMode,
   BusinessLogoSource,
 } from "../business-branding/BusinessLogoTypes";
-
-import {
-  normalizeJCSScreenBackgroundID,
-} from "../../components/layout/JCSScreenBackground";
 
 // MARK: - Constants
 
@@ -462,7 +459,7 @@ export function normalizeAppSettingsFormValues(
       ),
 
     backgroundID:
-      normalizeJCSScreenBackgroundID(
+      normalizeAppScreenBackgroundID(
         values.backgroundID,
       ),
   };
@@ -505,9 +502,7 @@ export function createAppSettingsFormValues(
       settings.accentColorName,
 
     backgroundID:
-      normalizeJCSScreenBackgroundID(
-        settings.backgroundID,
-      ),
+      settings.backgroundID,
   });
 }
 
@@ -818,11 +813,9 @@ export function createAppSettingsRecordFromSaveInput(
         .accentColorName,
 
     backgroundID:
-      normalizeJCSScreenBackgroundID(
-        normalizedInput
-          .formValues
-          .backgroundID,
-      ),
+      normalizedInput
+        .formValues
+        .backgroundID,
 
     activeLogoID:
       branding.activeLogoID,
@@ -913,9 +906,6 @@ export function serializeAppSettingsForFirestore(
     accentColorName:
       normalizedRecord.accentColorName,
 
-    backgroundID:
-      normalizedRecord.backgroundID,
-
     activeLogoID:
       normalizedRecord.activeLogoID,
 
@@ -938,6 +928,10 @@ export function serializeAppSettingsForFirestore(
     useAccentColorForLogo:
       normalizedRecord
         .useAccentColorForLogo,
+
+    backgroundID:
+      normalizedRecord
+        .backgroundID,
 
     backgroundStoragePath:
       normalizedRecord
@@ -1114,11 +1108,6 @@ export function deserializeAppSettingsRecord(
         data.accentColorName,
       ),
 
-    backgroundID:
-      normalizeJCSScreenBackgroundID(
-        data.backgroundID,
-      ),
-
     activeLogoID:
       readString(
         data.activeLogoID,
@@ -1147,6 +1136,11 @@ export function deserializeAppSettingsRecord(
     logoSupportsAccentColor,
 
     useAccentColorForLogo,
+
+    backgroundID:
+      normalizeAppScreenBackgroundID(
+        data.backgroundID,
+      ),
 
     backgroundStoragePath:
       readString(
@@ -1275,11 +1269,6 @@ export function normalizeAppSettingsRecord(
         settings.accentColorName,
       ),
 
-    backgroundID:
-      normalizeJCSScreenBackgroundID(
-        settings.backgroundID,
-      ),
-
     activeLogoID:
       settings.activeLogoID.trim(),
 
@@ -1306,6 +1295,11 @@ export function normalizeAppSettingsRecord(
         "template" &&
       settings.useAccentColorForLogo ===
         true,
+
+    backgroundID:
+      normalizeAppScreenBackgroundID(
+        settings.backgroundID,
+      ),
 
     backgroundStoragePath:
       settings.backgroundStoragePath.trim(),

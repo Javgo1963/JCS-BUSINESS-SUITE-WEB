@@ -8,10 +8,10 @@ import JCSBillingReturnView from
 
 export const metadata: Metadata = {
   title:
-    "Subscription Verification | JCS Business Suite",
+    "Preparing Your Workspace | JCS Business Suite",
 
   description:
-    "Verify the canonical JCS Business Suite subscription after Stripe Checkout.",
+    "Prepare secure JCS Business Suite access after subscription checkout.",
 };
 
 
