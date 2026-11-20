@@ -913,15 +913,35 @@ export function canDisplayDashboardModule(
     );
 
   /*
+   * Tenant provisioning is the absolute ceiling for every
+   * tenant-scoped identity.
+   *
+   * No Business Owner, Administrator, Manager, Employee,
+   * Provider or Customer may escape the business module set.
+   */
+  if (!enabled) {
+    return false;
+  }
+
+  /*
+   * Business Owner has full authority inside the tenant ceiling.
+   *
+   * Once a module is supported and operationally enabled for the
+   * business, the primary Business Owner receives it regardless
+   * of employee-role permission defaults.
+   *
+   * Platform-only modules were already rejected above.
+   */
+  if (access.isBusinessOwner) {
+    return true;
+  }
+
+  /*
    * Per-user explicit module authority.
    *
-   * Business configuration still determines whether the module
-   * exists for the tenant. Once provisioned for the business,
-   * an explicit AppUser enabledModules assignment is a valid
-   * access grant.
-   *
-   * disabledModules is an explicit per-user denial and therefore
-   * wins over role defaults and permissions.
+   * Business configuration determines whether the module exists
+   * for the tenant. After that ceiling is satisfied, explicit
+   * AppUser grants and denials refine access for non-owner roles.
    */
   const explicitlyEnabledForUser =
     Boolean(module.moduleKey) &&
@@ -961,39 +981,29 @@ export function canDisplayDashboardModule(
   }
 
   /*
-   * Foundational modules such as Users, Invitations and
-   * App Settings may be controlled directly by role.
-   */
-  if (
-    module.roleControlled &&
-    (roleAccess || permissionAccess)
-  ) {
-    return true;
-  }
-
-  /*
-   * For regular operational modules, the module must be
-   * provisioned and the user must have role or permission access
-   * when those restrictions are declared.
-   */
-  if (!enabled) {
-    return false;
-  }
-
-  /*
-   * Explicit per-user denial wins after tenant provisioning
-   * and before role/default access.
+   * Explicit per-user denial wins over role/default authority.
    */
   if (explicitlyDisabledForUser) {
     return false;
   }
 
   /*
-   * Explicit per-user module assignment is a direct access grant.
-   * This allows Business Owners to add a module beyond the
-   * selected role defaults, matching the intended Apple behavior.
+   * Explicit per-user module assignment is a direct access grant
+   * inside the tenant module ceiling.
    */
   if (explicitlyEnabledForUser) {
+    return true;
+  }
+
+  /*
+   * Foundational modules such as Users, Invitations and
+   * App Settings may be controlled directly by role, but only
+   * after tenant provisioning has been satisfied.
+   */
+  if (
+    module.roleControlled &&
+    (roleAccess || permissionAccess)
+  ) {
     return true;
   }
 
