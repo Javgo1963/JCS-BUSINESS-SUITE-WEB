@@ -1138,85 +1138,6 @@ const businessLogo =
   // MARK: - Dashboard Modules
   // =====================================================
 
-  // =====================================================
-  // MARK: - Tenant Effective Module Ceiling
-  // =====================================================
-  //
-  // The business-enabled module set is the absolute tenant
-  // capability ceiling.
-  //
-  // Platform Administrator is intentionally exempt because
-  // platform authority exists outside a tenant.
-  //
-  // Business Owner receives every tenant-enabled module.
-  // All other tenant users must satisfy BOTH:
-  //
-  //   1. tenant capability
-  //   2. their effective user/role permission authority
-  //
-  // DashboardItems continues to enforce user permission
-  // authority. This ceiling prevents any role default from
-  // escaping the business-enabled module set.
-  //
-
-  const tenantEnabledModules =
-    useMemo(
-      () => {
-        const source =
-          business?.enabledModules ??
-          appUser?.enabledModules ??
-          membership?.enabledModules ??
-          [];
-
-        return new Set(
-          source
-            .map((moduleKey) =>
-              cleanText(
-                moduleKey
-              ).toLowerCase()
-            )
-            .filter(Boolean)
-        );
-      },
-      [
-        appUser?.enabledModules,
-        business?.enabledModules,
-        membership?.enabledModules,
-      ]
-    );
-
-  const moduleFitsTenantCeiling =
-    (
-      module:
-        DashboardModuleDefinition
-    ): boolean => {
-      if (
-        access.isPlatformAdmin
-      ) {
-        return true;
-      }
-
-      const requiredModules =
-        module.requiredModules ??
-        [];
-
-      if (
-        requiredModules.length ===
-        0
-      ) {
-        return true;
-      }
-
-      return requiredModules.some(
-        (moduleKey) =>
-          tenantEnabledModules.has(
-            cleanText(
-              moduleKey
-            ).toLowerCase()
-          )
-      );
-    };
-
   const visibilityContext =
     useMemo(
       () => ({
@@ -1251,8 +1172,6 @@ const businessLogo =
               getDashboardModulesForSection(
                 section,
                 visibilityContext
-              ).filter(
-                moduleFitsTenantCeiling
               ),
           }))
           .filter(
@@ -1262,7 +1181,6 @@ const businessLogo =
                 .length > 0
           ),
       [
-        moduleFitsTenantCeiling,
         visibilityContext,
       ]
     );
