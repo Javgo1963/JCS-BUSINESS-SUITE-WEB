@@ -247,6 +247,20 @@ export function useDashboardOfficialShell({
   // MARK: - Primary Navigation
   // =====================================================
 
+  const effectiveSidebarModuleIDs =
+    useMemo(
+      () =>
+        new Set(
+          sidebarModules.map(
+            (module) =>
+              module.id
+          )
+        ),
+      [
+        sidebarModules,
+      ]
+    );
+
   const navigationItems =
     useMemo(
       () => [
@@ -274,7 +288,9 @@ export function useDashboardOfficialShell({
               .onOpenDashboard,
         },
 
-        ...(!access.isCustomer
+        ...(effectiveSidebarModuleIDs.has(
+          "customers"
+        )
           ? [
               {
                 id:
@@ -300,7 +316,13 @@ export function useDashboardOfficialShell({
                     "Customers" as DashboardRoute
                   ),
               },
+            ]
+          : []),
 
+        ...(effectiveSidebarModuleIDs.has(
+          "appointments"
+        )
+          ? [
               {
                 id:
                   "appointments",
@@ -325,7 +347,13 @@ export function useDashboardOfficialShell({
                     "Calendar" as DashboardRoute
                   ),
               },
+            ]
+          : []),
 
+        ...(effectiveSidebarModuleIDs.has(
+          "settings"
+        )
+          ? [
               {
                 id:
                   "app-settings",
@@ -414,6 +442,7 @@ export function useDashboardOfficialShell({
       ],
       [
         access.isCustomer,
+        effectiveSidebarModuleIDs,
 
         access
           .isPlatformAdmin,

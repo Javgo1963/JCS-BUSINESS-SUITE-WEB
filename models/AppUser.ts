@@ -477,7 +477,16 @@ export function createProviderDefaultPermissions():
     ...createEmptyAppUserPermissions(),
 
     canAccessDashboard: true,
+
+    // Canonical Provider operational defaults.
+    // The tenant-enabled module ceiling determines whether
+    // each capability is actually available to this business.
+    canAccessProducts: true,
+    canAccessInventory: true,
     canAccessTransportation: true,
+    canAccessReceiving: true,
+    canAccessShipping: true,
+    canAccessCompliance: true,
   };
 }
 
